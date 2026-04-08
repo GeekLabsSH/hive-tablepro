@@ -1,4 +1,4 @@
-import { GridCellCoordinates, GridColDef, GridRowId } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridCellCoordinates, GridColDef, GridRowId } from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 
 export type GridCellSelectionModel = Record<GridRowId, Record<GridColDef['field'], boolean>>;
 

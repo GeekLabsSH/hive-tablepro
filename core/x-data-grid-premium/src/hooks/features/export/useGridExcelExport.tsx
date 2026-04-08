@@ -2,14 +2,14 @@ import {
   GridExportDisplayOptions,
   useGridApiMethod,
   useGridLogger,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import {
   defaultGetRowsToExport,
   exportAs,
   getColumnsToExport,
   GridPipeProcessor,
   useGridRegisterPipeProcessor,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import { GridExcelExportMenuItem } from "../../../components";
 import { GridPrivateApiPremium } from "../../../models/gridApiPremium";

@@ -1,4 +1,4 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
 import PropTypes from "prop-types";
 import { createGrid } from "../../../mui-system/src";
 import { styled, useThemeProps } from "../styles";

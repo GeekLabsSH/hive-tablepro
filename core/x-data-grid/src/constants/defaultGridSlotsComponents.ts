@@ -1,11 +1,11 @@
-import MUIButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
-import MUICheckbox from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Checkbox';
-import MUIFormControl from "@GeekLabsSH/hive-tablepro/core/mui-material/src/FormControl";
-import MUIPopper from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
-import MUISelect from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Select";
-import MUISwitch from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Switch";
-import MUITextField from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
-import MUITooltip from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Tooltip";
+import MUIButton from "@geeklabssh/hive-tablepro/core/mui-material/src/Button";
+import MUICheckbox from '@geeklabssh/hive-tablepro/core/mui-material/src/Checkbox';
+import MUIFormControl from "@geeklabssh/hive-tablepro/core/mui-material/src/FormControl";
+import MUIPopper from "@geeklabssh/hive-tablepro/core/mui-material/src/Popper";
+import MUISelect from "@geeklabssh/hive-tablepro/core/mui-material/src/Select";
+import MUISwitch from "@geeklabssh/hive-tablepro/core/mui-material/src/Switch";
+import MUITextField from "@geeklabssh/hive-tablepro/core/mui-material/src/TextField";
+import MUITooltip from "@geeklabssh/hive-tablepro/core/mui-material/src/Tooltip";
 import {
   GridAddIcon, GridArrowDownwardIcon,
   GridArrowUpwardIcon,

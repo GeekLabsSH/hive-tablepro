@@ -1,7 +1,7 @@
-import { DistributiveOmit } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { DistributiveOmit } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 
-declare module '@GeekLabsSH/hive-tablepro/core/mui-material/src/OverridableComponent' {
+declare module '@geeklabssh/hive-tablepro/core/mui-material/src/OverridableComponent' {
   /**
    * A component whose root component can be controlled via a `component` prop.
    *

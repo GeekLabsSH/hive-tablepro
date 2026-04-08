@@ -3,7 +3,7 @@ import {
   GridRowIdToModelLookup,
   GridRowsProp,
   GridValidRowModel
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 
 export interface GridPinnedRowsProp<R extends GridValidRowModel = GridValidRowModel> {
   top?: GridRowsProp<R>;

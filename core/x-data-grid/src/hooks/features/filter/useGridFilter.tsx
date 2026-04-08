@@ -39,7 +39,7 @@ import * as table from "@/utils/tableFunctions";
 import {
   GridFilterModel,
   useGridRootProps,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import { useDidMountEffect } from "@/utils/hooks";
 
 export const filterStateInitializer: GridStateInitializer<

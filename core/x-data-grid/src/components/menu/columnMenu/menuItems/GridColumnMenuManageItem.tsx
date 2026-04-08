@@ -1,6 +1,6 @@
-import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
-import ListItemText from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemText";
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import ListItemIcon from "@geeklabssh/hive-tablepro/core/mui-material/src/ListItemIcon";
+import ListItemText from "@geeklabssh/hive-tablepro/core/mui-material/src/ListItemText";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GridPreferencePanelsValue } from "../../../../hooks/features/preferencesPanel/gridPreferencePanelsValue";

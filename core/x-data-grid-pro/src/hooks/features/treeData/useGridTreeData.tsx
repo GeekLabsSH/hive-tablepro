@@ -1,7 +1,7 @@
 import {
   GridEventListener,
   useGridApiEventHandler,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import * as React from "react";
 import { GridApiPro } from "../../../models/gridApiPro";
 

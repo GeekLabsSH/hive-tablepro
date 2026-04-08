@@ -1,3 +1,3 @@
-export { unstable_generateUtilityClass as default } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
-export type { GlobalStateSlot } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+export { unstable_generateUtilityClass as default } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
+export type { GlobalStateSlot } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 

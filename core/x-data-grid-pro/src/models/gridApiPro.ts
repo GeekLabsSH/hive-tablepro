@@ -3,8 +3,8 @@ import {
   GridColumnReorderApi,
   GridRowMultiSelectionApi,
   GridRowProApi
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { GridPrivateOnlyApiCommon } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { GridPrivateOnlyApiCommon } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import type {
   GridColumnPinningApi,
   GridDetailPanelApi, GridDetailPanelPrivateApi, GridRowPinningApi

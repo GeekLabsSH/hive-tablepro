@@ -1,4 +1,4 @@
-import { ResponsiveStyleValue, SxProps, SystemProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { ResponsiveStyleValue, SxProps, SystemProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 import { Theme } from '../styles/createTheme';

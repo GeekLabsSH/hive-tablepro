@@ -1,10 +1,10 @@
-import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import IconButton from "@geeklabssh/hive-tablepro/core/mui-material/src/IconButton";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   GridRenderCellParams,
   useGridSelector,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridDetailPanelExpandedRowsContentCacheSelector } from "../hooks/features/detailPanel/gridDetailPanelSelector";

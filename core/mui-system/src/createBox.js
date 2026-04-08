@@ -1,4 +1,4 @@
-import styled from "@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src";
+import styled from "@geeklabssh/hive-tablepro/core/mui-styled-engine/src";
 import clsx from "clsx";
 import * as React from "react";
 import styleFunctionSx, { extendSxProp } from "./styleFunctionSx";

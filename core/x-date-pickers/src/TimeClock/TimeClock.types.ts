@@ -1,5 +1,5 @@
-import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { Theme } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import {
   PickersArrowSwitcherSlotsComponent,
   PickersArrowSwitcherSlotsComponentsProps

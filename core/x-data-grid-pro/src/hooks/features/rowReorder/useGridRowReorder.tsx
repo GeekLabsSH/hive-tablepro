@@ -1,4 +1,4 @@
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   GridEventListener,
@@ -9,8 +9,8 @@ import {
   useGridApiOptionHandler,
   useGridLogger,
   useGridSelector,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
-import { gridEditRowsStateSelector } from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
+import { gridEditRowsStateSelector } from "@geeklabssh/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import { DataGridProProcessedProps } from "../../../models/dataGridProProps";
 import { GridPrivateApiPro } from "../../../models/gridApiPro";

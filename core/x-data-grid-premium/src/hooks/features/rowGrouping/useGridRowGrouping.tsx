@@ -3,13 +3,13 @@ import {
   GridEventListener,
   useGridApiEventHandler,
   useGridApiMethod,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import {
   GridPipeProcessor,
   GridRestoreStatePreProcessingContext,
   GridStateInitializer,
   useGridRegisterPipeProcessor,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals";
 import * as React from "react";
 import { DataGridPremiumProcessedProps } from "../../../models/dataGridPremiumProps";
 import { GridPrivateApiPremium } from "../../../models/gridApiPremium";

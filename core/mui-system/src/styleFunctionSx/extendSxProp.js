@@ -1,4 +1,4 @@
-import { isPlainObject } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { isPlainObject } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import defaultSxConfig from "./defaultSxConfig";
 
 const splitProps = (props) => {

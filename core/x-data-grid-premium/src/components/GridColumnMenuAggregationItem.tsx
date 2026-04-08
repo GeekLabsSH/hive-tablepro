@@ -1,16 +1,16 @@
-import FormControl from "@GeekLabsSH/hive-tablepro/core/mui-material/src/FormControl";
-import InputLabel from "@GeekLabsSH/hive-tablepro/core/mui-material/src/InputLabel";
-import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
-import ListItemText from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemText";
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import FormControl from "@geeklabssh/hive-tablepro/core/mui-material/src/FormControl";
+import InputLabel from "@geeklabssh/hive-tablepro/core/mui-material/src/InputLabel";
+import ListItemIcon from "@geeklabssh/hive-tablepro/core/mui-material/src/ListItemIcon";
+import ListItemText from "@geeklabssh/hive-tablepro/core/mui-material/src/ListItemText";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
 import Select, {
   SelectChangeEvent,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Select";
-import { unstable_useId as useId } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Select";
+import { unstable_useId as useId } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   GridColumnMenuItemProps,
   useGridSelector,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GridAggregationModel } from "../hooks/features/aggregation/gridAggregationInterfaces";

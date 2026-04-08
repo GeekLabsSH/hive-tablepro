@@ -1,5 +1,5 @@
-import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import TextField from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import { SlotComponentProps } from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import TextField from "@geeklabssh/hive-tablepro/core/mui-material/src/TextField";
 import * as React from 'react';
 import { FieldsTextFieldProps, UncapitalizeObjectKeys } from '../internals';
 import { UseFieldInternalProps } from '../internals/hooks/useField';
@@ -65,7 +65,7 @@ export type TimeFieldOwnerState<TDate> = TimeFieldProps<TDate>;
 export interface TimeFieldSlotsComponent {
   /**
    * Form control with an input to render the value.
-   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@geeklabssh/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType;

@@ -2,10 +2,10 @@ import {
   gridColumnLookupSelector,
   GridRowId,
   gridRowTreeSelector, GRID_CHECKBOX_SELECTION_FIELD, useFirstRender
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import {
   createRowTree, GridColumnRawLookup, GridHydrateColumnsValue, GridPipeProcessor, GridStrategyProcessor, RowTreeBuilderGroupingCriterion, sortRowTree, updateRowTree, useGridRegisterPipeProcessor, useGridRegisterStrategyProcessor
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridPrivateApiPremium } from '../../../models/gridApiPremium';

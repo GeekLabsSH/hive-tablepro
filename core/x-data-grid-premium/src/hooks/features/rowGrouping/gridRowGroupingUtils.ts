@@ -1,9 +1,9 @@
 import {
   GridColDef, GridFilterModel, GridFilterState, GridGroupNode, GridKeyValue, GridRowId, GridRowModel, GridRowTreeConfig, GridTreeNode
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import {
   GridAggregatedFilterItemApplier, GridApiCommunity, GridColumnRawLookup, passFilterLogic
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridPrivateApiPremium } from '../../../models/gridApiPremium';

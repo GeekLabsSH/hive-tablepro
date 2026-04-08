@@ -1,7 +1,7 @@
 import {
   GridColDef,
   GRID_STRING_COL_DEF,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import { renderRowReorderCell } from "../../../components/GridRowReorderCell";
 
 export const GRID_REORDER_COL_DEF: GridColDef = {

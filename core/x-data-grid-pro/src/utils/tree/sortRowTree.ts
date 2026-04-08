@@ -1,5 +1,5 @@
-import { GridGroupNode, GridRowId, GridRowTreeConfig, GRID_ROOT_GROUP_ID } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { GridSortingModelApplier } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+import { GridGroupNode, GridRowId, GridRowTreeConfig, GRID_ROOT_GROUP_ID } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { GridSortingModelApplier } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 
 interface SortRowTreeParams {
   rowTree: GridRowTreeConfig;

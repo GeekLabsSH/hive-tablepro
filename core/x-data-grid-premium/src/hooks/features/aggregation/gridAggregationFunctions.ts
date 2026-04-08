@@ -1,5 +1,5 @@
-import { GridValueFormatterParams } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
-import { isNumber } from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+import { GridValueFormatterParams } from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
+import { isNumber } from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import { GridAggregationFunction } from './gridAggregationInterfaces';
 
 const sumAgg: GridAggregationFunction<number> = {

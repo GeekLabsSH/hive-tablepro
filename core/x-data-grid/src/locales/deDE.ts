@@ -1,4 +1,4 @@
-import { deDE as deDECore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { deDE as deDECore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

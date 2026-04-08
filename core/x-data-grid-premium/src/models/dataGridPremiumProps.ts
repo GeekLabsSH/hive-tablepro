@@ -1,10 +1,10 @@
-import { GridCallbackDetails, GridGroupNode, GridValidRowModel } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridCallbackDetails, GridGroupNode, GridValidRowModel } from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import {
   DataGridProPropsWithDefaultValue,
   DataGridProPropsWithoutDefaultValue,
   DataGridPropsWithComplexDefaultValueAfterProcessing,
   DataGridPropsWithComplexDefaultValueBeforeProcessing, GridExperimentalProFeatures
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import type {
   GridAggregationFunction, GridAggregationModel, GridAggregationPosition

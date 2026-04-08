@@ -1,4 +1,4 @@
-import { nlNL as nlNLCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { nlNL as nlNLCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

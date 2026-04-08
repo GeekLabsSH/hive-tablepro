@@ -1,4 +1,4 @@
-import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import { DateIOFormats } from "@date-io/core/IUtils";
 import PropTypes from "prop-types";
 import * as React from "react";
@@ -101,7 +101,7 @@ export function LocalizationProvider<TDate>(
       throw new Error(
         [
           "HIVE: The date adapter should be imported from `@mui/x-date-pickers` or `@mui/x-date-pickers-pro`, not from `@date-io`",
-          "For example, `import { AdapterDayjs } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/AdapterDayjs'` instead of `import AdapterDayjs from '@date-io/dayjs'`",
+          "For example, `import { AdapterDayjs } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/AdapterDayjs'` instead of `import AdapterDayjs from '@date-io/dayjs'`",
           "More information on the installation documentation: https://next.mui.com/x/react-date-pickers/getting-started/#installation",
         ].join(`\n`)
       );

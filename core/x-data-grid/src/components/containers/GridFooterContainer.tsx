@@ -2,8 +2,8 @@ import {
   styled,
   SxProps,
   Theme,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

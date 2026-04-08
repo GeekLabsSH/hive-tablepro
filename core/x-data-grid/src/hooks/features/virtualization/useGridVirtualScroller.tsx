@@ -1,7 +1,7 @@
 import {
   unstable_useEnhancedEffect as useEnhancedEffect,
   unstable_useForkRef as useForkRef,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { GridRenderContext, GridRowEntry } from "../../../models";

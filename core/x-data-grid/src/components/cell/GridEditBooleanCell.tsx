@@ -2,7 +2,7 @@ import {
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
   unstable_useId as useId,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

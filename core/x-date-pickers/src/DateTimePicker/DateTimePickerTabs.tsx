@@ -1,12 +1,12 @@
 import {
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import Tab from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Tab";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import Tab from "@geeklabssh/hive-tablepro/core/mui-material/src/Tab";
 import Tabs, {
   tabsClasses,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Tabs";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Tabs";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { DateRange, Time } from "../internals/components/icons";

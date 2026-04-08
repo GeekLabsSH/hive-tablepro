@@ -1,4 +1,4 @@
-import { GridFilterModel, GridSortModel } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/models';
+import { GridFilterModel, GridSortModel } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/models';
 
 /**
  * Object passed as parameter to the [[onFetchRows]] option.

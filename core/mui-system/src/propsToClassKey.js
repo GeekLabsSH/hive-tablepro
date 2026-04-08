@@ -1,4 +1,4 @@
-import { unstable_capitalize as capitalize } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_capitalize as capitalize } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 
 function isEmpty(string) {
   return string.length === 0;

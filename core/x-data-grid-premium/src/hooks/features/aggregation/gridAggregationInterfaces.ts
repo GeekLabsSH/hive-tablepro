@@ -1,7 +1,7 @@
 import {
   GridColDef, GridRowId,
   GridRowModel, GridValueFormatterParams
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 
 export interface GridAggregationState {
   model: GridAggregationModel;

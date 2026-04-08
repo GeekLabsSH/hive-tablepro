@@ -1,4 +1,4 @@
-import { GridColDef, GridValidRowModel } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridColDef, GridValidRowModel } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 
 export type GridRowGroupingModel = string[];
 

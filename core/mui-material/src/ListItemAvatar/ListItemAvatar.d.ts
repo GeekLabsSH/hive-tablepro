@@ -1,4 +1,4 @@
-import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 import { InternalStandardProps as StandardProps, Theme } from '..';
 import { ListItemAvatarClasses } from './listItemAvatarClasses';
 

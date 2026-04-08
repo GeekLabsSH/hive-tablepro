@@ -1,4 +1,4 @@
-import { zhTW as zhTWCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { zhTW as zhTWCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

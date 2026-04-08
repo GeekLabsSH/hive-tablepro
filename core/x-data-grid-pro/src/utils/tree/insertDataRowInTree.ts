@@ -3,8 +3,8 @@ import {
   GridLeafNode,
   GridRowId,
   GridRowTreeConfig, GRID_ROOT_GROUP_ID
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { GridRowTreeUpdatedGroupsManager, GridTreeDepths } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { GridRowTreeUpdatedGroupsManager, GridTreeDepths } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import { DataGridProProps } from '../../models/dataGridProProps';
 import { GridTreePathDuplicateHandler, RowTreeBuilderGroupingCriterion } from './models';
 import {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { CSSObject, SxConfig, SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { CSSObject, SxConfig, SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@geeklabssh/hive-tablepro/core/mui-types';
 import { Components } from './components';
 import { Palette, PaletteOptions } from './createPalette';
 import { Theme, ThemeOptions } from './createTheme';
@@ -16,7 +16,7 @@ export type DefaultColorScheme = 'light' | 'dark';
  * The application can add more color-scheme by extending this interface via module augmentation
  *
  * Ex.
- * declare module @GeekLabsSH/hive-tablepro/core/mui-material/src/styles {
+ * declare module @geeklabssh/hive-tablepro/core/mui-material/src/styles {
  *   interface ColorSchemeOverrides {
  *     foo: true;
  *   }

@@ -1,4 +1,4 @@
-import { bgBG as bgBGCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { bgBG as bgBGCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

@@ -1,4 +1,4 @@
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 export { DataGridProColumnHeaders } from '../components/DataGridProColumnHeaders';
 export { DataGridProVirtualScroller } from '../components/DataGridProVirtualScroller';
 export { DATA_GRID_PRO_DEFAULT_SLOTS_COMPONENTS } from '../constants/dataGridProDefaultSlotsComponents';

@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import styledEngineStyled, {
   internal_processStyles as processStyles,
-} from "@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src";
-import { getDisplayName } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-styled-engine/src";
+import { getDisplayName } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import createTheme from "./createTheme";
 import propsToClassKey from "./propsToClassKey";
 import styleFunctionSx from "./styleFunctionSx";

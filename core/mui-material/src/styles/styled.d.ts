@@ -1,4 +1,4 @@
-import { CreateMUIStyled } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { CreateMUIStyled } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 import { Theme } from './createTheme';
 
 export function rootShouldForwardProp(prop: string): boolean;

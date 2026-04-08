@@ -18,7 +18,7 @@ export interface PickersProComponentNameToClassKey {
   MuiStaticDateRangePicker: never;
 }
 
-declare module '@GeekLabsSH/hive-tablepro/core/mui-material/src/styles' {
+declare module '@geeklabssh/hive-tablepro/core/mui-material/src/styles' {
   interface ComponentNameToClassKey extends PickersProComponentNameToClassKey { }
 }
 

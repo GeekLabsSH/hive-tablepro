@@ -1,4 +1,4 @@
-import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { deepmerge } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import createTheme from "./createTheme";
 
 export default function createMuiStrictModeTheme(options, ...args) {

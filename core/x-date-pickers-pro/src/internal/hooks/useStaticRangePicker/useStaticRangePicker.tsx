@@ -1,16 +1,16 @@
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import {
   DateOrTimeView,
   DIALOG_WIDTH,
   ExportedBaseToolbarProps,
   usePicker,
   WrapperVariantContext,
-} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
-import { LocalizationProvider } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/LocalizationProvider";
+} from "@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals";
+import { LocalizationProvider } from "@geeklabssh/hive-tablepro/core/x-date-pickers/src/LocalizationProvider";
 import {
   PickersLayout,
   PickersLayoutSlotsComponentsProps,
-} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/PickersLayout";
+} from "@geeklabssh/hive-tablepro/core/x-date-pickers/src/PickersLayout";
 import clsx from "clsx";
 import * as React from "react";
 import { DateRange, RangePosition } from "../../models/range";

@@ -1,12 +1,12 @@
-import { useSlotProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import { useSlotProps } from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import IconButton from "@geeklabssh/hive-tablepro/core/mui-material/src/IconButton";
 import {
   styled,
   useTheme,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@geeklabssh/hive-tablepro/core/mui-material/src/Typography";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { ArrowLeft, ArrowRight } from "../icons";

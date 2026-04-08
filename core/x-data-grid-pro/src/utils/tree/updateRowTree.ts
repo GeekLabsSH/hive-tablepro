@@ -1,9 +1,9 @@
-import { GridGroupNode, GridRowId, GridRowTreeConfig, GRID_ROOT_GROUP_ID } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridGroupNode, GridRowId, GridRowTreeConfig, GRID_ROOT_GROUP_ID } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 import {
   getTreeNodeDescendants, GridRowTreeCreationValue,
   GridTreeDepths,
   isDeepEqual
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import { insertDataRowInTree } from './insertDataRowInTree';
 import { GridTreePathDuplicateHandler, RowTreeBuilderNode } from './models';
 import { removeDataRowFromTree } from './removeDataRowFromTree';

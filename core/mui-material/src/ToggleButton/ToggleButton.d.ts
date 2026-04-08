@@ -1,5 +1,5 @@
-import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { Theme } from '..';
 import { ExtendButtonBase, ExtendButtonBaseTypeMap } from '../ButtonBase';

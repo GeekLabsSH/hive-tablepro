@@ -1,9 +1,9 @@
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-base/src";
 import {
   alpha,
   darken,
   lighten,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

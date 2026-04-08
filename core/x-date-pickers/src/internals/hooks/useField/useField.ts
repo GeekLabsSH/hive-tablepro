@@ -1,6 +1,6 @@
-import useEnhancedEffect from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEnhancedEffect';
-import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
-import useForkRef from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useForkRef';
+import useEnhancedEffect from '@geeklabssh/hive-tablepro/core/mui-utils/src/useEnhancedEffect';
+import useEventCallback from "@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback";
+import useForkRef from '@geeklabssh/hive-tablepro/core/mui-utils/src/useForkRef';
 import * as React from 'react';
 import { useUtils } from '../useUtils';
 import { useValidation } from '../validation/useValidation';

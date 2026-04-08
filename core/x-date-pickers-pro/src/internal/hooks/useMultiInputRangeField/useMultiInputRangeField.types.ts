@@ -1,4 +1,4 @@
-import { UseFieldResponse } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+import { UseFieldResponse } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 
 export interface UseMultiInputRangeFieldResponse<TChildProps extends {}> {
   startDate: UseFieldResponse<TChildProps> & { error: boolean; readOnly: boolean };

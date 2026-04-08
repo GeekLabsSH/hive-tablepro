@@ -1,4 +1,4 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
 import * as React from "react";
 import { useSlotProps, WithOptionalOwnerState } from "../utils";
 import {

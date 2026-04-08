@@ -1,4 +1,4 @@
-import { unstable_useForkRef as useForkRef } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_useForkRef as useForkRef } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { useGridPrivateApiContext } from "../../hooks/utils/useGridPrivateApiContext";

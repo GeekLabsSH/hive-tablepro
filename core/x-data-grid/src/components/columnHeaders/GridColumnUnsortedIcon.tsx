@@ -1,4 +1,4 @@
-import { SvgIconProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/SvgIcon";
+import { SvgIconProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/SvgIcon";
 import * as React from "react";
 import { useGridRootProps } from "../../hooks/utils/useGridRootProps";
 import { GridSortDirection } from "../../models/gridSortModel";

@@ -5,10 +5,10 @@ import {
   GridRowId,
   GridRowTreeConfig,
   GridTreeNode, GRID_ROOT_GROUP_ID
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 import {
   GridRowTreeUpdatedGroupsManager, GridRowTreeUpdateGroupAction, GridTreeDepths
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import { DataGridProProps } from '../../models/dataGridProProps';
 import { RowTreeBuilderGroupingCriterion } from './models';
 

@@ -1,10 +1,10 @@
 import {
   resolveComponentProps,
   useSlotProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
-import MuiInputAdornment from "@GeekLabsSH/hive-tablepro/core/mui-material/src/InputAdornment";
-import useForkRef from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useForkRef";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import IconButton from "@geeklabssh/hive-tablepro/core/mui-material/src/IconButton";
+import MuiInputAdornment from "@geeklabssh/hive-tablepro/core/mui-material/src/InputAdornment";
+import useForkRef from "@geeklabssh/hive-tablepro/core/mui-utils/src/useForkRef";
 import * as React from "react";
 import { LocalizationProvider } from "../../../LocalizationProvider";
 import { PickersLayout } from "../../../PickersLayout";

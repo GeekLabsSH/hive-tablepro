@@ -1,4 +1,4 @@
-import { GridRowId } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridRowId } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 import * as React from 'react';
 
 type DetailPanelHeightCache = Record<GridRowId, { autoHeight: boolean; height: number }>;

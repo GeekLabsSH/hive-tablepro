@@ -1,11 +1,11 @@
 import {
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import Typography, {
   TypographyProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Typography";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import {

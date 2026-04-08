@@ -1,8 +1,8 @@
-import { DistributiveOmit } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { DistributiveOmit } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { StyledComponentProps } from './styles';
 
-export { default as unstable_compClasses } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/compClasses';
+export { default as unstable_compClasses } from '@geeklabssh/hive-tablepro/core/mui-base/src/compClasses';
 export * from './Accordion';
 export { default as Accordion } from './Accordion';
 export * from './AccordionActions';
@@ -223,7 +223,7 @@ export * from './Stepper';
 export { default as Stepper } from './Stepper';
 export * from './styles';
 /**
- * @deprecated will be removed in v5.beta, please use StyledEngineProvider from @GeekLabsSH/hive-tablepro/core/mui-material/src/styles instead
+ * @deprecated will be removed in v5.beta, please use StyledEngineProvider from @geeklabssh/hive-tablepro/core/mui-material/src/styles instead
  */
 export { StyledEngineProvider } from './styles';
 export * from './SvgIcon';

@@ -1,5 +1,5 @@
-import useEventCallback from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback';
-import { MuiPickersAdapter } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+import useEventCallback from '@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback';
+import { MuiPickersAdapter } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { DateRange } from '../internal/models';
 import { isEndOfRange, isStartOfRange } from '../internal/utils/date-utils';

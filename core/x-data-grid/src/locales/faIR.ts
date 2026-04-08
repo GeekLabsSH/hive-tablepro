@@ -1,4 +1,4 @@
-import { faIR as faIRCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { faIR as faIRCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

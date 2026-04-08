@@ -1,7 +1,7 @@
 import {
   unstable_generateUtilityClass as generateUtilityClass,
   unstable_generateUtilityClasses as generateUtilityClasses
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 ;
 
 export interface YearCalendarClasses {

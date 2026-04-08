@@ -1,13 +1,13 @@
-import useEventCallback from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback';
+import useEventCallback from '@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback';
 import {
   unstable_useDateField as useDateField,
   UseDateFieldComponentProps
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/DateField';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/DateField';
 import {
   DateValidationError, FieldChangeHandler,
   FieldChangeHandlerContext, useLocalizationContext,
   useValidation
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { UseMultiInputDateRangeFieldParams } from '../../../MultiInputDateRangeField/MultiInputDateRangeField.types';
 import { useDefaultizedDateRangeFieldProps } from '../../../SingleInputDateRangeField/useSingleInputDateRangeField';

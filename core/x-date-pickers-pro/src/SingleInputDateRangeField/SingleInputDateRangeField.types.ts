@@ -1,6 +1,6 @@
-import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/utils';
-import TextField from '@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField';
-import { FieldsTextFieldProps, UncapitalizeObjectKeys } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+import { SlotComponentProps } from '@geeklabssh/hive-tablepro/core/mui-base/src/utils';
+import TextField from '@geeklabssh/hive-tablepro/core/mui-material/src/TextField';
+import { FieldsTextFieldProps, UncapitalizeObjectKeys } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { UseDateRangeFieldDefaultizedProps, UseDateRangeFieldProps } from '../internal/models';
 
@@ -53,7 +53,7 @@ export type SingleInputDateRangeFieldOwnerState<TDate> = SingleInputDateRangeFie
 export interface SingleInputDateRangeFieldSlotsComponent {
   /**
    * Form control with an input to render the value.
-   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@geeklabssh/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType;

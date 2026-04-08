@@ -1,11 +1,11 @@
-import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
-import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { Theme } from "@geeklabssh/hive-tablepro/core/mui-material/src";
+import { SxProps } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import {
   unstable_capitalize as capitalize,
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
   unstable_useForkRef as useForkRef,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

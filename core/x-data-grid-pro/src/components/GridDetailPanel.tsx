@@ -1,10 +1,10 @@
-import Box from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Box";
+import Box from "@geeklabssh/hive-tablepro/core/mui-material/src/Box";
 import {
   styled,
   SxProps,
   Theme,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { GridRowId } from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { GridRowId } from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import * as React from "react";
 import { useGridPrivateApiContext } from "../hooks/utils/useGridPrivateApiContext";
 

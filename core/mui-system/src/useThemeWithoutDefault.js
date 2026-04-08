@@ -1,4 +1,4 @@
-import { useTheme as muiUseTheme } from "@GeekLabsSH/hive-tablepro/core/mui-private-theming/src";
+import { useTheme as muiUseTheme } from "@geeklabssh/hive-tablepro/core/mui-private-theming/src";
 
 function isObjectEmpty(obj) {
   return Object.keys(obj).length === 0;

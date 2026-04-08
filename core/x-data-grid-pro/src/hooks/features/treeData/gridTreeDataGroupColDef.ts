@@ -1,4 +1,4 @@
-import { GridColDef, GRID_STRING_COL_DEF } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridColDef, GRID_STRING_COL_DEF } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 
 /**
  * TODO: Add sorting and filtering on the value and the filteredDescendantCount

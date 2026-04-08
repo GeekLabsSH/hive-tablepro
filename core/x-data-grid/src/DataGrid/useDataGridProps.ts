@@ -1,4 +1,4 @@
-import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import * as React from "react";
 import { GRID_DEFAULT_LOCALE_TEXT } from "../constants";
 import { DATA_GRID_DEFAULT_SLOTS_COMPONENTS } from "../constants/defaultGridSlotsComponents";

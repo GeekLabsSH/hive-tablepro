@@ -1,5 +1,5 @@
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
-import { TextFieldProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
+import { TextFieldProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/TextField";
 import * as React from "react";
 import { useGridRootProps } from "../../../hooks/utils/useGridRootProps";
 import { GridFilterInputValueProps } from "./GridFilterInputValueProps";

@@ -1,3 +1,3 @@
-export * from '@GeekLabsSH/hive-tablepro/core/mui-base/src/ClickAwayListener';
-export { default } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/ClickAwayListener';
+export * from '@geeklabssh/hive-tablepro/core/mui-base/src/ClickAwayListener';
+export { default } from '@geeklabssh/hive-tablepro/core/mui-base/src/ClickAwayListener';
 

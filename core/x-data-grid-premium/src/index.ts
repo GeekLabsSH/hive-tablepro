@@ -1,17 +1,17 @@
 import './typeOverloads';
 
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/components';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/hooks';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/models';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/utils';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/colDef';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/components';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/constants';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/context';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/hooks';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/locales';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/models';
-export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/utils';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/components';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/hooks';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/models';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/utils';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/colDef';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/components';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/constants';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/context';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/hooks';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/locales';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/models';
+export * from '@geeklabssh/hive-tablepro/core/x-data-grid/src/utils';
 export * from './components';
 export {
   GridColumnMenu,

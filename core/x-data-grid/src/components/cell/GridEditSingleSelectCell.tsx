@@ -1,9 +1,9 @@
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
 import {
   SelectChangeEvent,
   SelectProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Select";
-import { unstable_useEnhancedEffect as useEnhancedEffect } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Select";
+import { unstable_useEnhancedEffect as useEnhancedEffect } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import { EndpointForSelect, TranslationType } from "@/models/CommonTypes";
 import { removeDuplicateByValue, getListAgentNetworkLabel } from "@/utils/functions";
 import PropTypes from "prop-types";

@@ -2,12 +2,12 @@ import {
   GridFilterModel, GridFilterState, GridRowId,
   GridRowTreeConfig,
   GridTreeNode
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 import {
   GridAggregatedFilterItemApplier,
   GridApiCommunity,
   passFilterLogic
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 
 interface FilterRowTreeFromTreeDataParams {
   rowTree: GridRowTreeConfig;

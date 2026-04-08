@@ -1,15 +1,15 @@
-import useEventCallback from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback';
+import useEventCallback from '@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback';
 import {
   FieldChangeHandler,
   FieldChangeHandlerContext, TimeValidationError,
   useLocalizationContext,
   useUtils,
   useValidation
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   unstable_useTimeField as useTimeField,
   UseTimeFieldComponentProps
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/TimeField';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/TimeField';
 import * as React from 'react';
 import type {
   UseMultiInputTimeRangeFieldDefaultizedProps,

@@ -1,4 +1,4 @@
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import clsx from "clsx";
 import { LocalizationProvider } from "../../../LocalizationProvider";
 import { PickersLayout } from "../../../PickersLayout";

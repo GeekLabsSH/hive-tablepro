@@ -1,4 +1,4 @@
-import { unstable_useEventCallback as useEventCallback } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+import { unstable_useEventCallback as useEventCallback } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import extractEventHandlers from '../utils/extractEventHandlers';
 import {

@@ -1,4 +1,4 @@
-import { ComponentsPropsList } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { ComponentsPropsList } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import * as React from 'react';
 
 /**

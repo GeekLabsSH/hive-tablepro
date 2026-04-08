@@ -1,5 +1,5 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
-import { chainPropTypes } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
+import { chainPropTypes } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

@@ -1,4 +1,4 @@
-import { jaJP as jaJPCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { jaJP as jaJPCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

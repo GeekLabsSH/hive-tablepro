@@ -1,4 +1,4 @@
-import { unstable_useControlled as useControlled, unstable_useId as useId } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+import { unstable_useControlled as useControlled, unstable_useId as useId } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 
 export interface UseTabsParameters {

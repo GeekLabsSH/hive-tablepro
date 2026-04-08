@@ -1,4 +1,4 @@
-import { unstable_useEnhancedEffect as useEnhancedEffect } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_useEnhancedEffect as useEnhancedEffect } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { DateOrTimeView } from "../models";
 import { arrayIncludes } from "../utils/utils";

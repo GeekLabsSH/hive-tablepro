@@ -1,4 +1,4 @@
-import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { deepmerge } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import merge from "./merge";
 

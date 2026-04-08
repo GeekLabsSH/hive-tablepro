@@ -1,4 +1,4 @@
-import { internal_resolveProps as resolveProps } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { internal_resolveProps as resolveProps } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 
 export default function getThemeProps(params) {
   const { theme, name, props } = params;

@@ -1,7 +1,7 @@
 import {
   SxProps,
   Theme,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridFilterableColumnDefinitionsSelector } from "../../../hooks/features/columns/gridColumnsSelector";

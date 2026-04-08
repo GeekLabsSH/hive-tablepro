@@ -1,11 +1,11 @@
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
-import Badge from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Badge";
-import { ButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
-import { TooltipProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Tooltip";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src";
+import Badge from "@geeklabssh/hive-tablepro/core/mui-material/src/Badge";
+import { ButtonProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/Button";
+import { TooltipProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/Tooltip";
 import {
   unstable_capitalize as capitalize,
   unstable_compClasses as compClasses,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { getDataGridUtilityClass } from "../../constants/gridClasses";

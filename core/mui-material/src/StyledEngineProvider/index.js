@@ -1,1 +1,1 @@
-export { StyledEngineProvider as default } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+export { StyledEngineProvider as default } from "@geeklabssh/hive-tablepro/core/mui-system/src";

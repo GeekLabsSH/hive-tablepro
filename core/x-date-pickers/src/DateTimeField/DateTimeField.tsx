@@ -1,6 +1,6 @@
-import { useSlotProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import MuiTextField from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import { useSlotProps } from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import { useThemeProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import MuiTextField from "@geeklabssh/hive-tablepro/core/mui-material/src/TextField";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { DateTimeFieldProps } from "./DateTimeField.types";

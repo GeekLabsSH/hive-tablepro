@@ -1,7 +1,7 @@
 import {
   createBreakpoints,
   createSpacing,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
 
 export default function adaptV4Theme(inputTheme) {
   if (process.env.NODE_ENV !== null) {

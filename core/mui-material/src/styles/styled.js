@@ -1,7 +1,7 @@
 import {
   createStyled,
   shouldForwardProp,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import defaultTheme from "./defaultTheme";
 
 export const rootShouldForwardProp = (prop) =>

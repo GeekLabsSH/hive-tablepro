@@ -1,7 +1,7 @@
-import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src';
-import { ModalUnstyledTypeMap } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/ModalUnstyled';
-import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
-import { OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { SlotComponentProps } from '@geeklabssh/hive-tablepro/core/mui-base/src';
+import { ModalUnstyledTypeMap } from '@geeklabssh/hive-tablepro/core/mui-base/src/ModalUnstyled';
+import { SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
+import { OverrideProps } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import Backdrop, { BackdropProps } from '../Backdrop';
 import { OverridableComponent } from '../OverridableComponent';

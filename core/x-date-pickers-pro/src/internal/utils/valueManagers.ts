@@ -2,7 +2,7 @@ import {
   addPositionPropertiesToSections,
   createDateStrForInputFromSections, FieldValueManager, getSectionOrder, PickerValueManager,
   replaceInvalidDateByNull, splitFormatIntoSections
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import type { DateRangeValidationError } from '../hooks/validation/useDateRangeValidation';
 import type { DateTimeRangeValidationError } from '../hooks/validation/useDateTimeRangeValidation';
 import type { TimeRangeValidationError } from '../hooks/validation/useTimeRangeValidation';

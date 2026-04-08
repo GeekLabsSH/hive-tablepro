@@ -1,7 +1,7 @@
 import {
   unstable_useForkRef as useForkRef,
   unstable_useIsFocusVisible as useIsFocusVisible
-} from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+} from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import extractEventHandlers from '../utils/extractEventHandlers';
 import { EventHandlers } from '../utils/types';

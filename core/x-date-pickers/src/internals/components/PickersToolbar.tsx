@@ -1,10 +1,10 @@
-import Grid from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Grid";
+import Grid from "@geeklabssh/hive-tablepro/core/mui-material/src/Grid";
 import {
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@geeklabssh/hive-tablepro/core/mui-material/src/Typography";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { BaseToolbarProps } from "../models/props/toolbar";

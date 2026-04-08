@@ -1,5 +1,5 @@
-import MenuList from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuList";
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import MenuList from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuList";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

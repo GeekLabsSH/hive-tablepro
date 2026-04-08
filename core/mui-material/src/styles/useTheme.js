@@ -1,4 +1,4 @@
-import { useTheme as useThemeSystem } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { useTheme as useThemeSystem } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import * as React from "react";
 import defaultTheme from "./defaultTheme";
 

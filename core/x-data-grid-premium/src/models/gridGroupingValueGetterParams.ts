@@ -2,7 +2,7 @@ import {
   GridColDef, GridGroupNode, GridRowId,
   GridRowModel,
   GridValidRowModel
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 
 /**
  * Parameters passed to `colDef.groupingValueGetter`.

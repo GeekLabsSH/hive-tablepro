@@ -1,8 +1,8 @@
-import { ContainerClasses } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
-import { unstable_generateUtilityClasses as generateUtilityClasses } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+import { ContainerClasses } from '@geeklabssh/hive-tablepro/core/mui-system/src';
+import { unstable_generateUtilityClasses as generateUtilityClasses } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import generateUtilityClass from '../generateUtilityClass';
 
-export type { ContainerClassKey } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+export type { ContainerClassKey } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 export type { ContainerClasses };
 
 export function getContainerUtilityClass(slot: string): string {

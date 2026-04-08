@@ -1,4 +1,4 @@
-import { OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { OverrideProps } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { SlotComponentProps } from '../utils';
 import { UseTabsListRootSlotProps } from './useTabsList.types';

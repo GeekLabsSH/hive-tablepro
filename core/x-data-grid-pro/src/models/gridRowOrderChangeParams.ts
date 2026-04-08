@@ -1,4 +1,4 @@
-import { GridRowModel } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridRowModel } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 
 /**
  * Object passed as parameter of the row order change event.

@@ -1,4 +1,4 @@
-import { OverridableComponent, OverridableTypeMap, OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { OverridableComponent, OverridableTypeMap, OverrideProps } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { SlotComponentProps } from '../utils';
 

@@ -1,11 +1,11 @@
-import Skeleton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Skeleton";
+import Skeleton from "@geeklabssh/hive-tablepro/core/mui-material/src/Skeleton";
 import {
   styled,
   Theme,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@geeklabssh/hive-tablepro/core/mui-system/src";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

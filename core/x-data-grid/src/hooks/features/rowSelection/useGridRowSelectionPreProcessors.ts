@@ -1,6 +1,6 @@
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
-import { getDataGridUtilityClass, GRID_CHECKBOX_SELECTION_COL_DEF, GRID_CHECKBOX_SELECTION_FIELD } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { useGridRegisterPipeProcessor } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
+import { getDataGridUtilityClass, GRID_CHECKBOX_SELECTION_COL_DEF, GRID_CHECKBOX_SELECTION_FIELD } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { useGridRegisterPipeProcessor } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import React, { useMemo } from "react";
 
 const useUtilityClasses = (ownerState: any) => {

@@ -2,7 +2,7 @@ import {
   GridApi,
   GridColumnVisibilityModel,
   gridColumnVisibilityModelSelector
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import * as React from 'react';
 import { DataGridPremiumProps } from '../../models/dataGridPremiumProps';
 import { GridInitialStatePremium } from '../../models/gridStatePremium';

@@ -1,7 +1,7 @@
 import {
   BaseDateValidationProps, DateValidationError,
   validateDate, Validator
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import { DateRange, DayRangeValidationProps } from '../../models';
 import { isRangeValid } from '../../utils/date-utils';
 

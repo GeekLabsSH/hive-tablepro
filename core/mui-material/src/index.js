@@ -1,7 +1,7 @@
 /* eslint-disable import/export */
 import * as colors from "./colors";
 
-export { default as unstable_compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/compClasses";
+export { default as unstable_compClasses } from "@geeklabssh/hive-tablepro/core/mui-base/src/compClasses";
 export * from "./Accordion";
 export { default as Accordion } from "./Accordion";
 export * from "./AccordionActions";

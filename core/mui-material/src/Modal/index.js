@@ -1,3 +1,3 @@
-export * from "@GeekLabsSH/hive-tablepro/core/mui-base/src/ModalUnstyled";
+export * from "@geeklabssh/hive-tablepro/core/mui-base/src/ModalUnstyled";
 export * from "./Modal";
 export { default } from "./Modal";

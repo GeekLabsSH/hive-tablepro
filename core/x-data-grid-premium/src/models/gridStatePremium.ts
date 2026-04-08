@@ -1,7 +1,7 @@
 import {
   GridInitialState as GridInitialStatePro,
   GridState as GridStatePro
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import type {
   GridAggregationInitialState, GridAggregationState, GridCellSelectionModel, GridRowGroupingInitialState, GridRowGroupingState
 } from '../hooks';

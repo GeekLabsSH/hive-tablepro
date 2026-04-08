@@ -1,5 +1,5 @@
-import { GridRowId, GridTreeNode, GRID_ROOT_GROUP_ID } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { buildRootGroup, GridRowTreeCreationValue } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+import { GridRowId, GridTreeNode, GRID_ROOT_GROUP_ID } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { buildRootGroup, GridRowTreeCreationValue } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import { DataGridProProps } from '../../models/dataGridProProps';
 import { insertDataRowInTree } from './insertDataRowInTree';
 import { GridTreePathDuplicateHandler, RowTreeBuilderNode } from './models';

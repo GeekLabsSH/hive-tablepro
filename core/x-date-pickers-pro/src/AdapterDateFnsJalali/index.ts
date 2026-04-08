@@ -1,1 +1,1 @@
-//export { AdapterDateFnsJalali } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/AdapterDateFnsJalali';
+//export { AdapterDateFnsJalali } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/AdapterDateFnsJalali';

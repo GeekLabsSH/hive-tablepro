@@ -1,4 +1,4 @@
-import { OverridableStringUnion } from "@GeekLabsSH/hive-tablepro/core/mui-types";
+import { OverridableStringUnion } from "@geeklabssh/hive-tablepro/core/mui-types";
 
 export interface BreakpointOverrides { }
 

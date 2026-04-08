@@ -1,4 +1,4 @@
-import { CSSObject } from '@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src';
+import { CSSObject } from '@geeklabssh/hive-tablepro/core/mui-styled-engine/src';
 import * as CSS from 'csstype';
 import { AliasesCSSProperties } from './AliasesCSSProperties';
 import { OverwriteCSSProperties } from './OverwriteCSSProperties';

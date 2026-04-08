@@ -1,13 +1,13 @@
 import {
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import {
   unstable_compClasses as compClasses,
   unstable_useControlled as useControlled,
   unstable_useEventCallback as useEventCallback,
   unstable_useId as useId,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

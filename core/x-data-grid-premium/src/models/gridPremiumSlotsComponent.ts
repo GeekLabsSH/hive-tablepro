@@ -1,4 +1,4 @@
-import { GridProSlotsComponent } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridProSlotsComponent } from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import { GridPremiumIconSlotsComponent } from './gridPremiumIconSlotsComponent';
 
 /**

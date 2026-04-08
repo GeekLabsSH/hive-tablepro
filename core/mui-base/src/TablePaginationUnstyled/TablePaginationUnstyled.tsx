@@ -1,9 +1,9 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
 import {
   chainPropTypes,
   integerPropType,
   unstable_useId as useId,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import compClasses from "../compClasses";

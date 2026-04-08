@@ -1,5 +1,5 @@
-import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import TextField, { TextFieldProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import { SlotComponentProps } from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import TextField, { TextFieldProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/TextField";
 import * as React from 'react';
 import {
   ExportedPickersLayoutSlotsComponent,
@@ -30,7 +30,7 @@ export interface UseMobilePickerSlotsComponent<TDate, TView extends DateOrTimeVi
   Field: React.ElementType<BaseFieldProps<TDate | null, any>>;
   /**
    * Form control with an input to render the value inside the default field.
-   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@geeklabssh/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType<TextFieldProps>;

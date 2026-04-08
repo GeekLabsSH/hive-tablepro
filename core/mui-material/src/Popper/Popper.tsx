@@ -1,15 +1,15 @@
 import PopperUnstyled, {
   PopperUnstyledProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/PopperUnstyled";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src/PopperUnstyled";
 import {
   Direction,
   SxProps,
   useThemeWithoutDefault as useTheme,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import {
   HTMLElementType,
   refType,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { styled, Theme, useThemeProps } from "../styles";

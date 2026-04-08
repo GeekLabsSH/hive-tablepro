@@ -1,6 +1,6 @@
 import {
   GridExportDisplayOptions, GridExportExtension as GridExportExtensionCommunity, GridExportFormat as GridExportFormatCommunity, GridFileExportOptions, GridToolbarExportProps as GridToolbarExportPropsCommunity
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import type * as Excel from 'exceljs';
 
 export type GridExportFormat = GridExportFormatCommunity | 'excel';

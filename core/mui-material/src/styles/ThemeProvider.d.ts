@@ -1,4 +1,4 @@
-import { DefaultTheme } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { DefaultTheme } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 
 export interface ThemeProviderProps<Theme = DefaultTheme> {
   children?: React.ReactNode;

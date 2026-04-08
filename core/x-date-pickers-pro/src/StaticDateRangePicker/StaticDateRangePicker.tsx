@@ -1,4 +1,4 @@
-import { PickerViewRendererLookup } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
+import { PickerViewRendererLookup } from "@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useDateRangePickerDefaultizedProps } from "../DateRangePicker/shared";

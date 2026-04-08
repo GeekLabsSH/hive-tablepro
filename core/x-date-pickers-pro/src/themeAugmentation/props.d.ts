@@ -22,7 +22,7 @@ export interface PickersProComponentsPropsList {
   MuiStaticDateRangePicker: StaticDateRangePickerProps<unknown>;
 }
 
-declare module '@GeekLabsSH/hive-tablepro/core/mui-material/src/styles' {
+declare module '@geeklabssh/hive-tablepro/core/mui-material/src/styles' {
   interface ComponentsPropsList extends PickersProComponentsPropsList { }
 }
 

@@ -1,6 +1,6 @@
-import Badge from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Badge";
-import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import Badge from "@geeklabssh/hive-tablepro/core/mui-material/src/Badge";
+import IconButton from "@geeklabssh/hive-tablepro/core/mui-material/src/IconButton";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { getDataGridUtilityClass } from "../../constants/gridClasses";

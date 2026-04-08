@@ -1,13 +1,13 @@
-import Box from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Box";
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import Box from "@geeklabssh/hive-tablepro/core/mui-material/src/Box";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   gridClasses,
   GridColDef,
   GridColumnHeaderParams,
   GridColumnHeaderTitle,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import { getAggregationFunctionLabel } from "../hooks/features/aggregation/gridAggregationUtils";
 import { useGridApiContext } from "../hooks/utils/useGridApiContext";
 import { useGridRootProps } from "../hooks/utils/useGridRootProps";

@@ -1,4 +1,4 @@
-import { useThemeProps as systemUseThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { useThemeProps as systemUseThemeProps } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import defaultTheme from "./defaultTheme";
 
 export default function useThemeProps({ props, name }) {

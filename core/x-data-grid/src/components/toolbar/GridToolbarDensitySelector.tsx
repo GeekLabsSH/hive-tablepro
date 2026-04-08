@@ -1,11 +1,11 @@
-import { ButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
-import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
-import MenuList from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuList";
+import { ButtonProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/Button";
+import ListItemIcon from "@geeklabssh/hive-tablepro/core/mui-material/src/ListItemIcon";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
+import MenuList from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuList";
 import {
   unstable_useForkRef as useForkRef,
   unstable_useId as useId,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { gridClasses } from "../../constants/gridClasses";
 import { gridDensityValueSelector } from "../../hooks/features/density/densitySelector";

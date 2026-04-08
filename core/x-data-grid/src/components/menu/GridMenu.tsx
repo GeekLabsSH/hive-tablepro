@@ -1,18 +1,18 @@
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src";
 import ClickAwayListener, {
   ClickAwayListenerProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ClickAwayListener";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/ClickAwayListener";
 import Grow, {
   GrowProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Grow";
-import Paper from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Paper";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Grow";
+import Paper from "@geeklabssh/hive-tablepro/core/mui-material/src/Paper";
 import Popper, {
   PopperProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/Popper";
 import {
   HTMLElementType,
   unstable_compClasses as compClasses,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

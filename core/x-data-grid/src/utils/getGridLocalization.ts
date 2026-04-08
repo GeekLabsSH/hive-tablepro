@@ -1,4 +1,4 @@
-import { Localization as CoreLocalization } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { Localization as CoreLocalization } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 
 export interface Localization {

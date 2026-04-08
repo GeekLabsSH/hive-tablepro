@@ -4,8 +4,8 @@ import {
   lighten,
   styled,
   Theme,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { CSSInterpolation } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { CSSInterpolation } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import { gridClasses } from "../../constants/gridClasses";
 
 function getBorderColor(theme: Theme) {

@@ -1,4 +1,4 @@
-import { frFR as frFRCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
+import { frFR as frFRCore } from '@geeklabssh/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

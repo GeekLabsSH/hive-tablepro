@@ -1,7 +1,7 @@
 import {
   ComponentsOverrides,
   ComponentsProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import { DataGridPremiumProps } from "../models/dataGridPremiumProps";
 
 export interface DataGridPremiumComponentsPropsList {
@@ -15,7 +15,7 @@ export interface DataGridPremiumComponents<Theme = unknown> {
   };
 }
 
-declare module "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles" {
+declare module "@geeklabssh/hive-tablepro/core/mui-material/src/styles" {
   interface ComponentsPropsList extends DataGridPremiumComponentsPropsList {}
   interface Components<Theme = unknown>
     extends DataGridPremiumComponents<Theme> {}

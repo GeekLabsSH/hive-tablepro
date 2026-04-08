@@ -1,4 +1,4 @@
-import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
+import useEventCallback from "@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback";
 import * as React from 'react';
 import { MuiDateSectionName } from '../../models/muiPickersAdapter';
 import { useUtils } from '../useUtils';

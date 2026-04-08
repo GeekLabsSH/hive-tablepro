@@ -1,14 +1,14 @@
-import { unstable_capitalize as capitalize } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_capitalize as capitalize } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   GridColDef,
   GridFooterNode, GridGroupNode, GridRowId,
   GRID_ROOT_GROUP_ID
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import {
   addPinnedRow,
   GridColumnRawLookup,
   GridHydrateRowsValue, insertNodeInTree, isDeepEqual, removeNodeFromTree
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridApiPremium, GridPrivateApiPremium } from '../../../models/gridApiPremium';

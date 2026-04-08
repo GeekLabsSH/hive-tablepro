@@ -1,6 +1,6 @@
-import { BadgeUnstyledTypeMap, ExtendBadgeUnstyledTypeMap } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/BadgeUnstyled';
-import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { BadgeUnstyledTypeMap, ExtendBadgeUnstyledTypeMap } from '@geeklabssh/hive-tablepro/core/mui-base/src/BadgeUnstyled';
+import { SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 import { Theme } from '../styles';

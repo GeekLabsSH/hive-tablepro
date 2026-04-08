@@ -6,13 +6,13 @@ import {
   gridRowTreeSelector,
   GRID_CHECKBOX_SELECTION_FIELD,
   useFirstRender,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import {
   GridPipeProcessor,
   GridStrategyProcessor,
   useGridRegisterPipeProcessor,
   useGridRegisterStrategyProcessor,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import { GridTreeDataGroupingCell } from "../../../components";
 import { DataGridProProcessedProps } from "../../../models/dataGridProProps";

@@ -1,7 +1,7 @@
-import { GridKeyValue, GridValidRowModel } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridKeyValue, GridValidRowModel } from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import type {
   GridApiCachesPro, GridControlledStateEventLookupPro
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/typeOverloads';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/typeOverloads';
 import type {
   GridAggregationCellMeta,
   GridAggregationHeaderMeta, GridAggregationModel, GridCellSelectionModel, GridRowGroupingModel
@@ -62,7 +62,7 @@ export interface GridApiCachesPremium extends GridApiCachesPro {
   aggregation: GridAggregationInternalCache;
 }
 
-declare module "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src" {
+declare module "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src" {
   interface GridControlledStateEventLookup
     extends GridControlledStateEventLookupPro,
     GridControlledStateEventLookupPremium { }
@@ -74,7 +74,7 @@ declare module "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src" {
   interface GridApiCaches extends GridApiCachesPremium { }
 }
 
-declare module '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals' {
+declare module '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals' {
   interface GridApiCaches extends GridApiCachesPremium { }
 
   interface GridBaseColDef<R, V, F> extends GridColDefPremium<R, V, F> { }

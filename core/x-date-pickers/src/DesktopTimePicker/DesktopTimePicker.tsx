@@ -1,4 +1,4 @@
-import { resolveComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import { resolveComponentProps } from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { TimeView, useLocaleText, validateTime } from "../internals";

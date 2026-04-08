@@ -1,5 +1,5 @@
 /* eslint-disable material-ui/mui-name-matches-component-name */
-import { createContainer } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { createContainer } from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import PropTypes from "prop-types";
 import styled from "../styles/styled";
 import useThemeProps from "../styles/useThemeProps";

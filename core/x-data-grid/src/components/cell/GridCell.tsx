@@ -3,7 +3,7 @@ import {
   unstable_capitalize as capitalize,
   unstable_compClasses as compClasses,
   unstable_ownerDocument as ownerDocument
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import { EndpointForSelect } from "@/models/CommonTypes";
 import clsx from "clsx";
 import PropTypes from "prop-types";

@@ -1,5 +1,5 @@
-import { unstable_useControlled as useControlled } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
-import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
+import { unstable_useControlled as useControlled } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
+import useEventCallback from "@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback";
 import * as React from "react";
 import { DateOrTimeView } from "../models";
 import { MakeOptional } from "../models/helpers";

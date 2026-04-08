@@ -1,4 +1,4 @@
-import { Breakpoint } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { Breakpoint } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 
 export interface HiddenCssProps {

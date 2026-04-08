@@ -1,8 +1,8 @@
 import {
   GridEventListener, gridRowsMetaSelector, GridScrollParams, gridVisibleColumnDefinitionsSelector, useGridApiEventHandler,
   useGridApiOptionHandler, useGridSelector
-} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
-import { useGridVisibleRows } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
+import { useGridVisibleRows } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 import { GridRowScrollEndParams } from '../../../models';
 import { DataGridProProcessedProps } from '../../../models/dataGridProProps';

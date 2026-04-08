@@ -1,7 +1,7 @@
 import {
   GridApi, GridColDef, GridRowId, GridValueFormatterParams, GRID_DATETIME_COL_DEF, GRID_DATE_COL_DEF, ValueOptions
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
-import { buildWarning, GridStateColDef, isObject } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
+import { buildWarning, GridStateColDef, isObject } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import type * as Excel from 'exceljs';
 import { GridPrivateApiPremium } from '../../../../models/gridApiPremium';
 import { ColumnsStylesInterface, GridExceljsProcessInput } from '../gridExcelExportInterface';

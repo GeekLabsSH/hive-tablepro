@@ -1,6 +1,6 @@
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
-import { alpha } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
-import { refType } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-base/src";
+import { alpha } from "@geeklabssh/hive-tablepro/core/mui-system/src";
+import { refType } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

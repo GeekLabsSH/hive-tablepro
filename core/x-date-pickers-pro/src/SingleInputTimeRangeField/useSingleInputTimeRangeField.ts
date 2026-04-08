@@ -1,4 +1,4 @@
-import { useField, useUtils } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+import { useField, useUtils } from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import { validateTimeRange } from '../internal/hooks/validation/useTimeRangeValidation';
 import { rangeFieldValueManager, rangeValueManager } from '../internal/utils/valueManagers';
 import {

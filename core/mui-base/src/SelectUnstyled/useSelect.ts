@@ -2,7 +2,7 @@ import {
   unstable_useControlled as useControlled,
   unstable_useForkRef as useForkRef,
   unstable_useId as useId
-} from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+} from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import { useButton } from '../ButtonUnstyled';
 import {

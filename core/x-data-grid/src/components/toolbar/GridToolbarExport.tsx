@@ -1,5 +1,5 @@
-import { ButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
-import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import { ButtonProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/Button";
+import MenuItem from "@geeklabssh/hive-tablepro/core/mui-material/src/MenuItem";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useGridApiContext } from "../../hooks/utils/useGridApiContext";

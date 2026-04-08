@@ -2,7 +2,7 @@ import {
   SxProps,
   unstable_createCssVarsProvider as createCssVarsProvider,
   unstable_styleFunctionSx as styleFunctionSx,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
 import createTypography from "./createTypography";
 import excludeVariablesFromRoot from "./excludeVariablesFromRoot";
 import experimental_extendTheme, {

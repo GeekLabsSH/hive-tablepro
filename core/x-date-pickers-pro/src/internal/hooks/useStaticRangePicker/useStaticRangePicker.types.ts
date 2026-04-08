@@ -2,11 +2,11 @@ import {
   BasePickerProps, DateOrTimeView, ExportedBaseToolbarProps,
   StaticOnlyPickerProps,
   UncapitalizeObjectKeys, UsePickerParams
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   ExportedPickersLayoutSlotsComponent,
   ExportedPickersLayoutSlotsComponentsProps
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/PickersLayout/PickersLayout.types';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/PickersLayout/PickersLayout.types';
 import * as React from 'react';
 import { DateRange } from '../../models/range';
 

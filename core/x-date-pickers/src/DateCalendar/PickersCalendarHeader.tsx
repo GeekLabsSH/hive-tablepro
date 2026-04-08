@@ -1,15 +1,15 @@
 import {
   SlotComponentProps,
   useSlotProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import Fade from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Fade";
-import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import Fade from "@geeklabssh/hive-tablepro/core/mui-material/src/Fade";
+import IconButton from "@geeklabssh/hive-tablepro/core/mui-material/src/IconButton";
 import {
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import SvgIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/SvgIcon";
-import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import SvgIcon from "@geeklabssh/hive-tablepro/core/mui-material/src/SvgIcon";
+import { unstable_compClasses as compClasses } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { ArrowDropDown } from "../internals/components/icons";
 import {

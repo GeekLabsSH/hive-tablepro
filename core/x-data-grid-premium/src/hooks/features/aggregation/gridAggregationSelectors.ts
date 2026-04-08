@@ -1,4 +1,4 @@
-import { createSelector } from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
+import { createSelector } from '@geeklabssh/hive-tablepro/core/x-data-grid-pro/src/internals';
 import { GridStatePremium } from '../../../models/gridStatePremium';
 
 export const gridAggregationStateSelector = (state: GridStatePremium) => state.aggregation;

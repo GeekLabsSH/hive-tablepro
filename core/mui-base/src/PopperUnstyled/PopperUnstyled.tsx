@@ -1,4 +1,4 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
 import {
   chainPropTypes,
   HTMLElementType,
@@ -6,7 +6,7 @@ import {
   unstable_ownerDocument as ownerDocument,
   unstable_useEnhancedEffect as useEnhancedEffect,
   unstable_useForkRef as useForkRef,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import {
   createPopper,
   Instance,

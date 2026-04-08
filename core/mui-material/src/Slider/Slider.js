@@ -2,17 +2,17 @@ import {
   isHostComponent,
   unstable_compClasses as compClasses,
   useSlotProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src";
 import {
   getSliderUtilityClass,
   useSlider,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/SliderUnstyled";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src/SliderUnstyled";
 import {
   alpha,
   darken,
   lighten,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
-import { chainPropTypes } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
+import { chainPropTypes } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

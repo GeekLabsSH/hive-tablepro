@@ -1,5 +1,5 @@
-import { gridClasses } from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
-import { findParentElementFromClassName } from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
+import { gridClasses } from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
+import { findParentElementFromClassName } from "@geeklabssh/hive-tablepro/core/x-data-grid/src/internals";
 import { GridApiPro } from "../models/gridApiPro";
 
 export function getFieldFromHeaderElem(colCellEl: Element): string {

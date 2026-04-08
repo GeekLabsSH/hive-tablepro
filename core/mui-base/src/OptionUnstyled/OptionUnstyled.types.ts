@@ -1,4 +1,4 @@
-import { DefaultComponentProps, OverrideProps, Simplify } from '@GeekLabsSH/hive-tablepro/core/mui-types';
+import { DefaultComponentProps, OverrideProps, Simplify } from '@geeklabssh/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { OptionState } from '../ListboxUnstyled';
 import { UseSelectOptionSlotProps } from '../SelectUnstyled/useSelect.types';

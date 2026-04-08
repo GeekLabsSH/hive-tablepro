@@ -1,5 +1,5 @@
-import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
-import { unstable_useForkRef as useForkRef } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { OverridableComponent } from "@geeklabssh/hive-tablepro/core/mui-types";
+import { unstable_useForkRef as useForkRef } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import compClasses from "../compClasses";

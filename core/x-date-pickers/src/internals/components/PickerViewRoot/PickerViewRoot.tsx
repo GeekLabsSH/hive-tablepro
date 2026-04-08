@@ -1,4 +1,4 @@
-import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { styled } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import { DIALOG_WIDTH, VIEW_HEIGHT } from "../../constants/dimensions";
 export const PickerViewRoot = styled("div")({
   overflowX: "hidden",

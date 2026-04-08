@@ -1,4 +1,4 @@
-import { CSSObject } from '@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src';
+import { CSSObject } from '@geeklabssh/hive-tablepro/core/mui-styled-engine/src';
 import { SxConfig, SxProps } from '../styleFunctionSx';
 import { Breakpoints, BreakpointsOptions } from './createBreakpoints';
 import { Spacing, SpacingOptions } from './createSpacing';

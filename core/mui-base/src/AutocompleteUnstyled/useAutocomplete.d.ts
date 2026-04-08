@@ -339,7 +339,7 @@ export default function useAutocomplete<
 ): {
   getRootProps: (externalProps?: any) => React.HTMLAttributes<HTMLDivElement>;
   getInputProps: () => React.InputHTMLAttributes<HTMLInputElement>;
-  // We pass `getInputLabelProps()` to `@GeekLabsSH/hive-tablepro/core/mui-material/src/InputLabel` which does not implement HTMLLabelElement#color.
+  // We pass `getInputLabelProps()` to `@geeklabssh/hive-tablepro/core/mui-material/src/InputLabel` which does not implement HTMLLabelElement#color.
   getInputLabelProps: () => Omit<
     React.HTMLAttributes<HTMLLabelElement>,
     "color"

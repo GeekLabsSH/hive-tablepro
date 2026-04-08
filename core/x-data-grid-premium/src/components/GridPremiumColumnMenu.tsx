@@ -4,7 +4,7 @@ import {
   GridGenericColumnMenu,
   GRID_COLUMN_MENU_COMPONENTS,
   GRID_COLUMN_MENU_COMPONENTS_PROPS,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid-pro/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { isGroupingColumn } from "../hooks/features/rowGrouping";

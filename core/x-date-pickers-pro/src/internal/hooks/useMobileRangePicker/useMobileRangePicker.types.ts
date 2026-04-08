@@ -1,16 +1,16 @@
-import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/utils';
-import Stack, { StackProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Stack';
-import TextField, { TextFieldProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField';
-import Typography, { TypographyProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography';
+import { SlotComponentProps } from '@geeklabssh/hive-tablepro/core/mui-base/src/utils';
+import Stack, { StackProps } from '@geeklabssh/hive-tablepro/core/mui-material/src/Stack';
+import TextField, { TextFieldProps } from '@geeklabssh/hive-tablepro/core/mui-material/src/TextField';
+import Typography, { TypographyProps } from '@geeklabssh/hive-tablepro/core/mui-material/src/Typography';
 import {
   BaseNonStaticPickerProps, BasePickerProps, DateOrTimeView, ExportedBaseToolbarProps, PickersModalDialogSlotsComponent,
   PickersModalDialogSlotsComponentsProps, UncapitalizeObjectKeys, UsePickerParams, UsePickerValueNonStaticProps,
   UsePickerViewsNonStaticProps, UsePickerViewsProps
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   ExportedPickersLayoutSlotsComponent,
   ExportedPickersLayoutSlotsComponentsProps
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/PickersLayout/PickersLayout.types';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/PickersLayout/PickersLayout.types';
 import * as React from 'react';
 import { DateRange, RangePositionProps } from '../../models';
 import { BaseMultiInputFieldProps } from '../../models/fields';
@@ -23,7 +23,7 @@ export interface UseMobileRangePickerSlotsComponent<TDate, TView extends DateOrT
   FieldSeparator?: React.ElementType<TypographyProps>;
   /**
    * Form control with an input to render a date or time inside the default field.
-   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@geeklabssh/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType<TextFieldProps>;

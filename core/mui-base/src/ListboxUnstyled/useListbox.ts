@@ -1,4 +1,4 @@
-import { unstable_useForkRef as useForkRef, unstable_useId as useId } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
+import { unstable_useForkRef as useForkRef, unstable_useId as useId } from '@geeklabssh/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import areArraysEqual from '../utils/areArraysEqual';
 import { EventHandlers } from '../utils/types';

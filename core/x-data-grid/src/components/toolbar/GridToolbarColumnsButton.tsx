@@ -1,4 +1,4 @@
-import { ButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
+import { ButtonProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/Button";
 import * as React from "react";
 import { gridPreferencePanelStateSelector } from "../../hooks/features/preferencesPanel/gridPreferencePanelSelector";
 import { GridPreferencePanelsValue } from "../../hooks/features/preferencesPanel/gridPreferencePanelsValue";

@@ -1,4 +1,4 @@
-import { DateOrTimeView } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
+import { DateOrTimeView } from "@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals";
 import {
   DateRangeCalendar,
   DateRangeCalendarProps,

@@ -1,11 +1,11 @@
-import { PickersInputLocaleText } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src";
+import { PickersInputLocaleText } from "@geeklabssh/hive-tablepro/core/x-date-pickers/src";
 import {
   DateOrTimeView,
   onSpaceOrEnter,
   useLocaleText,
   UsePickerResponse,
   WrapperVariant
-} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@geeklabssh/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { DateRange, RangePosition } from '../models';
 

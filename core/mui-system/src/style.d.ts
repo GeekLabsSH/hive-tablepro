@@ -1,4 +1,4 @@
-import { CSSObject } from '@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src';
+import { CSSObject } from '@geeklabssh/hive-tablepro/core/mui-styled-engine/src';
 import { StyleFunction } from './Box';
 
 export type TransformFunction = (

@@ -1,4 +1,4 @@
-import { GridRowId } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridRowId } from '@geeklabssh/hive-tablepro/core/x-data-grid/src';
 import type {
   GridColumnPinningInternalCache,
   GridPinnedColumns
@@ -49,7 +49,7 @@ export interface GridApiCachesPro {
   pinnedRows: GridRowPinningInternalCache;
 }
 
-declare module '@GeekLabsSH/hive-tablepro/core/x-data-grid/src' {
+declare module '@geeklabssh/hive-tablepro/core/x-data-grid/src' {
   interface GridEventLookup extends GridEventLookupPro { }
 
   interface GridControlledStateEventLookup extends GridControlledStateEventLookupPro { }
@@ -57,6 +57,6 @@ declare module '@GeekLabsSH/hive-tablepro/core/x-data-grid/src' {
   interface GridPipeProcessingLookup extends GridPipeProcessingLookupPro { }
 }
 
-declare module '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals' {
+declare module '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals' {
   interface GridApiCaches extends GridApiCachesPro { }
 }

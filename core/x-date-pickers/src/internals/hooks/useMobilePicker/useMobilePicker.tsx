@@ -1,8 +1,8 @@
 import {
   resolveComponentProps,
   useSlotProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
-import useForkRef from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useForkRef";
+} from "@geeklabssh/hive-tablepro/core/mui-base/src/utils";
+import useForkRef from "@geeklabssh/hive-tablepro/core/mui-utils/src/useForkRef";
 import * as React from "react";
 import { LocalizationProvider } from "../../../LocalizationProvider";
 import { PickersLayout } from "../../../PickersLayout";

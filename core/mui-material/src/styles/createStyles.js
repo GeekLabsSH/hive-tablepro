@@ -5,7 +5,7 @@ export default function createStyles(styles) {
   if (!warnedOnce) {
     console.warn(
       [
-        "HIVE: createStyles from @GeekLabsSH/hive-tablepro/core/mui-material/src/styles is deprecated.",
+        "HIVE: createStyles from @geeklabssh/hive-tablepro/core/mui-material/src/styles is deprecated.",
         "Please use @mui/styles/createStyles",
       ].join("\n")
     );

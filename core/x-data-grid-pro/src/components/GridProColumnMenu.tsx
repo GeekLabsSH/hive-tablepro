@@ -3,7 +3,7 @@ import {
   GridGenericColumnMenu,
   GRID_COLUMN_MENU_COMPONENTS,
   GRID_COLUMN_MENU_COMPONENTS_PROPS,
-} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GridColumnMenuPinningItem } from "./GridColumnMenuPinningItem";

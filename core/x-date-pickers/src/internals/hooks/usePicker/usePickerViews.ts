@@ -1,7 +1,7 @@
-import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
-import useEnhancedEffect from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEnhancedEffect';
-import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
+import { Theme } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@geeklabssh/hive-tablepro/core/mui-system/src";
+import useEnhancedEffect from '@geeklabssh/hive-tablepro/core/mui-utils/src/useEnhancedEffect';
+import useEventCallback from "@geeklabssh/hive-tablepro/core/mui-utils/src/useEventCallback";
 import * as React from 'react';
 import { DateOrTimeView } from '../../models';
 import { useViews, UseViewsOptions } from '../useViews';

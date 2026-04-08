@@ -1,5 +1,5 @@
-import { PopperProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src';
-import { MUIStyledCommonProps, SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { PopperProps } from '@geeklabssh/hive-tablepro/core/mui-material/src';
+import { MUIStyledCommonProps, SxProps } from '@geeklabssh/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 import { InternalStandardProps as StandardProps, Theme } from '..';
 import { TransitionProps } from '../transitions/transition';

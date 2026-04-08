@@ -1,4 +1,4 @@
-export * from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src";
+export * from "@geeklabssh/hive-tablepro/core/x-date-pickers/src";
 // Calendars
 export * from './DateRangeCalendar';
 // New pickers

@@ -6,12 +6,12 @@ import {
   positions, PropsFor, shadows, SimpleStyleFunction, sizing, StyleFunction, typography
 } from './Box';
 // disable automatic export
-export { DefaultTheme } from '@GeekLabsSH/hive-tablepro/core/mui-private-theming/src';
+export { DefaultTheme } from '@geeklabssh/hive-tablepro/core/mui-private-theming/src';
 export {
   css, CSSInterpolation,
   CSSObject, GlobalStyles,
   GlobalStylesProps, Interpolation, keyframes, StyledEngineProvider
-} from '@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src';
+} from '@geeklabssh/hive-tablepro/core/mui-styled-engine/src';
 export * from './Box';
 export { default as Box } from './Box';
 export { handleBreakpoints } from './breakpoints';

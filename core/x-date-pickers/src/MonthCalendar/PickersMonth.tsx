@@ -2,11 +2,11 @@ import {
   alpha,
   styled,
   useThemeProps,
-} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+} from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
 import {
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
-} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import {
   getPickersMonthUtilityClass,

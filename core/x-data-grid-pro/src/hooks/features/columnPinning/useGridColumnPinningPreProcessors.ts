@@ -1,4 +1,4 @@
-import { GridPipeProcessor, useGridRegisterPipeProcessor } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
+import { GridPipeProcessor, useGridRegisterPipeProcessor } from '@geeklabssh/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 import { filterColumns } from '../../../components/DataGridProVirtualScroller';
 import { DataGridProProcessedProps } from '../../../models/dataGridProProps';

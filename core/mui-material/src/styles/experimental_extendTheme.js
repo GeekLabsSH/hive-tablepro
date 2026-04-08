@@ -7,8 +7,8 @@ import {
   unstable_createGetCssVar as systemCreateGetCssVar,
   unstable_defaultSxConfig as defaultSxConfig,
   unstable_styleFunctionSx as styleFunctionSx,
-} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
-import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+} from "@geeklabssh/hive-tablepro/core/mui-system/src";
+import { deepmerge } from "@geeklabssh/hive-tablepro/core/mui-utils/src";
 import createThemeWithoutVars from "./createTheme";
 import getOverlayAlpha from "./getOverlayAlpha";
 

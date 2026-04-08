@@ -1,5 +1,5 @@
-import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
-import useMediaQuery from "@GeekLabsSH/hive-tablepro/core/mui-material/src/useMediaQuery";
+import { useThemeProps } from "@geeklabssh/hive-tablepro/core/mui-material/src/styles";
+import useMediaQuery from "@geeklabssh/hive-tablepro/core/mui-material/src/useMediaQuery";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { DesktopDateTimePicker } from "../DesktopDateTimePicker";
