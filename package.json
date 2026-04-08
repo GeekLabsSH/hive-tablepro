@@ -1,7 +1,6 @@
 {
-  "name": "@cronoslogistics/hive-tablepro",
+  "name": "@geeklabssh/hive-tablepro",
   "version": "1.0.0",
-  "private": true,
   "description": "Fork MUI + MUI X Data Grid usado pelo ProtonWeb (DataGridPro / Premium).",
   "license": "MIT",
   "sideEffects": true,
