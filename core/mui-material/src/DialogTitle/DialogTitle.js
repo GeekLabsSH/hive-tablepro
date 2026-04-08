@@ -1,0 +1,88 @@
+import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-base/src";
+import clsx from "clsx";
+import PropTypes from "prop-types";
+import * as React from "react";
+import DialogContext from "../Dialog/DialogContext";
+import styled from "../styles/styled";
+import useThemeProps from "../styles/useThemeProps";
+import Typography from "../Typography";
+import { getDialogTitleUtilityClass } from "./dialogTitleClasses";
+
+const useUtilityClasses = (ownerState) => {
+  const { classes } = ownerState;
+
+  const slots = {
+    root: ["root"],
+  };
+
+  return compClasses(slots, getDialogTitleUtilityClass, classes);
+};
+
+const DialogTitleRoot = styled(Typography, {
+  name: "MuiDialogTitle",
+  slot: "Root",
+  overridesResolver: (props, styles) => styles.root,
+})({
+  padding: "16px 24px",
+  flex: "0 0 auto",
+});
+
+const DialogTitle = React.forwardRef(function DialogTitle(inProps, ref) {
+  const props = useThemeProps({
+    props: inProps,
+    name: "MuiDialogTitle",
+  });
+
+  const { className, id: idProp, ...other } = props;
+  const ownerState = props;
+  const classes = useUtilityClasses(ownerState);
+
+  const { titleId: id = idProp } = React.useContext(DialogContext);
+
+  return (
+    <DialogTitleRoot
+      component="h2"
+      className={clsx(classes.root, className)}
+      ownerState={ownerState}
+      ref={ref}
+      variant="h6"
+      id={id}
+      {...other}
+    />
+  );
+});
+
+DialogTitle.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+   * The content of the component.
+   */
+  children: PropTypes.node,
+  /**
+   * Override or extend the styles applied to the component.
+   */
+  classes: PropTypes.object,
+  /**
+   * @ignore
+   */
+  className: PropTypes.string,
+  /**
+   * @ignore
+   */
+  id: PropTypes.string,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.oneOfType([
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.bool])
+    ),
+    PropTypes.func,
+    PropTypes.object,
+  ]),
+};
+
+export default DialogTitle;

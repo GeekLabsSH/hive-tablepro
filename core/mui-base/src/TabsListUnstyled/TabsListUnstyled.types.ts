@@ -1,0 +1,55 @@
+import { OverrideProps } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import * as React from 'react';
+import { SlotComponentProps } from '../utils';
+import { UseTabsListRootSlotProps } from './useTabsList.types';
+
+interface TabsListUnstyledComponentsPropsOverrides { }
+
+export interface TabsListUnstyledOwnProps {
+  /**
+   * The content of the component.
+   */
+  children?: React.ReactNode;
+  className?: string;
+  /**
+   * The props used for each slot inside the TabsList.
+   * @default {}
+   */
+  slotProps?: {
+    root?: SlotComponentProps<
+      'div',
+      TabsListUnstyledComponentsPropsOverrides,
+      TabsListUnstyledOwnerState
+    >;
+  };
+  /**
+   * The components used for each slot inside the TabsList.
+   * Either a string to use a HTML element or a component.
+   * @default {}
+   */
+  slots?: {
+    root?: React.ElementType;
+  };
+}
+
+export interface TabsListUnstyledTypeMap<P = {}, D extends React.ElementType = 'div'> {
+  props: P & TabsListUnstyledOwnProps;
+  defaultComponent: D;
+}
+
+export type TabsListUnstyledProps<
+  D extends React.ElementType = TabsListUnstyledTypeMap['defaultComponent'],
+  P = {},
+> = OverrideProps<TabsListUnstyledTypeMap<P, D>, D> & {
+  component?: D;
+};
+
+export type TabsListUnstyledOwnerState = TabsListUnstyledProps & {
+  isRtl: boolean;
+  orientation: 'horizontal' | 'vertical';
+};
+
+export type TabsListUnstyledRootSlotProps = UseTabsListRootSlotProps & {
+  className?: string;
+  ownerState: TabsListUnstyledOwnerState;
+};

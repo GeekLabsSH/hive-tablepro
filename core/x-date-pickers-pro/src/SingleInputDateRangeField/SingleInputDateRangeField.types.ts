@@ -1,0 +1,64 @@
+import { SlotComponentProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src/utils';
+import TextField from '@cronoslogistics/hive-tablepro/core/mui-material/src/TextField';
+import { FieldsTextFieldProps, UncapitalizeObjectKeys } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+import * as React from 'react';
+import { UseDateRangeFieldDefaultizedProps, UseDateRangeFieldProps } from '../internal/models';
+
+export interface UseSingleInputDateRangeFieldParams<TDate, TChildProps extends {}> {
+  props: UseSingleInputDateRangeFieldComponentProps<TDate, TChildProps>;
+  inputRef?: React.Ref<HTMLInputElement>;
+}
+
+export interface UseSingleInputDateRangeFieldProps<TDate> extends UseDateRangeFieldProps<TDate> { }
+
+export type UseSingleInputDateRangeFieldDefaultizedProps<
+  TDate,
+  AdditionalProps extends {},
+> = UseDateRangeFieldDefaultizedProps<TDate> & AdditionalProps;
+
+export type UseSingleInputDateRangeFieldComponentProps<TDate, TChildProps extends {}> = Omit<
+  TChildProps,
+  keyof UseSingleInputDateRangeFieldProps<TDate>
+> &
+  UseSingleInputDateRangeFieldProps<TDate>;
+
+export interface SingleInputDateRangeFieldProps<TDate>
+  extends UseSingleInputDateRangeFieldComponentProps<TDate, FieldsTextFieldProps> {
+  /**
+   * Overrideable components.
+   * @default {}
+   * @deprecated Please use `slots`.
+   */
+  components?: SingleInputDateRangeFieldSlotsComponent;
+  /**
+   * The props used for each component slot.
+   * @default {}
+   * @deprecated Please use `slotProps`.
+   */
+  componentsProps?: SingleInputDateRangeFieldSlotsComponentsProps<TDate>;
+  /**
+   * Overrideable component slots.
+   * @default {}
+   */
+  slots?: UncapitalizeObjectKeys<SingleInputDateRangeFieldSlotsComponent>;
+  /**
+   * The props used for each component slot.
+   * @default {}
+   */
+  slotProps?: SingleInputDateRangeFieldSlotsComponentsProps<TDate>;
+}
+
+export type SingleInputDateRangeFieldOwnerState<TDate> = SingleInputDateRangeFieldProps<TDate>;
+
+export interface SingleInputDateRangeFieldSlotsComponent {
+  /**
+   * Form control with an input to render the value.
+   * Receives the same props as `@cronoslogistics/hive-tablepro/core/mui-material/src/TextField`.
+   * @default TextField from '@mui/material'
+   */
+  TextField?: React.ElementType;
+}
+
+export interface SingleInputDateRangeFieldSlotsComponentsProps<TDate> {
+  textField?: SlotComponentProps<typeof TextField, {}, SingleInputDateRangeFieldOwnerState<TDate>>;
+}

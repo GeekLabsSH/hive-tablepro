@@ -1,0 +1,25 @@
+import { MuiFormatTokenMap } from '../internals/models';
+
+const formatTokenMap: MuiFormatTokenMap = {
+  y: 'year',
+  yy: 'year',
+  yyy: 'year',
+  yyyy: 'year',
+  M: 'month',
+  MM: 'month',
+  MMMM: { sectionName: 'month', contentType: 'letter' },
+  MMM: { sectionName: 'month', contentType: 'letter' },
+  LLL: { sectionName: 'month', contentType: 'letter' },
+  LLLL: { sectionName: 'month', contentType: 'letter' },
+  d: 'day',
+  dd: 'day',
+  H: 'hours',
+  HH: 'hours',
+  h: 'hours',
+  hh: 'hours',
+  mm: 'minutes',
+  ss: 'seconds',
+  a: 'meridiem',
+  aa: 'meridiem',
+  aaa: 'meridiem',
+};
