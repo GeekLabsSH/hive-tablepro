@@ -1,16 +1,16 @@
-# @cronoslogistics/hive-tablepro
+# @geeklabssh/hive-tablepro
 
 Pacote privado com o fork de **MUI Material**, **MUI System** e **MUI X Data Grid** (Community / Pro / Premium) usado pela aplicação ProtonWeb.
 
 ## Consumo no ProtonWeb hoje (Docker mais leve)
 
-O front instala o pacote a partir do **mesmo artefacto** que usarias no registry privado: um ficheiro **`vendor/cronoslogistics-hive-tablepro-1.0.0.tgz`** gerado com `npm pack`.
+O front instala o pacote a partir do **mesmo artefacto** que usarias no registry privado: um ficheiro **`vendor/geeklabssh-hive-tablepro-1.0.0.tgz`** gerado com `npm pack`.
 
-Código-fonte publicável: https://github.com/CronosLogistics/hive-tablepro
+Código-fonte publicável: https://github.com/GeekLabsSH/hive-tablepro
 
-- Em `package.json` do ProtonWeb: `"@cronoslogistics/hive-tablepro": "file:./vendor/cronoslogistics-hive-tablepro-1.0.0.tgz"`.
-- Imports na app: `@cronoslogistics/hive-tablepro/core/...`.
-- Next.js: `transpilePackages: ['@cronoslogistics/hive-tablepro']` em `next.config.js`.
+- Em `package.json` do ProtonWeb: `"@geeklabssh/hive-tablepro": "file:./vendor/geeklabssh-hive-tablepro-1.0.0.tgz"`.
+- Imports na app: `@geeklabssh/hive-tablepro/core/...`.
+- Next.js: `transpilePackages: ['@geeklabssh/hive-tablepro']` em `next.config.js`.
 - O **contexto Docker** ignora a pasta `hive-tablepro/` (muito maior) via `.dockerignore` na raiz do repositório; a imagem só precisa de `package.json`, `package-lock.json` e `vendor/*.tgz`.
 
 ### Fonte local vs pacote instalado (`HIVE_TABLEPRO_SOURCE`)
@@ -19,7 +19,7 @@ Em desenvolvimento no monorepo podes apontar o Next.js para a **pasta** `ProtonW
 
 | Valor | Comportamento |
 |-------|----------------|
-| *(omitido)* ou `npm` | Usa `@cronoslogistics/hive-tablepro` resolvido pelo npm (`file:./vendor/...tgz` ou versão publicada). |
+| *(omitido)* ou `npm` | Usa `@geeklabssh/hive-tablepro` resolvido pelo npm (`file:./vendor/...tgz` ou versão publicada). |
 | `local` | Alias Webpack para `./hive-tablepro` — alterações no fork refletem-se sem `npm run vendor:tablepro` a cada passo. |
 
 Definição típica em `ProtonWeb/.env.local`:
@@ -41,7 +41,7 @@ npm run vendor:tablepro
 npm install
 ```
 
-Isto recria `vendor/cronoslogistics-hive-tablepro-1.0.0.tgz` e, se o conteúdo mudar, atualiza o `integrity` no `package-lock.json`. Faça commit do `.tgz` e do lock quando publicar uma nova versão interna.
+Isto recria `vendor/geeklabssh-hive-tablepro-1.0.0.tgz` e, se o conteúdo mudar, atualiza o `integrity` no `package-lock.json`. Faça commit do `.tgz` e do lock quando publicar uma nova versão interna.
 
 ---
 
@@ -50,7 +50,7 @@ Isto recria `vendor/cronoslogistics-hive-tablepro-1.0.0.tgz` e, se o conteúdo m
 O fluxo oficial é o mesmo do npm: publicar o pacote com scope e instalar com `npm install` + `.npmrc` com token.
 
 1. **Scope e GitHub**  
-   No GitHub Packages o scope tem de estar em **minúsculas** e alinhado com a organização ou utilizador que detém o pacote. Ex.: se o teu GitHub for `minhaempresa`, o nome do pacote deverá ser algo como `@minhaempresa/tablepro` (podes renomear em `hive-tablepro/package.json` e ajustar imports com um codemod, se saíres de `@cronoslogistics/hive-tablepro`).
+   No GitHub Packages o scope tem de estar em **minúsculas** e alinhado com a organização ou utilizador que detém o pacote. Ex.: se o teu GitHub for `minhaempresa`, o nome do pacote deverá ser algo como `@minhaempresa/tablepro` (podes renomear em `hive-tablepro/package.json` e ajustar imports com um codemod, se saíres de `@geeklabssh/hive-tablepro`).
 
 2. **`private` e `npm publish`**  
    O npm **não publica** pacotes com `"private": true`. Para publicar no GitHub Packages, remove temporariamente `"private": true` **ou** mantém apenas o fluxo `npm pack` + upload manual ao registry, conforme a tua política. O `publishConfig.registry` já aponta para `https://npm.pkg.github.com`.
@@ -59,7 +59,7 @@ O fluxo oficial é o mesmo do npm: publicar o pacote com scope e instalar com `n
    Vê `ProtonWeb/.npmrc.example`. Linha típica:
 
    ```ini
-   @cronoslogistics:registry=https://npm.pkg.github.com
+   @geeklabssh:registry=https://npm.pkg.github.com
    //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
    ```
 
@@ -67,7 +67,7 @@ O fluxo oficial é o mesmo do npm: publicar o pacote com scope e instalar com `n
    Depois da primeira publicação bem-sucedida:
 
    ```json
-   "@cronoslogistics/hive-tablepro": "1.0.0"
+   "@geeklabssh/hive-tablepro": "1.0.0"
    ```
 
    Correr `npm install`, commit do `package-lock.json`, e **remover** a cópia em `vendor/` se já não precisares do modo tarball.
@@ -85,6 +85,6 @@ O mecanismo é o mesmo: publicar `@scope/pacote`, configurar `@scope:registry=..
 
 | Objetivo | O que usar |
 |----------|------------|
-| Imagem Docker sem enviar a pasta gigante `hive-tablepro/` no contexto | `vendor/cronoslogistics-hive-tablepro-1.0.0.tgz` + `.dockerignore` em `hive-tablepro/` |
+| Imagem Docker sem enviar a pasta gigante `hive-tablepro/` no contexto | `vendor/geeklabssh-hive-tablepro-1.0.0.tgz` + `.dockerignore` em `hive-tablepro/` |
 | Consumo “só npm” a partir de GitHub/Bit privado | Versão semântica no `package.json`, `.npmrc` com token, `npm install` / `npm ci` |
 | Não expor código no npm público | Registry privado + pacote com acesso restrito à organização; não publicar em `registry.npmjs.org` sem controlo |
