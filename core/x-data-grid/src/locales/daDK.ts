@@ -1,4 +1,4 @@
-import { daDK as daDKCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { daDK as daDKCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

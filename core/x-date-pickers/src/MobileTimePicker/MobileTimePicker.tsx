@@ -1,4 +1,4 @@
-import { resolveComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+import { resolveComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import PropTypes from "prop-types";
 import * as React from "react";
 import {

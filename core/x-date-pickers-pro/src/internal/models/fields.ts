@@ -1,12 +1,12 @@
-import { SlotComponentProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src/utils';
-import Stack, { StackProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/Stack';
-import TextField, { TextFieldProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/TextField';
-import Typography, { TypographyProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/Typography';
+import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/utils';
+import Stack, { StackProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Stack';
+import TextField, { TextFieldProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField';
+import Typography, { TypographyProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography';
 import {
   BaseFieldProps,
   FieldSection,
   UncapitalizeObjectKeys
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 
 export interface RangeFieldSection extends FieldSection {

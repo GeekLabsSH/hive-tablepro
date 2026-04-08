@@ -1,19 +1,19 @@
-import { useSlotProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+import { useSlotProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import Stack, {
   StackProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Stack";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Stack";
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import MuiTextField from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import MuiTextField from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
 import Typography, {
   TypographyProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Typography";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
 import {
   FieldsTextFieldProps,
   uncapitalizeObjectKeys,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useMultiInputDateRangeField } from "../internal/hooks/useMultiInputRangeField/useMultiInputDateRangeField";

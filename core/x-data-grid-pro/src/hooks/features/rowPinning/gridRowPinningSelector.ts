@@ -1,5 +1,5 @@
 export {
   gridAdditionalRowGroupsSelector,
   gridPinnedRowsSelector
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
 

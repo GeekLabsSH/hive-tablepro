@@ -1,4 +1,4 @@
-import { deepmerge } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 
 function merge(acc, item) {
   if (!item) {

@@ -1,4 +1,4 @@
-import { skSK as skSKCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { skSK as skSKCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

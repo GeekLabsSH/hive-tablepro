@@ -1,4 +1,4 @@
-import { createSvgIcon } from "@cronoslogistics/hive-tablepro/core/mui-material/src/utils";
+import { createSvgIcon } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/utils";
 
 export const GridPushPinRightIcon = createSvgIcon(
   <g transform="rotate(-30 15 10)">

@@ -1,15 +1,15 @@
-import useEventCallback from '@cronoslogistics/hive-tablepro/core/mui-utils/src/useEventCallback';
+import useEventCallback from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback';
 import {
   FieldChangeHandler,
   FieldChangeHandlerContext, TimeValidationError,
   useLocalizationContext,
   useUtils,
   useValidation
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   unstable_useTimeField as useTimeField,
   UseTimeFieldComponentProps
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/TimeField';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/TimeField';
 import * as React from 'react';
 import type {
   UseMultiInputTimeRangeFieldDefaultizedProps,

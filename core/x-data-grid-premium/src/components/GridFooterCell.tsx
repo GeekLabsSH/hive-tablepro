@@ -1,14 +1,14 @@
-import Box from "@cronoslogistics/hive-tablepro/core/mui-material/src/Box";
+import Box from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Box";
 import {
   styled,
   Theme,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   GridRenderCellParams,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import { useGridRootProps } from "../hooks/utils/useGridRootProps";
 import { DataGridPremiumProcessedProps } from "../models/dataGridPremiumProps";
 

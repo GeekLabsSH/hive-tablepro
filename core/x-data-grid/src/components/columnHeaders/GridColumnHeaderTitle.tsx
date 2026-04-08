@@ -1,5 +1,5 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

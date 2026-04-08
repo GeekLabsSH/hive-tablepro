@@ -1,7 +1,7 @@
 import {
   unstable_ownerDocument as ownerDocument,
   unstable_useForkRef as useForkRef
-} from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import { isFragment } from 'react-is';
 import { useTabContext } from '../TabsUnstyled';

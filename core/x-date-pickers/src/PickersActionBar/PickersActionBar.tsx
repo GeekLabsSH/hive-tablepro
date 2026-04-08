@@ -1,7 +1,7 @@
-import Button from "@cronoslogistics/hive-tablepro/core/mui-material/src/Button";
+import Button from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
 import DialogActions, {
   DialogActionsProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/DialogActions";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/DialogActions";
 import PropTypes from "prop-types";
 import { useLocaleText } from "../internals/hooks/useUtils";
 

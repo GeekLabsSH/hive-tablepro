@@ -1,4 +1,4 @@
-import { ComponentsOverrides, ComponentsProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/styles';
+import { ComponentsOverrides, ComponentsProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/styles';
 
 export interface PickersProComponents<Theme = unknown> {
   MuiDateRangeCalendar?: {
@@ -41,6 +41,6 @@ export interface PickersProComponents<Theme = unknown> {
   };
 }
 
-declare module '@cronoslogistics/hive-tablepro/core/mui-material/src/styles' {
+declare module '@GeekLabsSH/hive-tablepro/core/mui-material/src/styles' {
   interface Components<Theme = unknown> extends PickersProComponents<Theme> { }
 }

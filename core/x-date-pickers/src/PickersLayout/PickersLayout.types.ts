@@ -1,5 +1,5 @@
-import { SlotComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import { SxProps, Theme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import { SxProps, Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import * as React from 'react';
 import { UsePickerLayoutPropsResponseLayoutProps } from '../internals/hooks/usePicker/usePickerLayoutProps';
 import { WrapperVariant } from '../internals/models/common';

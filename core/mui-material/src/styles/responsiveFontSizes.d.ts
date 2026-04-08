@@ -1,4 +1,4 @@
-import { Breakpoint } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { Breakpoint } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { Theme } from './createTheme';
 import { Typography } from './createTypography';
 

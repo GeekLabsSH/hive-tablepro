@@ -1,4 +1,4 @@
-import { MakeOptional, UncapitalizeObjectKeys } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+import { MakeOptional, UncapitalizeObjectKeys } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   BaseDateRangePickerProps,
   BaseDateRangePickerSlotsComponent,

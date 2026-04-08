@@ -1,12 +1,12 @@
-import { resolveComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+import { resolveComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import useMediaQuery from "@cronoslogistics/hive-tablepro/core/mui-material/src/useMediaQuery";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
-import useControlled from "@cronoslogistics/hive-tablepro/core/mui-utils/src/useControlled";
-import useEventCallback from "@cronoslogistics/hive-tablepro/core/mui-utils/src/useEventCallback";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import useMediaQuery from "@GeekLabsSH/hive-tablepro/core/mui-material/src/useMediaQuery";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import useControlled from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useControlled";
+import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
 import {
   applyDefaultDate,
   BaseDateValidationProps,
@@ -28,7 +28,7 @@ import {
   useNow,
   usePreviousMonthDisabled,
   useUtils,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

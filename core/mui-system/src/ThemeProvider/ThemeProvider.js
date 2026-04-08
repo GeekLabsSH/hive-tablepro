@@ -1,6 +1,6 @@
-import { ThemeProvider as MuiThemeProvider } from "@cronoslogistics/hive-tablepro/core/mui-private-theming/src";
-import { ThemeContext as StyledEngineThemeContext } from "@cronoslogistics/hive-tablepro/core/mui-styled-engine/src";
-import { exactProp } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { ThemeProvider as MuiThemeProvider } from "@GeekLabsSH/hive-tablepro/core/mui-private-theming/src";
+import { ThemeContext as StyledEngineThemeContext } from "@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src";
+import { exactProp } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import useTheme from "../useTheme";
 

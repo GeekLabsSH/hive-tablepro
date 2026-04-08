@@ -1,9 +1,9 @@
 import {
   ExtendSliderUnstyled, ExtendSliderUnstyledTypeMap, SliderUnstyledTypeMap,
   SliderValueLabelProps
-} from '@cronoslogistics/hive-tablepro/core/mui-base/src/SliderUnstyled';
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+} from '@GeekLabsSH/hive-tablepro/core/mui-base/src/SliderUnstyled';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { OverrideProps } from '../OverridableComponent';
 import { Theme } from '../styles';

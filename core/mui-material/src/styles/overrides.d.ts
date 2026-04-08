@@ -1,4 +1,4 @@
-import { CSSInterpolation, CSSObject } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { CSSInterpolation, CSSObject } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { AccordionClassKey } from '../Accordion';
 import { AccordionActionsClassKey } from '../AccordionActions';
 import { AccordionDetailsClassKey } from '../AccordionDetails';

@@ -1,4 +1,4 @@
-import { trTR as trTRCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { trTR as trTRCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

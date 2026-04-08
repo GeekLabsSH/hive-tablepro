@@ -13,7 +13,7 @@ export {
   recomposeColor,
   rgbToHex,
   StyledEngineProvider,
-} from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 export { default as adaptV4Theme } from "./adaptV4Theme";
 export { default as unstable_createMuiStrictModeTheme } from "./createMuiStrictModeTheme";
 export { default as createStyles } from "./createStyles";

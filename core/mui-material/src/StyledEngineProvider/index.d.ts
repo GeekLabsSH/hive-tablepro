@@ -1,5 +1,5 @@
 /**
- * @deprecated will be removed in v5.beta, please use StyledEngineProvider from @cronoslogistics/hive-tablepro/core/mui-material/src/styles instead
+ * @deprecated will be removed in v5.beta, please use StyledEngineProvider from @GeekLabsSH/hive-tablepro/core/mui-material/src/styles instead
  */
-export { StyledEngineProvider as default } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+export { StyledEngineProvider as default } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 

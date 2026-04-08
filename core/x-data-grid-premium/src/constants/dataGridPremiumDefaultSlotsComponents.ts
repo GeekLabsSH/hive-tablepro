@@ -1,4 +1,4 @@
-import { DATA_GRID_PRO_DEFAULT_SLOTS_COMPONENTS } from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals';
+import { DATA_GRID_PRO_DEFAULT_SLOTS_COMPONENTS } from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
 import { GridFunctionsIcon, GridGroupWorkIcon, GridWorkspacesIcon } from '../components';
 import { GridPremiumColumnMenu } from '../components/GridPremiumColumnMenu';
 import { GridPremiumIconSlotsComponent, GridPremiumSlotsComponent } from '../models';

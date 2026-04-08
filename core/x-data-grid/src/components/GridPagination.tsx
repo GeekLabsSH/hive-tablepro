@@ -1,8 +1,8 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import TablePagination, {
   tablePaginationClasses,
   TablePaginationProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/TablePagination";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TablePagination";
 import * as React from "react";
 import { gridFilteredTopLevelRowCountSelector } from "../hooks/features/filter";
 import { useGridApiContext } from "../hooks/utils/useGridApiContext";

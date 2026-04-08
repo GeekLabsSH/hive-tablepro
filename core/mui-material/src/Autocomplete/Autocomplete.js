@@ -2,12 +2,12 @@ import {
   createFilterOptions,
   unstable_compClasses as compClasses,
   useAutocomplete,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src";
-import { alpha } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
+import { alpha } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import {
   chainPropTypes,
   integerPropType,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

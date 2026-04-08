@@ -1,4 +1,4 @@
-import { unstable_capitalize as capitalize } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { unstable_capitalize as capitalize } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   createEmptyBreakpointObject,
   handleBreakpoints,

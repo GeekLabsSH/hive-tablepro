@@ -1,7 +1,7 @@
-import { SlotComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import IconButton, { IconButtonProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import { InputAdornmentProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/InputAdornment';
-import TextField, { TextFieldProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
+import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import IconButton, { IconButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import { InputAdornmentProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/InputAdornment';
+import TextField, { TextFieldProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
 import * as React from 'react';
 import {
   ExportedPickersLayoutSlotsComponent,
@@ -32,7 +32,7 @@ export interface UseDesktopPickerSlotsComponent<TDate, TView extends DateOrTimeV
   Field: React.ElementType<BaseFieldProps<TDate | null, any>>;
   /**
    * Form control with an input to render the value inside the default field.
-   * Receives the same props as `@cronoslogistics/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType<TextFieldProps>;

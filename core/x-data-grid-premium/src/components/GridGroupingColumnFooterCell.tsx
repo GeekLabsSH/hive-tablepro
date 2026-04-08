@@ -1,4 +1,4 @@
-import { GridRenderCellParams } from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+import { GridRenderCellParams } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import { useGridRootProps } from "../hooks/utils/useGridRootProps";
 import { GridFooterCell } from "./GridFooterCell";
 

@@ -1,6 +1,6 @@
 /**
  * WARNING: Don't import this directly.
- * Use `MuiError` from `@cronoslogistics/hive-tablepro/core/mui-utils/src/macros/MuiError.macro` instead.
+ * Use `MuiError` from `@GeekLabsSH/hive-tablepro/core/mui-utils/src/macros/MuiError.macro` instead.
  * @param {number} code
  */
 export default function formatMuiErrorMessage(code: number): string {

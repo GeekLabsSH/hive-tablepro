@@ -1,4 +1,4 @@
-import { enUS as enUSCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { enUS as enUSCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GRID_DEFAULT_LOCALE_TEXT } from '../constants/localeTextConstants';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

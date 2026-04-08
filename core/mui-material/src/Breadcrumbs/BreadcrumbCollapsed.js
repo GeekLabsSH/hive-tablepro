@@ -1,4 +1,4 @@
-import { emphasize } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { emphasize } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import PropTypes from "prop-types";
 import ButtonBase from "../ButtonBase";
 import MoreHorizIcon from "../internal/svg-icons/MoreHoriz";

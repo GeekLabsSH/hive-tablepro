@@ -1,8 +1,8 @@
-import { useThemeProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import {
   LocalizedComponent,
   PickersInputLocaleText,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src";
 import {
   applyDefaultDate,
   BaseDateValidationProps,
@@ -13,7 +13,7 @@ import {
   uncapitalizeObjectKeys,
   useDefaultDates,
   useUtils,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import * as React from "react";
 import {
   DateRangeCalendarSlotsComponent,

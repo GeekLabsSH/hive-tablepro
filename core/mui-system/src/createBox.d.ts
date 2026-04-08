@@ -1,4 +1,4 @@
-import { OverridableComponent } from "@cronoslogistics/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
 import { BoxTypeMap } from './Box';
 import { Theme as SystemTheme } from './createTheme';
 

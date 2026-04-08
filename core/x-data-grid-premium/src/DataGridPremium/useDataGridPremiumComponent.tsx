@@ -59,7 +59,7 @@ import {
   useGridStatePersistence,
   useGridTreeData,
   useGridTreeDataPreProcessors,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals";
 import * as React from "react";
 import { DataGridPremiumProcessedProps } from "../models/dataGridPremiumProps";
 import {

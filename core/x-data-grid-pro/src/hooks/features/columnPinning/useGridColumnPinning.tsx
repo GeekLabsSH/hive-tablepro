@@ -9,13 +9,13 @@ import {
   useGridApiEventHandler,
   useGridApiMethod,
   useGridSelector,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import {
   GridPipeProcessor,
   GridRestoreStatePreProcessingContext,
   GridStateInitializer,
   useGridRegisterPipeProcessor,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import { filterColumns } from "../../../components/DataGridProVirtualScroller";
 import { DataGridProProcessedProps } from "../../../models/dataGridProProps";

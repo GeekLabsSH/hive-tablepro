@@ -1,8 +1,8 @@
-import { SlotComponentProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src/utils';
-import Stack, { StackProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/Stack';
-import TextField from '@cronoslogistics/hive-tablepro/core/mui-material/src/TextField';
-import Typography from '@cronoslogistics/hive-tablepro/core/mui-material/src/Typography';
-import { UncapitalizeObjectKeys } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/utils';
+import Stack, { StackProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Stack';
+import TextField from '@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField';
+import Typography from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography';
+import { UncapitalizeObjectKeys } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { RangePosition } from '../internal/models/range';
 import {
@@ -64,7 +64,7 @@ export interface MultiInputTimeRangeFieldSlotsComponent {
   /**
    * Form control with an input to render a time.
    * It is rendered twice: once for the start time and once for the end time.
-   * Receives the same props as `@cronoslogistics/hive-tablepro/core/mui-material/src/TextField`.
+   * Receives the same props as `@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField`.
    * @default TextField from '@mui/material'
    */
   TextField?: React.ElementType;

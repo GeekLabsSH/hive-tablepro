@@ -1,4 +1,4 @@
-import { heIL as heILCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { heIL as heILCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

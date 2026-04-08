@@ -1,4 +1,4 @@
-import { Simplify } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { Simplify } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import isHostComponent from './isHostComponent';
 

@@ -1,9 +1,9 @@
-import { ButtonProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Button";
-import MenuList from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuList";
+import { ButtonProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
+import MenuList from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuList";
 import {
   unstable_useForkRef as useForkRef,
   unstable_useId as useId,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { gridClasses } from "../../constants/gridClasses";
 import { useGridApiContext } from "../../hooks/utils/useGridApiContext";

@@ -1,4 +1,4 @@
-import { Interpolation } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { Interpolation } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { Theme } from './createTheme';
 import { ComponentsPropsList } from './props';
 

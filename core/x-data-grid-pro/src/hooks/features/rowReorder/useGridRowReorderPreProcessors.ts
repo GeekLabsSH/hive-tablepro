@@ -1,6 +1,6 @@
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
-import { getDataGridUtilityClass, GridColDef } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
-import { GridPipeProcessor, useGridRegisterPipeProcessor } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals';
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { getDataGridUtilityClass, GridColDef } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { GridPipeProcessor, useGridRegisterPipeProcessor } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 import { DataGridProProcessedProps } from '../../../models/dataGridProProps';
 import { GridPrivateApiPro } from '../../../models/gridApiPro';

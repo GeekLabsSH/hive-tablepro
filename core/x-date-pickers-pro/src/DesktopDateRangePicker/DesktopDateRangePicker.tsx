@@ -1,8 +1,8 @@
-import { resolveComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+import { resolveComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import {
   extractValidationProps,
   PickerViewRendererLookup,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useDateRangePickerDefaultizedProps } from "../DateRangePicker/shared";

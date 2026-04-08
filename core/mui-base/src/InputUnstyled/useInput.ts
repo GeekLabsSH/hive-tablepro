@@ -1,4 +1,4 @@
-import { unstable_useForkRef as useForkRef } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+import { unstable_useForkRef as useForkRef } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import { FormControlUnstyledState, useFormControlUnstyledContext } from '../FormControlUnstyled';
 import extractEventHandlers from '../utils/extractEventHandlers';

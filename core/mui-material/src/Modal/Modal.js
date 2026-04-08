@@ -1,14 +1,14 @@
 import ModalUnstyled, {
   modalUnstyledClasses,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src/ModalUnstyled";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/ModalUnstyled";
 import {
   isHostComponent,
   resolveComponentProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import {
   elementAcceptingRef,
   HTMLElementType,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import Backdrop from "../Backdrop";

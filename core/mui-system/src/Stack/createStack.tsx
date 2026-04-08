@@ -1,9 +1,9 @@
-import { OverridableComponent } from "@cronoslogistics/hive-tablepro/core/mui-types";
+import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
 import {
   deepmerge,
   unstable_compClasses as compClasses,
   unstable_generateUtilityClass as generateUtilityClass,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

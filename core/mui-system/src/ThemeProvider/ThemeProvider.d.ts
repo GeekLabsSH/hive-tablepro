@@ -1,4 +1,4 @@
-import { DefaultTheme } from '@cronoslogistics/hive-tablepro/core/mui-private-theming/src';
+import { DefaultTheme } from '@GeekLabsSH/hive-tablepro/core/mui-private-theming/src';
 
 export interface ThemeProviderProps<Theme = DefaultTheme> {
   /**

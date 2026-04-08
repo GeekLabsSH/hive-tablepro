@@ -1,7 +1,7 @@
-import { SlotComponentProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src/utils';
-import TextField from '@cronoslogistics/hive-tablepro/core/mui-material/src/TextField';
-import { UncapitalizeObjectKeys } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
-import { FieldsTextFieldProps } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals/models/fields';
+import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/utils';
+import TextField from '@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField';
+import { UncapitalizeObjectKeys } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
+import { FieldsTextFieldProps } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals/models/fields';
 import * as React from 'react';
 import {
   UseDateTimeRangeFieldDefaultizedProps,

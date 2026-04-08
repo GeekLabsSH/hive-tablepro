@@ -1,13 +1,13 @@
-import Box from "@cronoslogistics/hive-tablepro/core/mui-material/src/Box";
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import Box from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Box";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   gridFilteredDescendantCountLookupSelector,
   GridGroupNode,
   GridRenderCellParams,
   useGridSelector,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import * as React from "react";
 import { useGridApiContext } from "../hooks/utils/useGridApiContext";
 import { useGridRootProps } from "../hooks/utils/useGridRootProps";

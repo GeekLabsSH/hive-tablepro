@@ -1,8 +1,8 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
 import {
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { getDataGridUtilityClass } from "../../constants/gridClasses";

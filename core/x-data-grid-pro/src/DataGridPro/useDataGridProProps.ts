@@ -1,9 +1,9 @@
-import { useThemeProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import {
   DATA_GRID_PROPS_DEFAULT_VALUES,
   GridValidRowModel,
   GRID_DEFAULT_LOCALE_TEXT,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import * as React from "react";
 import { DATA_GRID_PRO_DEFAULT_SLOTS_COMPONENTS } from "../constants/dataGridProDefaultSlotsComponents";
 import { GridProSlotsComponent } from "../models";

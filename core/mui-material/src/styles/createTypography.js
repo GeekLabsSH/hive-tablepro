@@ -1,4 +1,4 @@
-import { deepmerge } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 
 function round(value) {
   return Math.round(value * 1e5) / 1e5;

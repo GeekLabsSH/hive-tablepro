@@ -1,5 +1,5 @@
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { getDataGridUtilityClass } from "../../constants/gridClasses";
 import { useGridApiContext } from "../../hooks/utils/useGridApiContext";

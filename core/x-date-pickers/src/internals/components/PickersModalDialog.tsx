@@ -1,12 +1,12 @@
 import MuiDialog, {
   dialogClasses,
   DialogProps as MuiDialogProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Dialog";
-import DialogContent from "@cronoslogistics/hive-tablepro/core/mui-material/src/DialogContent";
-import Fade from "@cronoslogistics/hive-tablepro/core/mui-material/src/Fade";
-import { PaperProps as MuiPaperProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Paper/Paper";
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { TransitionProps as MuiTransitionProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/transitions/transition";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Dialog";
+import DialogContent from "@GeekLabsSH/hive-tablepro/core/mui-material/src/DialogContent";
+import Fade from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Fade";
+import { PaperProps as MuiPaperProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Paper/Paper";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { TransitionProps as MuiTransitionProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/transitions/transition";
 import * as React from "react";
 import { DIALOG_WIDTH } from "../constants/dimensions";
 import { UsePickerValueActions } from "../hooks/usePicker/usePickerValue";

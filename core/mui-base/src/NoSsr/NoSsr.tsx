@@ -1,7 +1,7 @@
 import {
   exactProp,
   unstable_useEnhancedEffect as useEnhancedEffect,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { NoSsrProps } from "./NoSsr.types";

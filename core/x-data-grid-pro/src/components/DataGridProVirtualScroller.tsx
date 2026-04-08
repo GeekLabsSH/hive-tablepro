@@ -2,8 +2,8 @@ import {
   alpha,
   styled,
   Theme,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   getDataGridUtilityClass,
   gridClasses,
@@ -13,14 +13,14 @@ import {
   gridVisibleColumnFieldsSelector,
   useGridApiEventHandler,
   useGridSelector,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import {
   calculatePinnedRowsHeight,
   GridVirtualScroller,
   GridVirtualScrollerContent,
   GridVirtualScrollerRenderZone,
   useGridVirtualScroller,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import {
   GridPinnedColumns,

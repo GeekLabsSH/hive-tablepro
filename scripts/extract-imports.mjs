@@ -52,12 +52,12 @@ const pkgs = new Set();
 function addSpec(spec) {
   if (!spec || spec.startsWith(".") || spec.startsWith("/")) return;
   if (spec.startsWith("@/")) return;
-  if (spec.startsWith("@cronoslogistics/hive-tablepro")) return;
+  if (spec.startsWith("@GeekLabsSH/hive-tablepro")) return;
   const pkg = spec.startsWith("@")
     ? spec.split("/").slice(0, 2).join("/")
     : spec.split("/")[0];
   if (BUILTIN.has(pkg)) return;
-  // Documentação JSDoc/comentários citam @mui/*; o código usa @cronoslogistics/hive-tablepro/*
+  // Documentação JSDoc/comentários citam @mui/*; o código usa @GeekLabsSH/hive-tablepro/*
   if (pkg.startsWith("@mui/")) return;
   pkgs.add(pkg);
 }

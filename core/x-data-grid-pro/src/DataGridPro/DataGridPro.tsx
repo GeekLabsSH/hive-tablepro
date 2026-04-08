@@ -1,4 +1,4 @@
-import { chainPropTypes } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { chainPropTypes } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   GridBody,
   GridContextProvider,
@@ -6,7 +6,7 @@ import {
   GridHeader,
   GridRoot,
   GridValidRowModel,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { DataGridProColumnHeaders } from "../components/DataGridProColumnHeaders";

@@ -1,6 +1,6 @@
 import {
   unstable_getScrollbarSize as getScrollbarSize, unstable_ownerDocument as ownerDocument, unstable_ownerWindow as ownerWindow
-} from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 
 export interface ManagedModalProps {
   disableScrollLock?: boolean;

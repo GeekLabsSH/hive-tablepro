@@ -1,4 +1,4 @@
-import { OverridableComponent, OverrideProps } from "@cronoslogistics/hive-tablepro/core/mui-types";
+import { OverridableComponent, OverrideProps } from "@GeekLabsSH/hive-tablepro/core/mui-types";
 import * as React from 'react';
 import { Theme } from '../createTheme';
 import {

@@ -1,5 +1,5 @@
-import { useSlotProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { useSlotProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import { DateOrTimeView } from "../internals/models";
 import { BaseToolbarProps } from "../internals/models/props/toolbar";
 import { uncapitalizeObjectKeys } from "../internals/utils/slots-migration";

@@ -1,7 +1,7 @@
 import {
   BaseDateValidationProps, DefaultizedProps,
   MakeOptional, TimeValidationProps, UseFieldInternalProps
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import { DateTimeRangeValidationError } from '../hooks/validation/useDateTimeRangeValidation';
 import { BaseRangeProps, DayRangeValidationProps } from './dateRange';
 import { DateRange } from './range';

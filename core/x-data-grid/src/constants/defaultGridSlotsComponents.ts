@@ -1,11 +1,11 @@
-import MUIButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/Button";
-import MUICheckbox from '@cronoslogistics/hive-tablepro/core/mui-material/src/Checkbox';
-import MUIFormControl from "@cronoslogistics/hive-tablepro/core/mui-material/src/FormControl";
-import MUIPopper from "@cronoslogistics/hive-tablepro/core/mui-material/src/Popper";
-import MUISelect from "@cronoslogistics/hive-tablepro/core/mui-material/src/Select";
-import MUISwitch from "@cronoslogistics/hive-tablepro/core/mui-material/src/Switch";
-import MUITextField from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
-import MUITooltip from "@cronoslogistics/hive-tablepro/core/mui-material/src/Tooltip";
+import MUIButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Button";
+import MUICheckbox from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Checkbox';
+import MUIFormControl from "@GeekLabsSH/hive-tablepro/core/mui-material/src/FormControl";
+import MUIPopper from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
+import MUISelect from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Select";
+import MUISwitch from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Switch";
+import MUITextField from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import MUITooltip from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Tooltip";
 import {
   GridAddIcon, GridArrowDownwardIcon,
   GridArrowUpwardIcon,

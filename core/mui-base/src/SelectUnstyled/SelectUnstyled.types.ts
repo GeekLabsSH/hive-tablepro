@@ -1,4 +1,4 @@
-import { DefaultComponentProps, OverrideProps, Simplify } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { DefaultComponentProps, OverrideProps, Simplify } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import PopperUnstyled, { PopperUnstyledProps } from '../PopperUnstyled';
 import { SlotComponentProps } from '../utils';

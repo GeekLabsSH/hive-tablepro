@@ -1,4 +1,4 @@
-import CircularProgress from "@cronoslogistics/hive-tablepro/core/mui-material/src/CircularProgress";
+import CircularProgress from "@GeekLabsSH/hive-tablepro/core/mui-material/src/CircularProgress";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GridOverlay, GridOverlayProps } from "./containers/GridOverlay";

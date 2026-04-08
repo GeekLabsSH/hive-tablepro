@@ -1,1 +1,1 @@
-export { unstable_compClasses as default } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+export { unstable_compClasses as default } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';

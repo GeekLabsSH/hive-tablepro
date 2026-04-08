@@ -1,13 +1,13 @@
-import { SlotComponentProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src';
-import { Theme } from '@cronoslogistics/hive-tablepro/core/mui-material/src/styles';
-import { SxProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { SlotComponentProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src';
+import { Theme } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/styles';
+import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import {
   BaseDateValidationProps, DayCalendarProps, DayCalendarSlotsComponent,
   DayCalendarSlotsComponentsProps, DefaultizedProps,
   ExportedDayCalendarProps, ExportedUseViewsOptions, PickersArrowSwitcherSlotsComponent,
   PickersArrowSwitcherSlotsComponentsProps, PickersCalendarHeaderSlotsComponent,
   PickersCalendarHeaderSlotsComponentsProps, PickerSelectionState, UncapitalizeObjectKeys
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import * as React from 'react';
 import { DateRangePickerDay, DateRangePickerDayProps } from '../DateRangePickerDay';
 import { DateRange, DayRangeValidationProps, RangePositionProps } from '../internal/models';

@@ -2,8 +2,8 @@ import {
   darken,
   getContrastRatio,
   lighten,
-} from "@cronoslogistics/hive-tablepro/core/mui-system/src";
-import { deepmerge } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import blue from "../colors/blue";
 import common from "../colors/common";
 import green from "../colors/green";

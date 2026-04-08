@@ -1,8 +1,8 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { unstable_extendSxProp as extendSxProp } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { unstable_compClasses as compClasses } from '@cronoslogistics/hive-tablepro/core/mui-base/src';
+import { unstable_extendSxProp as extendSxProp } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { unstable_compClasses as compClasses } from '@GeekLabsSH/hive-tablepro/core/mui-base/src';
 import styled from '../styles/styled';
 import useThemeProps from '../styles/useThemeProps';
 import capitalize from '../utils/capitalize';

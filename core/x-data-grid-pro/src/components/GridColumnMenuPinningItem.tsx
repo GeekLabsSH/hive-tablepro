@@ -1,7 +1,7 @@
-import ListItemIcon from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemIcon";
-import ListItemText from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemText";
-import MenuItem from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
-import { GridColumnMenuItemProps } from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
+import ListItemText from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemText";
+import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import { GridColumnMenuItemProps } from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GridPinnedPosition } from "../hooks/features/columnPinning";

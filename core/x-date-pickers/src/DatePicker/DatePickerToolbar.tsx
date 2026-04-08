@@ -3,9 +3,9 @@ import {
   SxProps,
   Theme,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@cronoslogistics/hive-tablepro/core/mui-material/src/Typography";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { PickersToolbar } from "../internals/components/PickersToolbar";

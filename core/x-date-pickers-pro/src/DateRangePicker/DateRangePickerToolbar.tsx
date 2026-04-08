@@ -1,9 +1,9 @@
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@cronoslogistics/hive-tablepro/core/mui-material/src/Typography";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   BaseToolbarProps,
   ExportedBaseToolbarProps,
@@ -12,7 +12,7 @@ import {
   pickersToolbarClasses,
   useLocaleText,
   useUtils,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

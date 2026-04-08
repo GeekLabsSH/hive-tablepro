@@ -1,8 +1,8 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import ClickAwayListener from "@cronoslogistics/hive-tablepro/core/mui-material/src/ClickAwayListener";
-import Paper from "@cronoslogistics/hive-tablepro/core/mui-material/src/Paper";
-import Popper from "@cronoslogistics/hive-tablepro/core/mui-material/src/Popper";
-import { unstable_generateUtilityClasses as generateUtilityClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import ClickAwayListener from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ClickAwayListener";
+import Paper from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Paper";
+import Popper from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
+import { unstable_generateUtilityClasses as generateUtilityClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

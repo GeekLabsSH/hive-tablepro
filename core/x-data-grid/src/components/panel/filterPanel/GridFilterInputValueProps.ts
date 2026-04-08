@@ -1,4 +1,4 @@
-import { TextFieldProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
+import { TextFieldProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
 import * as React from 'react';
 import type { GridApiCommon } from '../../../models/api/gridApiCommon';
 import type { GridApiCommunity } from '../../../models/api/gridApiCommunity';

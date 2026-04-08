@@ -1,4 +1,4 @@
-export { unstable_ClassNameGenerator } from '@cronoslogistics/hive-tablepro/core/mui-base/src/className';
+export { unstable_ClassNameGenerator } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/className';
 export { default as capitalize } from './capitalize';
 export { default as createChainedFunction } from './createChainedFunction';
 export { default as createSvgIcon } from './createSvgIcon';

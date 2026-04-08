@@ -1,18 +1,26 @@
 {
   "name": "@geeklabssh/hive-tablepro",
   "version": "1.0.0",
-  "description": "Fork MUI + MUI X Data Grid usado pelo ProtonWeb (DataGridPro / Premium).",
+  "description": "componentes de tabela para o ProtonWeb",
   "license": "MIT",
   "sideEffects": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/CronosLogistics/hive-tablepro.git"
+    "url": "https://github.com/GeekLabsSH/hive-tablepro.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "files": [
+    "core",
+    "models",
+    "utils",
+    "README.md"
+  ],
   "scripts": {
-    "check-imports": "node ./scripts/extract-imports.mjs"
+    "check-imports": "node ./scripts/extract-imports.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run check-imports"
   },
   "peerDependencies": {
     "react": "^18.0.0",

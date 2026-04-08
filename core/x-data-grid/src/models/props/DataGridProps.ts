@@ -1,6 +1,6 @@
-import { CommonProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/OverridableComponent';
-import { Theme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { CommonProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/OverridableComponent';
+import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import * as React from 'react';
 import { GridClasses } from '../../constants/gridClasses';
 import { GridColumnVisibilityModel } from '../../hooks/features/columns/gridColumnsInterfaces';

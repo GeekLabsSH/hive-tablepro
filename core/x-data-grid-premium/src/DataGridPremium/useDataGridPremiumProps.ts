@@ -1,8 +1,8 @@
-import { useThemeProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import {
   DATA_GRID_PRO_PROPS_DEFAULT_VALUES,
   GRID_DEFAULT_LOCALE_TEXT,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import * as React from "react";
 import { DATA_GRID_PREMIUM_DEFAULT_SLOTS_COMPONENTS } from "../constants/dataGridPremiumDefaultSlotsComponents";
 import { GRID_AGGREGATION_FUNCTIONS } from "../hooks/features/aggregation";

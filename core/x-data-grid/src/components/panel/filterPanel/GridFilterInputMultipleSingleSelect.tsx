@@ -1,9 +1,9 @@
 import Autocomplete, {
   AutocompleteProps,
   createFilterOptions,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Autocomplete";
-import Chip from "@cronoslogistics/hive-tablepro/core/mui-material/src/Chip";
-import { unstable_useId as useId } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Autocomplete";
+import Chip from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Chip";
+import { unstable_useId as useId } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useGridRootProps } from "../../../hooks/utils/useGridRootProps";

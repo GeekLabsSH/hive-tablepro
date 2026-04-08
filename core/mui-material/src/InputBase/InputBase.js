@@ -2,11 +2,11 @@ import {
   isHostComponent,
   TextareaAutosize,
   unstable_compClasses as compClasses,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
 import {
   elementTypeAcceptingRef,
   refType,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

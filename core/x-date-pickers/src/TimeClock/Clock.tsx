@@ -1,13 +1,13 @@
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@cronoslogistics/hive-tablepro/core/mui-material/src/Typography";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
 import {
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { WrapperVariantContext } from "../internals/components/wrappers/WrapperVariantContext";

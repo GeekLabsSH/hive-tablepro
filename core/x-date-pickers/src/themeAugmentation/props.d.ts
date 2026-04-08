@@ -87,7 +87,7 @@ export interface PickersComponentsPropsList {
   MuiStaticDateTimePicker: StaticDateTimePickerProps<unknown>;
 }
 
-declare module "@cronoslogistics/hive-tablepro/core/mui-material/src/styles"; {
+declare module "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles"; {
   interface ComponentsPropsList extends PickersComponentsPropsList { }
 }
 

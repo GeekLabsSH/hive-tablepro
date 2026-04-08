@@ -1,4 +1,4 @@
-import { unstable_generateUtilityClasses as generateUtilityClasses } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+import { unstable_generateUtilityClasses as generateUtilityClasses } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 import generateUtilityClass from '../generateUtilityClass';
 import { inputBaseClasses } from '../InputBase';
 

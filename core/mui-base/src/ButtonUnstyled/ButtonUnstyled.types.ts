@@ -1,4 +1,4 @@
-import { OverrideProps, Simplify } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { OverrideProps, Simplify } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { SlotComponentProps } from '../utils';
 import { UseButtonParameters, UseButtonRootSlotProps } from './useButton.types';

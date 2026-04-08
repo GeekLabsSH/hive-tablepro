@@ -1,4 +1,4 @@
-import { useThemeProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import * as React from "react";
 import {
   DateCalendarSlotsComponent,

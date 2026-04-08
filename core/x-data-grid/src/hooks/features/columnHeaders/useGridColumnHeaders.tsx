@@ -1,5 +1,5 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import { unstable_useForkRef as useForkRef } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import { unstable_useForkRef as useForkRef } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { defaultMemoize } from "reselect";

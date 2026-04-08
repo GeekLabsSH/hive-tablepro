@@ -3,8 +3,8 @@ import {
   BreakpointOverrides, ResponsiveStyleValue,
   SxProps,
   SystemProps
-} from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { IfEquals } from '@cronoslogistics/hive-tablepro/core/mui-types';
+} from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { IfEquals } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 import { Theme } from '../styles';

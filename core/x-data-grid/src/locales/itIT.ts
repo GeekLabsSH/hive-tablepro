@@ -1,4 +1,4 @@
-import { itIT as itITCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { itIT as itITCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

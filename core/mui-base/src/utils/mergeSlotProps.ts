@@ -1,4 +1,4 @@
-import { Simplify } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { Simplify } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import clsx, { ClassValue } from 'clsx';
 import extractEventHandlers from './extractEventHandlers';
 import omitEventHandlers from './omitEventHandlers';

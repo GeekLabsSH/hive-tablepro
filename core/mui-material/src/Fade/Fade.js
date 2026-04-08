@@ -1,4 +1,4 @@
-import { elementAcceptingRef } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { elementAcceptingRef } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { Transition } from "react-transition-group";

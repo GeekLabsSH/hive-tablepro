@@ -1,5 +1,5 @@
-import MenuItem from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
-import { GridExportMenuItemProps } from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import { GridExportMenuItemProps } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import PropTypes from "prop-types";
 import { GridExcelExportOptions } from "../hooks/features/export";
 import { useGridApiContext } from "../hooks/utils/useGridApiContext";

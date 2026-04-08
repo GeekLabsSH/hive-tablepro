@@ -1,6 +1,6 @@
-import { SlotComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import SvgIcon from "@cronoslogistics/hive-tablepro/core/mui-material/src/SvgIcon";
+import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import SvgIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/SvgIcon";
 import * as React from "react";
 import { UncapitalizeObjectKeys } from "../../utils/slots-migration";
 import { PickersArrowSwitcherClasses } from "./pickersArrowSwitcherClasses";

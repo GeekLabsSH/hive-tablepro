@@ -1,7 +1,7 @@
 import {
   CreateMUIStyled as CreateMUIStyledStyledEngine,
   CSSInterpolation
-} from '@cronoslogistics/hive-tablepro/core/mui-styled-engine/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src';
 import * as React from 'react';
 import { Theme as DefaultTheme } from './createTheme';
 import styleFunctionSx, { SxProps } from './styleFunctionSx';

@@ -1,4 +1,4 @@
-import { DistributiveOmit } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { DistributiveOmit } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { StyledComponentProps } from './styles';
 

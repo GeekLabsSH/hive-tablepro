@@ -4,12 +4,12 @@ import {
   GridRowEntry,
   GridRowId,
   GridRowModel, GRID_ROOT_GROUP_ID
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
 import {
   GridHydrateRowsValue,
   GridPipeProcessor,
   useGridRegisterPipeProcessor
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 import { GridPrivateApiPro } from '../../../models/gridApiPro';
 import { insertNodeInTree } from '../../../utils/tree/utils';

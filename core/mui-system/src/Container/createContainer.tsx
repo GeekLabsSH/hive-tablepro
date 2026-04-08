@@ -1,10 +1,10 @@
-import { Interpolation } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { OverridableComponent } from "@cronoslogistics/hive-tablepro/core/mui-types";
+import { Interpolation } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { OverridableComponent } from "@GeekLabsSH/hive-tablepro/core/mui-types";
 import {
   unstable_capitalize as capitalize,
   unstable_compClasses as compClasses,
   unstable_generateUtilityClass as generateUtilityClass,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import { StyledComponent } from "@emotion/styled";
 import clsx from "clsx";
 import PropTypes from "prop-types";

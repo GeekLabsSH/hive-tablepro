@@ -1,6 +1,6 @@
-import { OverridableComponent, OverrideProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/OverridableComponent';
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { DistributiveOmit, OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { OverridableComponent, OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/OverridableComponent';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { DistributiveOmit, OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { PropTypes, Theme } from '..';
 import { PaperProps } from '../Paper';

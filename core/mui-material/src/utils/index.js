@@ -24,9 +24,9 @@ export const unstable_ClassNameGenerator = {
     if (process.env.NODE_ENV !== null) {
       console.warn(
         [
-          "HIVE: `unstable_ClassNameGenerator` import from `@cronoslogistics/hive-tablepro/core/mui-material/src/utils` is outdated and might cause unexpected issues.",
+          "HIVE: `unstable_ClassNameGenerator` import from `@GeekLabsSH/hive-tablepro/core/mui-material/src/utils` is outdated and might cause unexpected issues.",
           "",
-          "You should use `import { unstable_ClassNameGenerator } from '@cronoslogistics/hive-tablepro/core/mui-material/src/className'` instead",
+          "You should use `import { unstable_ClassNameGenerator } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/className'` instead",
           "",
           "The detail of the issue: https://github.com/mui/material-ui/issues/30011#issuecomment-1024993401",
           "",

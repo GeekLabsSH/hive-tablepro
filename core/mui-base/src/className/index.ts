@@ -1,2 +1,2 @@
 // eslint-disable-next-line import/prefer-default-export
-export { unstable_ClassNameGenerator } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+export { unstable_ClassNameGenerator } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';

@@ -1,4 +1,4 @@
-import { alpha, getPath } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { alpha, getPath } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import type { Theme } from '../styles';
 
 export const colorTransformations = {

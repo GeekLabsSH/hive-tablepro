@@ -1,4 +1,4 @@
-import Divider from '@cronoslogistics/hive-tablepro/core/mui-material/src/Divider';
+import Divider from '@GeekLabsSH/hive-tablepro/core/mui-material/src/Divider';
 import * as React from 'react';
 import { GridColDef } from '../../../models/colDef/gridColDef';
 import { useGridPrivateApiContext } from '../../utils/useGridPrivateApiContext';

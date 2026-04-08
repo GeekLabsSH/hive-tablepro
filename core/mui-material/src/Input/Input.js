@@ -1,8 +1,8 @@
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-base/src";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
 import {
   deepmerge,
   refType,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import InputBase from "../InputBase";

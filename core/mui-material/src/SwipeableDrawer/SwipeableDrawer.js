@@ -1,6 +1,6 @@
-import { NoSsr } from "@cronoslogistics/hive-tablepro/core/mui-base/src";
-import { useThemeProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
-import { elementTypeAcceptingRef } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { NoSsr } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
+import { useThemeProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { elementTypeAcceptingRef } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { flushSync } from "react-dom";

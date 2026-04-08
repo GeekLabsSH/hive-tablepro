@@ -1,7 +1,7 @@
 import {
   GridPipeProcessor,
   useGridRegisterPipeProcessor,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import { DataGridProProcessedProps } from "../../../models/dataGridProProps";
 import { GridPrivateApiPro } from "../../../models/gridApiPro";

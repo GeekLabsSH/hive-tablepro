@@ -1,5 +1,5 @@
-import { useTheme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import useControlled from '@cronoslogistics/hive-tablepro/core/mui-utils/src/useControlled';
+import { useTheme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import useControlled from '@GeekLabsSH/hive-tablepro/core/mui-utils/src/useControlled';
 import * as React from 'react';
 import { useLocaleText, useLocalizationContext, useUtils } from '../useUtils';
 import { InferError } from '../validation/useValidation';

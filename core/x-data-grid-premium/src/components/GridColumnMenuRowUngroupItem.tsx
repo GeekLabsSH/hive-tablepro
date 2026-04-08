@@ -1,11 +1,11 @@
-import ListItemIcon from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemIcon";
-import ListItemText from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemText";
-import MenuItem from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
+import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
+import ListItemText from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemText";
+import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
 import {
   gridColumnLookupSelector,
   GridColumnMenuItemProps,
   useGridSelector,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridRowGroupingSanitizedModelSelector } from "../hooks/features/rowGrouping/gridRowGroupingSelector";

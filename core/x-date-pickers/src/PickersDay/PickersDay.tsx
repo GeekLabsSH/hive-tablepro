@@ -1,18 +1,18 @@
 import ButtonBase, {
   ButtonBaseProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/ButtonBase";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ButtonBase";
 import {
   alpha,
   styled,
   Theme,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { CSSInterpolation } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { CSSInterpolation } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import {
   unstable_compClasses as compClasses,
   unstable_useEnhancedEffect as useEnhancedEffect,
   unstable_useForkRef as useForkRef,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

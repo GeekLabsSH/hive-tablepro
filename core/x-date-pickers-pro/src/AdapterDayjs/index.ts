@@ -1,2 +1,2 @@
-export { AdapterDayjs } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/AdapterDayjs';
+export { AdapterDayjs } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/AdapterDayjs';
 

@@ -4,7 +4,7 @@ import {
   unstable_useControlled as useControlled,
   unstable_useEventCallback as useEventCallback,
   unstable_useId as useId,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript

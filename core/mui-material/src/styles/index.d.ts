@@ -9,7 +9,7 @@ export {
   // color manipulators
   hexToRgb, hslToRgb, Interpolation, keyframes, lighten, recomposeColor, rgbToHex, StyledEngineProvider,
   SxProps
-} from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 export { default as adaptV4Theme, DeprecatedThemeOptions } from './adaptV4Theme';
 export { Components } from './components';
 export { Mixins } from './createMixins';

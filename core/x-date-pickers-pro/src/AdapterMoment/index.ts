@@ -1,2 +1,2 @@
-export { AdapterMoment } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/AdapterMoment';
+export { AdapterMoment } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/AdapterMoment';
 

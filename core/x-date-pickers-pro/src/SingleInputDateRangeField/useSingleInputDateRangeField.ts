@@ -1,6 +1,6 @@
 import {
   applyDefaultDate, useDefaultDates, useField, useUtils
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import { validateDateRange } from '../internal/hooks/validation/useDateRangeValidation';
 import { rangeFieldValueManager, rangeValueManager } from '../internal/utils/valueManagers';
 import {

@@ -2,8 +2,8 @@ import {
   gridColumnLookupSelector,
   useGridApiEventHandler,
   useGridApiMethod
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
-import { GridStateInitializer } from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridStateInitializer } from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridPrivateApiPremium } from '../../../models/gridApiPremium';

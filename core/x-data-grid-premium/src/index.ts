@@ -1,17 +1,17 @@
 import './typeOverloads';
 
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/components';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/hooks';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/models';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/utils';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/colDef';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/components';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/constants';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/context';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/hooks';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/locales';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/models';
-export * from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/utils';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/components';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/hooks';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/models';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/utils';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/colDef';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/components';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/constants';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/context';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/hooks';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/locales';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/models';
+export * from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/utils';
 export * from './components';
 export {
   GridColumnMenu,

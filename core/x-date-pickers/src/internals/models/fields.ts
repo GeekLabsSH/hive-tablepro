@@ -1,7 +1,7 @@
-import { SlotComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import { Theme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import TextField, { TextFieldProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
-import { SxProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import TextField, { TextFieldProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import * as React from 'react';
 import type { UseFieldInternalProps } from '../hooks/useField';
 ;

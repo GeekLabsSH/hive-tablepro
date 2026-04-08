@@ -1,7 +1,7 @@
 import {
   CSSObject,
   SxConfig, SxProps, Theme as SystemTheme, ThemeOptions as SystemThemeOptions
-} from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { Components } from './components';
 import { Mixins, MixinsOptions } from './createMixins';
 import { Palette, PaletteOptions } from './createPalette';
@@ -46,7 +46,7 @@ export interface Theme extends BaseTheme {
 
 /**
  * @deprecated
- * Use `import { createTheme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles"` instead.
+ * Use `import { createTheme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles"` instead.
  */
 export function createMuiTheme(options?: ThemeOptions, ...args: object[]): Theme;
 

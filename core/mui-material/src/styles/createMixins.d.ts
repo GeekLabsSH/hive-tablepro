@@ -1,4 +1,4 @@
-import { Breakpoints } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { Breakpoints } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import * as CSS from 'csstype';
 
 export type NormalCssProperties = CSS.Properties<number | string>;

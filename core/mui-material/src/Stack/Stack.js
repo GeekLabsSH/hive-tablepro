@@ -5,8 +5,8 @@ import {
   mergeBreakpointsInOrder,
   unstable_extendSxProp as extendSxProp,
   unstable_resolveBreakpointValues as resolveBreakpointValues,
-} from "@cronoslogistics/hive-tablepro/core/mui-system/src";
-import { deepmerge } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
+import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import styled from "../styles/styled";

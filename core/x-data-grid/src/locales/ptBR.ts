@@ -1,4 +1,4 @@
-import { ptBR as ptBRCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { ptBR as ptBRCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

@@ -1,4 +1,4 @@
-import { OverrideProps } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import { Instance, Options, OptionsGeneric, VirtualElement } from '@popperjs/core';
 import * as React from 'react';
 import { PortalProps } from '../Portal';

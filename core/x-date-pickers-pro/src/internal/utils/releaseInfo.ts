@@ -1,4 +1,4 @@
-import { ponyfillGlobal } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { ponyfillGlobal } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 
 export const getReleaseInfo = () => {
   const releaseInfo = '__RELEASE_INFO__';

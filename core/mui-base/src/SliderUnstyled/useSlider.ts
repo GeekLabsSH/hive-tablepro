@@ -1,7 +1,7 @@
 import {
   unstable_ownerDocument as ownerDocument, unstable_useControlled as useControlled, unstable_useEnhancedEffect as useEnhancedEffect, unstable_useEventCallback as useEventCallback,
   unstable_useForkRef as useForkRef, unstable_useIsFocusVisible as useIsFocusVisible, visuallyHidden
-} from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+} from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 import { EventHandlers } from '../utils';
 import {

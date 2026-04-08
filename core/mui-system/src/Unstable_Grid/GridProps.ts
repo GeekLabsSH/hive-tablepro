@@ -1,4 +1,4 @@
-import { IfEquals, OverrideProps } from "@cronoslogistics/hive-tablepro/core/mui-types";
+import { IfEquals, OverrideProps } from "@GeekLabsSH/hive-tablepro/core/mui-types";
 import * as React from 'react';
 import { SystemProps } from '../Box';
 import { Breakpoint, BreakpointOverrides, Theme } from '../createTheme';

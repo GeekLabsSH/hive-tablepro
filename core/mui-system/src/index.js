@@ -3,7 +3,7 @@ export {
   GlobalStyles,
   keyframes,
   StyledEngineProvider,
-} from "@cronoslogistics/hive-tablepro/core/mui-styled-engine/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-styled-engine/src";
 export * from "./borders";
 export { default as borders } from "./borders";
 export { default as Box } from "./Box";

@@ -1,6 +1,6 @@
 import {
   BaseTimeValidationProps, TimeValidationError, useValidation, validateTime, ValidationProps, Validator
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import { DateRange } from '../../models/range';
 import { isRangeValid } from '../../utils/date-utils';
 import { rangeValueManager } from '../../utils/valueManagers';

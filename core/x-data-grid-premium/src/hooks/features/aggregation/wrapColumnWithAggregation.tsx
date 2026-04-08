@@ -1,5 +1,5 @@
-import { GridRowId } from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
-import { GridBaseColDef } from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals";
+import { GridRowId } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridBaseColDef } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals";
 import * as React from "react";
 import { GridAggregationHeader } from "../../../components/GridAggregationHeader";
 import { GridFooterCell } from "../../../components/GridFooterCell";

@@ -1,5 +1,5 @@
-import { ClickAwayListenerProps } from '@cronoslogistics/hive-tablepro/core/mui-base/src/ClickAwayListener';
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { ClickAwayListenerProps } from '@GeekLabsSH/hive-tablepro/core/mui-base/src/ClickAwayListener';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 import { InternalStandardProps as StandardProps } from '..';
 import { SnackbarContentProps } from '../SnackbarContent';

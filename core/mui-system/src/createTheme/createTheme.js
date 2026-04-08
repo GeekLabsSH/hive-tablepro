@@ -1,4 +1,4 @@
-import { deepmerge } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { deepmerge } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import defaultSxConfig from "../styleFunctionSx/defaultSxConfig";
 import styleFunctionSx from "../styleFunctionSx/styleFunctionSx";
 import createBreakpoints from "./createBreakpoints";

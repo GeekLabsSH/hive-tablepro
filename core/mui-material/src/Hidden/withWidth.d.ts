@@ -1,5 +1,5 @@
-import { Breakpoint } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { PropInjector } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { Breakpoint } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { PropInjector } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 
 export interface WithWidthOptions {
   withTheme?: boolean;

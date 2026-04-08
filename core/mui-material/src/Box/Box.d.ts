@@ -1,4 +1,4 @@
-import { BoxTypeMap, createBox } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { BoxTypeMap, createBox } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { OverrideProps } from '../OverridableComponent';
 import { Theme as MaterialTheme } from '../styles';
 

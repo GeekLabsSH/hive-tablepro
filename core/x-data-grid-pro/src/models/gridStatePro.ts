@@ -1,7 +1,7 @@
 import {
   GridInitialState as GridInitialStateCommunity,
   GridState as GridStateCommunity
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
 import type {
   GridColumnPinningState, GridColumnReorderState,
   GridColumnResizeState, GridDetailPanelInitialState, GridDetailPanelState

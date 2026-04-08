@@ -1,9 +1,9 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
 import TextField, {
   TextFieldProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/TextField";
-import { unstable_debounce as debounce } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/TextField";
+import { unstable_debounce as debounce } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridQuickFilterValuesSelector } from "../../hooks/features/filter";

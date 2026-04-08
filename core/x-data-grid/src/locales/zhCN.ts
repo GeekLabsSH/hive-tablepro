@@ -1,4 +1,4 @@
-import { zhCN as zhCNCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { zhCN as zhCNCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

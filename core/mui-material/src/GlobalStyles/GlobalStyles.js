@@ -1,4 +1,4 @@
-import { GlobalStyles as SystemGlobalStyles } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { GlobalStyles as SystemGlobalStyles } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import PropTypes from "prop-types";
 import defaultTheme from "../styles/defaultTheme";
 

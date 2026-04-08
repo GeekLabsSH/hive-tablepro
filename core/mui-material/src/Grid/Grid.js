@@ -8,12 +8,12 @@
 //
 // Follow this flexbox Guide to better understand the underlying model:
 // - https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-base/src";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
 import {
   handleBreakpoints,
   unstable_extendSxProp as extendSxProp,
   unstable_resolveBreakpointValues as resolveBreakpointValues,
-} from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

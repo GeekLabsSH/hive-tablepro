@@ -5,8 +5,8 @@ import {
   GridGroupNode,
   GridRenderCellParams,
   GRID_STRING_COL_DEF,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
-import { GridColumnRawLookup } from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
+import { GridColumnRawLookup } from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals";
 import * as React from "react";
 import { GridGroupingColumnFooterCell } from "../../../components/GridGroupingColumnFooterCell";
 import { GridGroupingColumnLeafCell } from "../../../components/GridGroupingColumnLeafCell";

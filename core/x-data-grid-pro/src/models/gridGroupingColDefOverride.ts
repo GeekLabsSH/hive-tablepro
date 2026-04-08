@@ -1,4 +1,4 @@
-import { GridColDef, GridValidRowModel } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
+import { GridColDef, GridValidRowModel } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
 
 export interface GridGroupingColDefOverride<R extends GridValidRowModel = any>
   extends Omit<

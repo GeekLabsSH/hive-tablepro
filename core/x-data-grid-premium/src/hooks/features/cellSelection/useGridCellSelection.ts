@@ -1,18 +1,18 @@
-import { useEventCallback } from '@cronoslogistics/hive-tablepro/core/mui-material/src/utils';
+import { useEventCallback } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/utils';
 import {
   GridCellCoordinates, GridCellParams, gridClasses, GridEventListener,
   GridEventLookup, gridFocusCellSelector, gridRowsDataRowIdToIdLookupSelector, GRID_ACTIONS_COLUMN_TYPE,
   GRID_CHECKBOX_SELECTION_COL_DEF,
   GRID_DETAIL_PANEL_TOGGLE_FIELD, useGridApiEventHandler,
   useGridApiMethod
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import {
   GridPipeProcessor,
   GridStateInitializer,
   isNavigationKey,
   useGridRegisterPipeProcessor,
   useGridVisibleRows
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src/internals';
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridPrivateApiPremium } from '../../../models/gridApiPremium';

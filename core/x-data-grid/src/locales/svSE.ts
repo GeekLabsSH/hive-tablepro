@@ -1,4 +1,4 @@
-import { svSE as svSECore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { svSE as svSECore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

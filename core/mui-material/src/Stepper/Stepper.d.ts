@@ -1,4 +1,4 @@
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 import { PaperProps } from '../Paper';

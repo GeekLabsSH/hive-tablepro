@@ -1,4 +1,4 @@
-import { MuiPickersAdapter } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+import { MuiPickersAdapter } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import { DateRange, NonEmptyDateRange } from '../models/range';
 
 export const isRangeValid = <TDate>(

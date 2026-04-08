@@ -1,29 +1,29 @@
 import {
   SlotComponentProps,
   useSlotProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
-import Grow from "@cronoslogistics/hive-tablepro/core/mui-material/src/Grow";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
+import Grow from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Grow";
 import MuiPaper, {
   PaperProps as MuiPaperProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Paper";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Paper";
 import MuiPopper, {
   PopperPlacementType,
   PopperProps as MuiPopperProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Popper";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { TransitionProps as MuiTransitionProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/transitions";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { TransitionProps as MuiTransitionProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/transitions";
 import MuiTrapFocus, {
   TrapFocusProps as MuiTrapFocusProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/Unstable_TrapFocus";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Unstable_TrapFocus";
 import {
   unstable_compClasses as compClasses,
   unstable_ownerDocument as ownerDocument,
   unstable_useEventCallback as useEventCallback,
   unstable_useForkRef as useForkRef,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from "react";
 import { UsePickerValueActions } from "../hooks/usePicker/usePickerValue";
 import {
@@ -139,7 +139,7 @@ function clickedRootScrollbar(event: MouseEvent, doc: Document) {
 type OnClickAway = (event: MouseEvent | TouchEvent) => void;
 
 /**
- * Based on @cronoslogistics/hive-tablepro/core/mui-material/src/ClickAwayListener without the customization.
+ * Based on @GeekLabsSH/hive-tablepro/core/mui-material/src/ClickAwayListener without the customization.
  * We can probably strip away even more since children won't be portaled.
  * @param {boolean} active Only listen to clicks when the popper is opened.
  * @param {(event: MouseEvent | TouchEvent) => void} onClickAway The callback to call when clicking outside the popper.

@@ -3,7 +3,7 @@ import {
   DefaultizedProps,
   MakeOptional,
   UseFieldInternalProps
-} from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import type { DateRangeValidationError } from '../hooks/validation/useDateRangeValidation';
 import { DateRange } from './range';
 

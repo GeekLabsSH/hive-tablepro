@@ -1,8 +1,8 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import FormControlLabel from "@cronoslogistics/hive-tablepro/core/mui-material/src/FormControlLabel";
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import { switchClasses } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Switch";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import FormControlLabel from "@GeekLabsSH/hive-tablepro/core/mui-material/src/FormControlLabel";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import { switchClasses } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Switch";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { GRID_EXPERIMENTAL_ENABLED } from "../../constants/envConstants";

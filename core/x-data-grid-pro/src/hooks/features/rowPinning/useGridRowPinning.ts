@@ -1,5 +1,5 @@
-import { useGridApiMethod } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
-import { getRowIdFromRowModel, GridStateInitializer } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals';
+import { useGridApiMethod } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { getRowIdFromRowModel, GridStateInitializer } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 
 import { DataGridProProcessedProps, DataGridProProps } from '../../../models/dataGridProProps';

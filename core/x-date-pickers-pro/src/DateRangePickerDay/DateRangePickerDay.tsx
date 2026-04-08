@@ -2,13 +2,13 @@ import {
   alpha,
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
-import { useUtils } from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import { useUtils } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
 import {
   PickersDay,
   PickersDayProps,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/PickersDay";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/PickersDay";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

@@ -1,4 +1,4 @@
-import { usePreviousProps } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+import { usePreviousProps } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';
 import * as React from 'react';
 
 export interface UseBadgeParameters {

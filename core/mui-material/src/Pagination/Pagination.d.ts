@@ -1,6 +1,6 @@
-import { InternalStandardProps as StandardProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src';
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { InternalStandardProps as StandardProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { Theme } from '../styles';
 import { UsePaginationItem, UsePaginationProps } from '../usePagination/usePagination';

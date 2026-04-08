@@ -1,4 +1,4 @@
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { ExtendButtonBase, ExtendButtonBaseTypeMap } from '../ButtonBase';
 import { OverrideProps } from '../OverridableComponent';
 import { Theme } from '../styles';

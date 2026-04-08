@@ -1,4 +1,4 @@
-import { GridColDef } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
+import { GridColDef } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
 
 /**
  * Object passed as parameter in the onRowsScrollEnd callback.

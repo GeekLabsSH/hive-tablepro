@@ -4,7 +4,7 @@ import {
   unstable_ownerDocument as ownerDocument,
   unstable_useEventCallback as useEventCallback,
   unstable_useForkRef as useForkRef,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 

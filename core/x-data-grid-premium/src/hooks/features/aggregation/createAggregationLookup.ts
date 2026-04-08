@@ -3,7 +3,7 @@ import {
   gridFilteredRowsLookupSelector, GridGroupNode,
   GridLeafNode, GridRowId, gridRowTreeSelector,
   GRID_ROOT_GROUP_ID
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid-pro/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid-pro/src";
 import * as React from 'react';
 import { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
 import { GridApiPremium } from '../../../models/gridApiPremium';

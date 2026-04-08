@@ -1,7 +1,7 @@
 import {
   GridDimensions, GridEventListener, GridFeatureMode, gridFilterModelSelector, GridRenderedRowsIntervalChangeParams, GridRowEntry, gridSortModelSelector, useGridApiEventHandler, useGridApiOptionHandler, useGridSelector
-} from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
-import { getRenderableIndexes, useGridVisibleRows } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals';
+} from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
+import { getRenderableIndexes, useGridVisibleRows } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals';
 import * as React from 'react';
 import {
   DataGridProProcessedProps,

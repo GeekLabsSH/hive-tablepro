@@ -1,11 +1,11 @@
 import IconButton, {
   IconButtonProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import ListItemIcon from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemIcon";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
 import MenuItem, {
   MenuItemProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { tooltipClasses } from "../../../../mui-material/src";

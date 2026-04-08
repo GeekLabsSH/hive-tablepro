@@ -1,9 +1,9 @@
-import Fade from "@cronoslogistics/hive-tablepro/core/mui-material/src/Fade";
+import Fade from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Fade";
 import {
   styled,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { TransitionGroup } from "react-transition-group";

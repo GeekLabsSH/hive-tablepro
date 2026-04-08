@@ -2,8 +2,8 @@ import {
   styled,
   SxProps,
   Theme,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import { unstable_compClasses as compClasses } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import { unstable_compClasses as compClasses } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import * as React from "react";
 import { getDataGridUtilityClass } from "../../constants/gridClasses";

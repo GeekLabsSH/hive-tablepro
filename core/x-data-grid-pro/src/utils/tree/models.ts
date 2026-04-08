@@ -1,4 +1,4 @@
-import { GridKeyValue, GridRowId } from '@cronoslogistics/hive-tablepro/core/x-data-grid/src';
+import { GridKeyValue, GridRowId } from '@GeekLabsSH/hive-tablepro/core/x-data-grid/src';
 
 export interface RowTreeBuilderGroupingCriterion {
   field: string | null;

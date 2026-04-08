@@ -1,5 +1,5 @@
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { DistributiveOmit, OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { DistributiveOmit, OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { ExtendButtonBase, ExtendButtonBaseTypeMap } from '../ButtonBase';
 import { OverridableComponent, OverridableTypeMap, OverrideProps } from '../OverridableComponent';

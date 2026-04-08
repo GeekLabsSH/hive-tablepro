@@ -1,16 +1,16 @@
-import { SlotComponentProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src";
-import { useSlotProps } from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+import { SlotComponentProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src";
+import { useSlotProps } from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import {
   styled,
   useTheme,
   useThemeProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import Typography from "@cronoslogistics/hive-tablepro/core/mui-material/src/Typography";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import Typography from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Typography";
 import {
   unstable_compClasses as compClasses,
   unstable_useControlled as useControlled,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
-import useEventCallback from "@cronoslogistics/hive-tablepro/core/mui-utils/src/useEventCallback";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
+import useEventCallback from "@GeekLabsSH/hive-tablepro/core/mui-utils/src/useEventCallback";
 import clsx from "clsx";
 import * as React from "react";
 import { DAY_MARGIN, DAY_SIZE } from "../internals/constants/dimensions";

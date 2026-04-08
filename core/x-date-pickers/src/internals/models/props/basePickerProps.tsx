@@ -1,5 +1,5 @@
-import { Theme } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
-import { SxProps } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { Theme } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
+import { SxProps } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import * as React from "react";
 import { PickersInputComponentLocaleText } from "../../../locales/utils/pickersLocaleTextApi";
 import { UsePickerBaseProps } from "../../hooks/usePicker";

@@ -1,4 +1,4 @@
-import { unstable_useEventCallback as useEventCallback } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { unstable_useEventCallback as useEventCallback } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from 'react';
 import { GridPrivateApiCommunity } from '../../../models/api/gridApiCommunity';
 import {

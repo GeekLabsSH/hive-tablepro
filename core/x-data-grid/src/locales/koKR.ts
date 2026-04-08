@@ -1,4 +1,4 @@
-import { koKR as koKRCore } from '@cronoslogistics/hive-tablepro/core/mui-material/src/locale';
+import { koKR as koKRCore } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/locale';
 import { GridLocaleText } from '../models/api/gridLocaleTextApi';
 import { getGridLocalization, Localization } from '../utils/getGridLocalization';
 

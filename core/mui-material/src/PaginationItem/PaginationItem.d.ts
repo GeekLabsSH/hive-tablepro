@@ -1,6 +1,6 @@
-import { OverridableComponent, OverrideProps } from '@cronoslogistics/hive-tablepro/core/mui-material/src/OverridableComponent';
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+import { OverridableComponent, OverrideProps } from '@GeekLabsSH/hive-tablepro/core/mui-material/src/OverridableComponent';
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { Theme } from '../styles';
 import { UsePaginationItem } from '../usePagination/usePagination';

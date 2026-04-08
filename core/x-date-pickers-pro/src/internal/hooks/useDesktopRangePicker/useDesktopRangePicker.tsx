@@ -1,7 +1,7 @@
 import {
   resolveComponentProps,
   useSlotProps,
-} from "@cronoslogistics/hive-tablepro/core/mui-base/src/utils";
+} from "@GeekLabsSH/hive-tablepro/core/mui-base/src/utils";
 import {
   DateOrTimeView,
   executeInTheNextEventLoopTick,
@@ -12,12 +12,12 @@ import {
   uncapitalizeObjectKeys,
   usePicker,
   WrapperVariantContext,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals";
-import { LocalizationProvider } from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/LocalizationProvider";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals";
+import { LocalizationProvider } from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/LocalizationProvider";
 import {
   PickersLayout,
   PickersLayoutSlotsComponentsProps,
-} from "@cronoslogistics/hive-tablepro/core/x-date-pickers/src/PickersLayout";
+} from "@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/PickersLayout";
 import * as React from "react";
 import { BaseMultiInputFieldProps } from "../../models/fields";
 import { DateRange, RangePosition } from "../../models/range";

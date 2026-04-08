@@ -4,13 +4,13 @@ import {
   AutocompleteCloseReason,
   AutocompleteInputChangeReason,
   createFilterOptions, useAutocomplete, UseAutocompleteProps
-} from '@cronoslogistics/hive-tablepro/core/mui-base/src';
-import { IconButtonProps, InternalStandardProps as StandardProps, Theme } from '@cronoslogistics/hive-tablepro/core/mui-material/src';
-import { ChipProps, ChipTypeMap } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Chip";
-import { PaperProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Paper";
-import { PopperProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Popper";
-import { SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
-import { OverridableStringUnion } from '@cronoslogistics/hive-tablepro/core/mui-types';
+} from '@GeekLabsSH/hive-tablepro/core/mui-base/src';
+import { IconButtonProps, InternalStandardProps as StandardProps, Theme } from '@GeekLabsSH/hive-tablepro/core/mui-material/src';
+import { ChipProps, ChipTypeMap } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Chip";
+import { PaperProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Paper";
+import { PopperProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Popper";
+import { SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
+import { OverridableStringUnion } from '@GeekLabsSH/hive-tablepro/core/mui-types';
 import * as React from 'react';
 import { AutocompleteClasses } from './autocompleteClasses';
 

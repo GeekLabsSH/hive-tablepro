@@ -1,6 +1,6 @@
-import ListItemIcon from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemIcon";
-import ListItemText from "@cronoslogistics/hive-tablepro/core/mui-material/src/ListItemText";
-import MenuItem from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
+import ListItemIcon from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemIcon";
+import ListItemText from "@GeekLabsSH/hive-tablepro/core/mui-material/src/ListItemText";
+import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridSortModelSelector } from "../../../../hooks/features/sorting/gridSortingSelector";

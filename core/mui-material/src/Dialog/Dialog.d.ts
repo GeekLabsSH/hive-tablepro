@@ -1,4 +1,4 @@
-import { Breakpoint, SxProps } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { Breakpoint, SxProps } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import * as React from 'react';
 import { InternalStandardProps as StandardProps, Theme } from '..';
 import { ModalProps } from '../Modal';

@@ -1,14 +1,14 @@
-import { styled } from "@cronoslogistics/hive-tablepro/core/mui-material/src";
-import FormControl from "@cronoslogistics/hive-tablepro/core/mui-material/src/FormControl";
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import InputLabel from "@cronoslogistics/hive-tablepro/core/mui-material/src/InputLabel";
-import MenuItem from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuItem";
-import { SelectChangeEvent } from "@cronoslogistics/hive-tablepro/core/mui-material/src/Select";
+import { styled } from "@GeekLabsSH/hive-tablepro/core/mui-material/src";
+import FormControl from "@GeekLabsSH/hive-tablepro/core/mui-material/src/FormControl";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import InputLabel from "@GeekLabsSH/hive-tablepro/core/mui-material/src/InputLabel";
+import MenuItem from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuItem";
+import { SelectChangeEvent } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Select";
 import {
   unstable_capitalize as capitalize,
   unstable_compClasses as compClasses,
   unstable_useId as useId,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

@@ -1,4 +1,4 @@
-import { unstable_ownerDocument as ownerDocument } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { unstable_ownerDocument as ownerDocument } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from 'react';
 import { GridPrivateApiCommunity } from '../../../models/api/gridApiCommunity';
 import { GridFocusApi, GridFocusPrivateApi } from '../../../models/api/gridFocusApi';

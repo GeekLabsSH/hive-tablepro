@@ -1,7 +1,7 @@
 import {
   GridColDef,
   GRID_STRING_COL_DEF,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import { GridDetailPanelToggleCell } from "../../../components/GridDetailPanelToggleCell";
 import { GridApiPro } from "../../../models/gridApiPro";
 import { gridDetailPanelExpandedRowIdsSelector } from "./gridDetailPanelSelector";

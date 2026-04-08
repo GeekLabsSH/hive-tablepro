@@ -1,4 +1,4 @@
-import { BreakpointsOptions, ShapeOptions, SpacingOptions } from '@cronoslogistics/hive-tablepro/core/mui-system/src';
+import { BreakpointsOptions, ShapeOptions, SpacingOptions } from '@GeekLabsSH/hive-tablepro/core/mui-system/src';
 import { MixinsOptions } from './createMixins';
 import { Palette, PaletteOptions } from './createPalette';
 import { Theme } from './createTheme';

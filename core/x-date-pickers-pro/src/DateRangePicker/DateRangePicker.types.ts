@@ -1,4 +1,4 @@
-import { UncapitalizeObjectKeys } from '@cronoslogistics/hive-tablepro/core/x-date-pickers/src/internals';
+import { UncapitalizeObjectKeys } from '@GeekLabsSH/hive-tablepro/core/x-date-pickers/src/internals';
 import {
   DesktopDateRangePickerProps,
   DesktopDateRangePickerSlotsComponent,

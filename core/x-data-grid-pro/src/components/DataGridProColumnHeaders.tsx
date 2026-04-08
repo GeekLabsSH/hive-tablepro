@@ -1,11 +1,11 @@
 import {
   alpha,
   styled,
-} from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+} from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 import {
   unstable_compClasses as compClasses,
   unstable_useEventCallback as useEventCallback,
-} from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+} from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import {
   GridColumnHeaderSeparatorSides,
   getDataGridUtilityClass,
@@ -13,12 +13,12 @@ import {
   gridVisibleColumnFieldsSelector,
   useGridApiEventHandler,
   useGridSelector,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import {
   GridColumnHeaders,
   GridColumnHeadersInner,
   useGridColumnHeaders,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import {
   GridPinnedColumns,

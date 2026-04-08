@@ -88,3 +88,16 @@ O mecanismo é o mesmo: publicar `@scope/pacote`, configurar `@scope:registry=..
 | Imagem Docker sem enviar a pasta gigante `hive-tablepro/` no contexto | `vendor/geeklabssh-hive-tablepro-1.0.0.tgz` + `.dockerignore` em `hive-tablepro/` |
 | Consumo “só npm” a partir de GitHub/Bit privado | Versão semântica no `package.json`, `.npmrc` com token, `npm install` / `npm ci` |
 | Não expor código no npm público | Registry privado + pacote com acesso restrito à organização; não publicar em `registry.npmjs.org` sem controlo |
+
+---
+
+## CI no monorepo (GitHub Actions)
+
+No repositório **protonerp** existe o workflow `.github/workflows/publish-hive-tablepro.yml`:
+
+1. **Manual:** *Actions* → *Publish hive-tablepro* → *Run workflow*. Por defeito **dry run** (`npm pack` + validações). Desmarque *dry_run* para executar `npm publish` no GitHub Packages (usa `GITHUB_TOKEN` com `packages: write`).
+2. **Por tag:** faça bump da versão em `hive-tablepro/package.json`, commit, depois crie e envie uma tag `hive-tablepro-v1.0.1` (prefixo obrigatório). O workflow publica automaticamente.
+
+**Nota:** Se o fork do pacote viver noutro repositório (ex.: só `GeekLabsSH/hive-tablepro`), copie o mesmo workflow para a raiz desse repo e ajuste `working-directory` para `.`.
+
+Antes de publicar, confirme que o **scope** `@geeklabssh` corresponde ao **owner** do repositório no GitHub (utilizador ou organização, em minúsculas).

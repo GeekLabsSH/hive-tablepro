@@ -1,6 +1,6 @@
-import BadgeUnstyled from "@cronoslogistics/hive-tablepro/core/mui-base/src/BadgeUnstyled";
-import compClasses from "@cronoslogistics/hive-tablepro/core/mui-base/src/compClasses";
-import { usePreviousProps } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import BadgeUnstyled from "@GeekLabsSH/hive-tablepro/core/mui-base/src/BadgeUnstyled";
+import compClasses from "@GeekLabsSH/hive-tablepro/core/mui-base/src/compClasses";
+import { usePreviousProps } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import * as React from "react";

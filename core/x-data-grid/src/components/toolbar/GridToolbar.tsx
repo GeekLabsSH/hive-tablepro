@@ -1,4 +1,4 @@
-import Box from "@cronoslogistics/hive-tablepro/core/mui-material/src/Box";
+import Box from "@GeekLabsSH/hive-tablepro/core/mui-material/src/Box";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { useGridRootProps } from "../../hooks/utils/useGridRootProps";

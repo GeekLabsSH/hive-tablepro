@@ -1,6 +1,6 @@
-import IconButton from "@cronoslogistics/hive-tablepro/core/mui-material/src/IconButton";
-import MenuList from "@cronoslogistics/hive-tablepro/core/mui-material/src/MenuList";
-import { unstable_useId as useId } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import IconButton from "@GeekLabsSH/hive-tablepro/core/mui-material/src/IconButton";
+import MenuList from "@GeekLabsSH/hive-tablepro/core/mui-material/src/MenuList";
+import { unstable_useId as useId } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { gridClasses } from "../../constants/gridClasses";

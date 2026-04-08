@@ -1,1 +1,1 @@
-export { unstable_generateUtilityClasses as default } from '@cronoslogistics/hive-tablepro/core/mui-utils/src';
+export { unstable_generateUtilityClasses as default } from '@GeekLabsSH/hive-tablepro/core/mui-utils/src';

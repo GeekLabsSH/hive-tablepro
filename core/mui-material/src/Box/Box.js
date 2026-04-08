@@ -1,4 +1,4 @@
-import { createBox } from "@cronoslogistics/hive-tablepro/core/mui-system/src";
+import { createBox } from "@GeekLabsSH/hive-tablepro/core/mui-system/src";
 import PropTypes from "prop-types";
 import { unstable_ClassNameGenerator as ClassNameGenerator } from "../className";
 import { createTheme } from "../styles";

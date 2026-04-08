@@ -6,14 +6,14 @@ import {
   GridRowId,
   GridRowParams,
   GridValidRowModel,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src";
 import {
   DataGridPropsWithComplexDefaultValueAfterProcessing,
   DataGridPropsWithComplexDefaultValueBeforeProcessing,
   DataGridPropsWithDefaultValues,
   DataGridPropsWithoutDefaultValue,
   GridExperimentalFeatures,
-} from "@cronoslogistics/hive-tablepro/core/x-data-grid/src/internals";
+} from "@GeekLabsSH/hive-tablepro/core/x-data-grid/src/internals";
 import * as React from "react";
 import type { GridPinnedColumns } from "../hooks/features/columnPinning";
 import type { GridPinnedRowsProp } from "../hooks/features/rowPinning";

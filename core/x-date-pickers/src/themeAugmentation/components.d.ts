@@ -1,4 +1,4 @@
-import { ComponentsOverrides, ComponentsProps } from "@cronoslogistics/hive-tablepro/core/mui-material/src/styles";
+import { ComponentsOverrides, ComponentsProps } from "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles";
 ;
 
 export interface PickerComponents<Theme = unknown> {
@@ -166,6 +166,6 @@ export interface PickerComponents<Theme = unknown> {
   };
 }
 
-declare module "@cronoslogistics/hive-tablepro/core/mui-material/src/styles"; {
+declare module "@GeekLabsSH/hive-tablepro/core/mui-material/src/styles"; {
   interface Components<Theme = unknown> extends PickerComponents<Theme> { }
 }

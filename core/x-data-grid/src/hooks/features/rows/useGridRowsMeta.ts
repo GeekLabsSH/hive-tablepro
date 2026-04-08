@@ -1,4 +1,4 @@
-import { unstable_capitalize as capitalize, unstable_debounce as debounce } from "@cronoslogistics/hive-tablepro/core/mui-utils/src";
+import { unstable_capitalize as capitalize, unstable_debounce as debounce } from "@GeekLabsSH/hive-tablepro/core/mui-utils/src";
 import * as React from 'react';
 import { GridPrivateApiCommunity } from '../../../models/api/gridApiCommunity';
 import { GridRowsMetaApi, GridRowsMetaPrivateApi } from '../../../models/api/gridRowsMetaApi';
