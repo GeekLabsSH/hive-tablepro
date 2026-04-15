@@ -1,0 +1,178 @@
+{
+  "generatedAt": "2026-04-13T13:16:06.225Z",
+  "protonSrc": "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src",
+  "protonSrcExists": true,
+  "filesImportingPackage": 278,
+  "importFileSample": [
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\models\\CommonTypes.ts",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\adminsetting\\monitoring.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\launch\\abroad\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\launch\\agent\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\pay\\abroad\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\pay\\agent\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\validate\\abroad\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\validate\\agent\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\modules\\financial\\international\\validate\\operationwithoutcostagent\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\pages\\public\\operation\\publicModules\\publicContainer.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\pages\\public\\operation\\publicModules\\publicNcm.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\pages\\public\\operation\\publicModules\\publicVolume.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\crm\\contact.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\crm\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\crm\\schedule.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\detention\\detentionsubmodule\\purchase.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\detention\\detentionsubmodule\\sale.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\detention\\index.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\closed.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\account.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\additionalcomponents\\importContacts.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\additionalcomponents\\listSelectOperation.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\contacts.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\costabroad.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\costagent.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\exchange.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\tablecost.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\totalizer.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\costsubmodules\\transaction.tsx",
+    "C:\\Users\\Udo\\Documents\\Hive\\protonerp\\src\\front-end\\ProtonWeb\\src\\submodules\\financial\\international\\modules\\file.tsx"
+  ],
+  "symbolsImported": {
+    "GridActionsCellItem": 221,
+    "GridRowModesModel": 217,
+    "GridRowModes": 137,
+    "GridRowModel": 136,
+    "rowModeEntryIsEdit": 134,
+    "GridPreProcessEditCellProps": 125,
+    "GridColDef": 119,
+    "GridValidRowModel": 114,
+    "GridRowSelectionModel": 46,
+    "GRID_CHECKBOX_SELECTION_COL_DEF": 27,
+    "GridRowId": 19,
+    "GridToolbar": 15,
+    "GridRowParams": 8,
+    "GridToolbarContainer": 6,
+    "GridEditInputCell": 2,
+    "GridCellParams": 2,
+    "GridSortItem": 1,
+    "gridStringOrNumberComparator": 1,
+    "GridTreeNode": 1,
+    "DataGridPremium": 1,
+    "DataGridPro": 1,
+    "GridSortModel": 1,
+    "GridToolbarColumnsButton": 1,
+    "GridToolbarDensitySelector": 1,
+    "GridToolbarExport": 1,
+    "GridToolbarFilterButton": 1,
+    "GridToolbarQuickFilter": 1,
+    "useGridRootProps": 1
+  },
+  "patternHits": {
+    "getActions": {
+      "files": 220,
+      "matches": 221
+    },
+    "type: \"actions\"": {
+      "files": 220,
+      "matches": 221
+    },
+    "editMode": {
+      "files": 196,
+      "matches": 202
+    },
+    "processRowUpdate": {
+      "files": 142,
+      "matches": 163
+    },
+    "rowModesModel": {
+      "files": 216,
+      "matches": 852
+    },
+    "checkboxSelection": {
+      "files": 20,
+      "matches": 22
+    },
+    "rowSelectionModel": {
+      "files": 59,
+      "matches": 219
+    },
+    "slots:": {
+      "files": 2,
+      "matches": 2
+    },
+    "components:": {
+      "files": 182,
+      "matches": 188
+    },
+    "GridToolbar": {
+      "files": 21,
+      "matches": 55
+    },
+    "useGridRootProps": {
+      "files": 1,
+      "matches": 2
+    },
+    "useGridApiRef": {
+      "files": 0,
+      "matches": 0
+    },
+    "apiRef": {
+      "files": 0,
+      "matches": 0
+    },
+    "valueGetter": {
+      "files": 142,
+      "matches": 488
+    },
+    "valueFormatter": {
+      "files": 114,
+      "matches": 497
+    },
+    "singleSelect": {
+      "files": 195,
+      "matches": 839
+    },
+    "renderCell": {
+      "files": 29,
+      "matches": 31
+    },
+    "renderEditCell": {
+      "files": 2,
+      "matches": 2
+    },
+    "pinnedColumns": {
+      "files": 83,
+      "matches": 171
+    },
+    "sortModel": {
+      "files": 18,
+      "matches": 18
+    },
+    "filterModel": {
+      "files": 0,
+      "matches": 0
+    },
+    "paginationMode": {
+      "files": 210,
+      "matches": 216
+    },
+    "getRowClassName": {
+      "files": 85,
+      "matches": 90
+    },
+    "isCellEditable": {
+      "files": 7,
+      "matches": 10
+    },
+    "rowModeEntryIsEdit": {
+      "files": 134,
+      "matches": 274
+    },
+    "StyledDataGridPro": {
+      "files": 275,
+      "matches": 541
+    },
+    "@geeklabssh/hive-tablepro/table": {
+      "files": 0,
+      "matches": 0
+    }
+  }
+}

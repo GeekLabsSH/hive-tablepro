@@ -1,45 +1,121 @@
-import { GridApiCommunity } from './models/api/gridApiCommunity';
-import { GridInitialStateCommunity, GridStateCommunity } from './models/gridStateCommunity';
+/** Compatibilidade com a API pública do MUI X Data Grid (sem dependência MUI). */
 
-export * from './colDef';
-export * from './components';
-/**
- * Reexportable components.
- */
+export { isDataCellInteractiveTarget } from "./isDataCellInteractiveTarget";
+export { createGridApi } from "./api";
+export { DataGrid, DataGridPro, DataGridPremium } from "./DataGrid";
+export { hiveTableproObserve } from "./observability";
+export type { HiveTableproObserveEntry } from "./observability";
+export { GridErrorBoundary } from "./GridErrorBoundary";
+export type { GridErrorBoundaryFallbackRender, GridErrorBoundaryProps } from "./GridErrorBoundary";
+export { GridFilterPanel } from "./GridFilterPanel";
+export { GridColumnsPanel } from "./GridColumnsPanel";
 export {
-  GridColumnMenu,
-  GRID_COLUMN_MENU_COMPONENTS,
-  GRID_COLUMN_MENU_COMPONENTS_PROPS
-} from './components/reexportable';
-export type { GridToolbarExportProps } from './components/toolbar/GridToolbarExport';
-export * from './constants';
-export * from './context';
-export * from './DataGrid';
-export * from './hooks';
-export { useGridApiContext } from './hooks/utils/useGridApiContext';
-export { useGridApiRef } from './hooks/utils/useGridApiRef';
-export { useGridRootProps } from './hooks/utils/useGridRootProps';
-export * from './locales';
-export * from './models';
-export type { GridExportExtension, GridExportFormat } from './models/gridExport';
-export type { DataGridProps, GridExperimentalFeatures } from './models/props/DataGridProps';
-export * from './utils';
+  GRID_DENSITY_DEFAULTS,
+  resolveDensityDimensions
+} from "./gridDensityDefaults";
+export type { GridDensityDimensionsProp, GridDensityResolved } from "./gridDensityDefaults";
+export { useGridApiRef } from "./hooks/useGridApiRef";
+export {
+  GRID_PREFERENCES_STORAGE_VERSION,
+  mergePersistedColumnOrder,
+  mergePersistedColumnSizing,
+  parsePersistedGridPreferences,
+  pickPersistableColumnSizing,
+  readGridPreferencesFromStorage,
+  stringifyPersistedGridPreferences,
+  writeGridPreferencesToStorage
+} from "./persistGridPreferences";
+export type { PersistedGridPreferences } from "./persistGridPreferences";
 
+export { GRID_CHECKBOX_SELECTION_COL_DEF, GRID_CHECKBOX_SELECTION_FIELD } from "./constants";
+export { gridStringOrNumberComparator } from "./comparators";
+export { GridEditInputCell, GridActionsCellItem } from "./GridCells";
+export type { GridActionsCellItemProps } from "./GridCells";
+export {
+  GridToolbar,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport,
+  GridToolbarDensitySelector,
+  GridToolbarQuickFilter,
+  GridToolbarFilterColumnsDensityRow
+} from "./gridToolbar";
+export type { GridToolbarProps, GridToolbarQuickFilterProps } from "./gridToolbar";
+export { GridDefaultRowEditActions } from "./GridRowEditActions";
+export { GridRootProvider, useGridApiContext, useGridRootProps, useGridRootContext } from "./GridRootContext";
+export type { GridDensity, GridEditToolbarCompatProps, GridRootContextValue } from "./GridRootContext";
 
+export type {
+  GridAggregationModel,
+  GridApiCommunity,
+  GridBuiltInAggregation,
+  GridCellParams,
+  GridColDef,
+  GridColumnHeaderParams,
+  GridColumnOrderChangeParams,
+  GridColumnResizeParams,
+  GridColumnVisibilityModel,
+  GridCsvExportOptions,
+  GridDetailPanelParams,
+  GridExcelExportOptions,
+  GridFilterItem,
+  GridFilterModel,
+  GridFilterOperator,
+  GridGetActionsParams,
+  GridRowModeEntry,
+  GridLocaleText,
+  GridPaginationMeta,
+  GridPaginationModel,
+  GridPinnedColumns,
+  GridPrintExportOptions,
+  GridRenderCellParams,
+  GridRenderEditCellParams,
+  GridRenderHeaderParams,
+  GridRow,
+  GridRowEditStopParams,
+  GridRowEditStopReason,
+  GridRowGroupingModel,
+  GridRowId,
+  GridRowModel,
+  GridRowModesModel,
+  GridRowClassNameParams,
+  GridRowParams,
+  GridRowSelectionModel,
+  GridRowTransaction,
+  GridRowUpdate,
+  GridScrollPosition,
+  GridScrollToIndexesOptions,
+  GridSortModel,
+  GridStateSnapshot,
+  GridSubscriptionEvent,
+  GridTreeNode,
+  GridValidRowModel,
+  GridValueFormatterParams,
+  GridValueGetterParams,
+  GridValueOptionsList,
+  GridValueOptionsParams,
+  GridEditCellProps,
+  GridPreProcessEditCellProps,
+  GridSortItem,
+  GridRowMode
+} from "./types";
 
+export {
+  GridRowEditStopReasons,
+  GridRowModes,
+  resolveRowModeFromEntry,
+  rowModeEntryIsEdit
+} from "./types";
 
-
-/**
- * The full grid API.
- */
-export type GridApi = GridApiCommunity;
-
-/**
- * The state of `DataGrid`.
- */
-export type GridState = GridStateCommunity;
-
-/**
- * The initial state of `DataGrid`.
- */
-export type GridInitialState = GridInitialStateCommunity;
+export type {
+  DataGridProps,
+  DataGridRowPresentation,
+  GridFilterPanelSlotProps,
+  GridFooterSlotProps,
+  GridOverlaySlotComponent,
+  GridPaginationSlotProps,
+  GridRowEditActionsSlotProps,
+  GridSlotProps,
+  GridSlots
+} from "./dataGridProps";

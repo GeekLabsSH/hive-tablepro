@@ -1,103 +1,195 @@
 # @geeklabssh/hive-tablepro
 
-Pacote privado com o fork de **MUI Material**, **MUI System** e **MUI X Data Grid** (Community / Pro / Premium) usado pela aplicação ProtonWeb.
+Pacote de **tabelas e UI** para o ProtonWeb, versão **2.x**: **Tailwind CSS**, padrão **shadcn/ui** (componentes com **Radix UI**), **TanStack Table** e **TanStack Virtual**. **Ícones:** [@heroicons/react](https://heroicons.com) (outline/solid). **Sem MUI / Emotion.**
 
-## Consumo no ProtonWeb hoje (Docker mais leve)
+## Consumo no ProtonWeb
 
-O front instala o pacote a partir do **mesmo artefacto** que usarias no registry privado: um ficheiro **`vendor/geeklabssh-hive-tablepro-1.0.0.tgz`** gerado com `npm pack`.
+### Dependências no app
 
-Código-fonte publicável: https://github.com/GeekLabsSH/hive-tablepro
+- `tailwindcss` (peer, ^3.4) — o app já deve usar Tailwind 3.
+- `react` / `react-dom` 18.
 
-- Em `package.json` do ProtonWeb: `"@geeklabssh/hive-tablepro": "file:./vendor/geeklabssh-hive-tablepro-1.0.0.tgz"`.
-- Imports na app: `@geeklabssh/hive-tablepro/core/...`.
-- Next.js: `transpilePackages: ['@geeklabssh/hive-tablepro']` em `next.config.js`.
-- O **contexto Docker** ignora a pasta `hive-tablepro/` (muito maior) via `.dockerignore` na raiz do repositório; a imagem só precisa de `package.json`, `package-lock.json` e `vendor/*.tgz`.
+### Tema (shadcn default / slate)
 
-### Fonte local vs pacote instalado (`HIVE_TABLEPRO_SOURCE`)
+O ficheiro `styles.css` do pacote define o **tema padrão do shadcn** (`components.json`: `style: default`, `baseColor: slate`, `cssVariables: true`): variáveis HSL para `background`, `foreground`, `primary`, `muted`, `chart-1`…`chart-5`, `sidebar-*`, modo `.dark`, e `font-feature-settings` no `body` como no template oficial.
 
-Em desenvolvimento no monorepo podes apontar o Next.js para a **pasta** `ProtonWeb/hive-tablepro/` (código-fonte do fork) em vez do pacote descompactado em `node_modules`:
+Para **fontes** (ex. Geist no Next.js), defina `--font-sans` / `--font-mono` no layout da aplicação; o `tailwind.config` do pacote já referencia essas variáveis.
 
-| Valor | Comportamento |
-|-------|----------------|
-| *(omitido)* ou `npm` | Usa `@geeklabssh/hive-tablepro` resolvido pelo npm (`file:./vendor/...tgz` ou versão publicada). |
-| `local` | Alias Webpack para `./hive-tablepro` — alterações no fork refletem-se sem `npm run vendor:tablepro` a cada passo. |
+### Tema da DataGrid (ProtonWeb, `#153`)
 
-Definição típica em `ProtonWeb/.env.local`:
+Além do shadcn, o pacote expõe variáveis **`--hive-grid-*`** em `src/styles/hive-data-grid-theme.css` (importado por `styles.css`). Por defeito apontam para os tokens shadcn (`--border`, `--muted`, …). A raiz da `DataGrid` usa a classe **`hive-data-grid`**; a UI da grelha usa utilitários Tailwind **`hiveGrid`** (ex. `border-hiveGrid-chromeBorder`, `bg-hiveGrid-headerCell`), definidos no `tailwind.config.ts` do pacote.
 
-```bash
-HIVE_TABLEPRO_SOURCE=local
+No **ProtonWeb**, estenda o tema só da grelha sobrescrevendo variáveis depois do import do pacote, por exemplo:
+
+```css
+:root {
+  --hive-grid-chrome-border: hsl(220 14% 80%);
+  --hive-grid-header-cell-bg: hsl(220 14% 94%);
+}
 ```
 
-No PowerShell (sessão atual): `$env:HIVE_TABLEPRO_SOURCE='local'; npm run dev`
+Inclua **`./node_modules/@geeklabssh/hive-tablepro/core/**/*.{ts,tsx}`** (ou o caminho do fork) no `content` do Tailwind da app para gerar as classes `*-hiveGrid-*`.
 
-Para validar o fluxo **igual à CI/produção** (só tarball ou registry), remove a variável ou usa `HIVE_TABLEPRO_SOURCE=npm`.
+### CSS e Tailwind (importante)
 
-### Atualizar o tarball depois de mudar o fork
+1. Importe os tokens do pacote no layout ou entrada global do Next.js:
 
-Na pasta `ProtonWeb`:
+   ```tsx
+   import "@geeklabssh/hive-tablepro/styles.css";
+   ```
 
-```bash
-npm run vendor:tablepro
-npm install
+2. No `tailwind.config` do **ProtonWeb**, inclua o código fonte do pacote no `content` para as classes serem geradas (ajuste o caminho conforme `file:` / monorepo):
+
+   ```js
+   content: [
+     "./src/**/*.{js,ts,jsx,tsx}",
+     "./node_modules/@geeklabssh/hive-tablepro/src/**/*.{js,ts,jsx,tsx}"
+   ];
+   ```
+
+   Se usar alias `HIVE_TABLEPRO_SOURCE=local` para a pasta do fork, use o caminho relativo a essa pasta em vez de `node_modules/...`.
+
+### Migração desde o fork MUI (mesma API de dados)
+
+Para **não alterar** o código do ProtonWeb além do import do pacote, use a grelha compatível com **MUI X Data Grid**:
+
+```tsx
+import {
+  DataGrid,
+  useGridApiRef
+} from "@geeklabssh/hive-tablepro/core/x-data-grid/src";
+// ou: import { DataGrid, useGridApiRef } from "@geeklabssh/hive-tablepro";
+
+const columns = [
+  { field: "id", headerName: "ID", width: 120 },
+  { field: "nome", headerName: "Nome", flex: 1 }
+];
+
+export function Exemplo() {
+  const apiRef = useGridApiRef();
+  return (
+    <DataGrid
+      rows={[]}
+      columns={columns}
+      checkboxSelection
+      apiRef={apiRef}
+      paginationModel={{ page: 0, pageSize: 20 }}
+    />
+  );
+}
 ```
 
-Isto recria `vendor/geeklabssh-hive-tablepro-1.0.0.tgz` e, se o conteúdo mudar, atualiza o `integrity` no `package-lock.json`. Faça commit do `.tgz` e do lock quando publicar uma nova versão interna.
+Para novos ecrãs pode continuar a usar `HiveDataTable` com `ColumnDef` (TanStack) se preferir.
+
+### Exemplo `HiveDataTable` (TanStack direto)
+
+```tsx
+import { HiveDataTable } from "@geeklabssh/hive-tablepro";
+import type { ColumnDef } from "@tanstack/react-table";
+
+type Row = { id: string; nome: string };
+
+const columns: ColumnDef<Row>[] = [
+  { accessorKey: "id", header: "ID" },
+  { accessorKey: "nome", header: "Nome" }
+];
+
+export function Exemplo() {
+  return (
+    <HiveDataTable
+      data={[]}
+      columns={columns}
+      enableRowSelection
+      showExportMenu
+    />
+  );
+}
+```
+
+### Exports principais
+
+| Caminho | Conteúdo |
+|--------|-----------|
+| `@geeklabssh/hive-tablepro` | `DataGrid`, `useGridApiRef`, `GridActionsCellItem`, `GridEditInputCell`, `HiveDataTable`, `HiveDatePicker`, exportações, `cn`, componentes UI |
+| `@geeklabssh/hive-tablepro/core/x-data-grid/src` | API compatível com MUI X (`DataGrid`, `GridColDef`, `rows`/`columns`, …) |
+| `@geeklabssh/hive-tablepro/core/x-data-grid-premium/src` | Alias MUI Premium: `DataGridPremium`, `GridActionsCellItem` (reexporta o núcleo). Requer pacote ≥ versão que declara este subpath no `exports`; caso contrário importe a partir da raiz `@geeklabssh/hive-tablepro`. |
+| `@geeklabssh/hive-tablepro/core/x-data-grid-pro/src` | Alias MUI Pro: `DataGridPro` |
+| `@geeklabssh/hive-tablepro/styles.css` | Variáveis CSS e base Tailwind do tema |
+| `@geeklabssh/hive-tablepro/table` | Apenas `HiveDataTable` (TanStack `ColumnDef`) |
+| `@geeklabssh/hive-tablepro/export` | Apenas exportações |
+| `@geeklabssh/hive-tablepro/date-picker` | Apenas date picker |
+
+### Testes
+
+```bash
+npm test
+```
+
+Testes unitários (**Vitest**) cobrem utilitários centrais da grelha em `core/x-data-grid/src/*.test.ts` (por exemplo `selectionUtils`, `filterFns`, `persistGridPreferences`, `adapter`, `createGridApi`). Use `npm run test:watch` durante desenvolvimento.
+
+Testes **e2e** (Playwright) sob `e2e/` — requerem browsers instalados (`npx playwright install`). Arranque automático do playground via `npm run test:e2e`.
+
+### DataGrid — roadmap e paridade MUI
+
+A lista de funcionalidades, estado por item e notas de implementação está em [`docs/DATA_GRID_BACKLOG.md`](./docs/DATA_GRID_BACKLOG.md).
+
+Props úteis: `preferencesKey` (+ `preferencesStorage`) para gravar sort/filtros/paginação/visibilidade/pin, **`columnOrder`**, **`columnSizing`** (larguras) e (se o agrupamento não for controlado por prop) **`rowGroupingModel`** em `localStorage`; `defaultPreferences` para valores iniciais quando o storage está vazio ou sem um campo; `mergePersistedColumnOrder` / `mergePersistedColumnSizing` / `pickPersistableColumnSizing`; `columnVirtualization` para muitas colunas (sem pinning); `getEstimatedRowHeight` / `enableVariableRowHeight` com virtualização de linhas.
+
+### API imperativa (`apiRef`)
+
+Obtenha a ref com `useGridApiRef()`, passe `apiRef` à `DataGrid` e use métodos alinhados ao MUI X: ordenação/filtros/paginação (`setSortModel`, `getFilterModel`, …), scroll (`scrollToIndexes`, `scrollToRow`), exportação (`exportDataAsCsv`, `exportDataAsExcel`, `exportDataAsPrint`), edição (`startCellEditMode`, `stopCellEditMode`, `getCellMode`, `setEditCellValue`), `subscribeEvent('stateChange' | 'rowSelectionChange' | 'filterChange' | 'sortChange' | 'paginationChange' | 'columnVisibilityChange' | 'pinnedColumnsChange' | 'columnOrderChange' | 'rowGroupingModelChange' | 'columnSizingChange' | 'densityChange' | 'rowModesModelChange', …)`. Detalhes dos tipos: `GridApiCommunity` em `core/x-data-grid/src/types.ts`.
+
+`GridErrorBoundary` envolve a grelha (ou um ramo próximo) para capturar erros de **render** e mostrar um fallback com «Tentar novamente»; opcional `onError` para telemetria e `fallback` customizado.
+
+Há uma região **`aria-live="polite"`** (classe `sr-only`) que anuncia mudanças de **ordenação** e **filtros**; personalize com `localeText.gridAnnounce*` ou desative com **`disableAccessibilityAnnouncements`**.
+
+Utilitário exportado: `isDataCellInteractiveTarget` — útil se replicar lógica de clique em grelhas custom.
+
+### CI
+
+Neste repositório: workflow GitHub Actions `.github/workflows/ci.yml` (typecheck, `check-imports`, Vitest). E2e Playwright não entram na CI por defeito (instalação de browsers); correr localmente com `npm run test:e2e`.
+
+### Validar tema (claro / escuro)
+
+1. Importar `@geeklabssh/hive-tablepro/styles.css` no app.
+2. No playground deste repo: `npm run dev` e o botão «Tema escuro» / «Tema claro» (classe `dark` no `documentElement`).
+3. Confirmar que grelha, filtros e diálogos usam tokens (`background`, `border`, `muted`, etc.) sem cinzentos hardcoded órfãos.
+
+### Qualidade manual (playground)
+
+Para validar a UI localmente, use `npm run dev` (playground Vite neste repositório). Storybook: `npm run storybook` (história mínima em `stories/DataGrid.stories.tsx`; build estático `npm run build-storybook`).
 
 ---
 
-## Publicar em registry npm **privado** (GitHub Packages)
+## Inventário no repositório ProtonWeb (antes de migrar ecrãs)
 
-O fluxo oficial é o mesmo do npm: publicar o pacote com scope e instalar com `npm install` + `.npmrc` com token.
+Com o código do ProtonWeb na máquina, na **raiz do ProtonWeb**:
 
-1. **Scope e GitHub**  
-   No GitHub Packages o scope tem de estar em **minúsculas** e alinhado com a organização ou utilizador que detém o pacote. Ex.: se o teu GitHub for `minhaempresa`, o nome do pacote deverá ser algo como `@minhaempresa/tablepro` (podes renomear em `hive-tablepro/package.json` e ajustar imports com um codemod, se saíres de `@geeklabssh/hive-tablepro`).
+```bash
+# listar ficheiros que importam o pacote
+rg "@geeklabssh/hive-tablepro" --glob "*.{ts,tsx}" -l
+```
 
-2. **`private` e `npm publish`**  
-   O npm **não publica** pacotes com `"private": true`. Para publicar no GitHub Packages, remove temporariamente `"private": true` **ou** mantém apenas o fluxo `npm pack` + upload manual ao registry, conforme a tua política. O `publishConfig.registry` já aponta para `https://npm.pkg.github.com`.
-
-3. **`.npmrc` no ProtonWeb** (local ou CI; **nunca** commitar o token)  
-   Vê `ProtonWeb/.npmrc.example`. Linha típica:
-
-   ```ini
-   @geeklabssh:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
-   ```
-
-4. **Trocar a dependência no ProtonWeb**  
-   Depois da primeira publicação bem-sucedida:
-
-   ```json
-   "@geeklabssh/hive-tablepro": "1.0.0"
-   ```
-
-   Correr `npm install`, commit do `package-lock.json`, e **remover** a cópia em `vendor/` se já não precisares do modo tarball.
-
-5. **Docker só com registry**  
-   Deixa de copiar `vendor/` no `Dockerfile`. Antes de `npm ci`, cria um `.npmrc` com o token (idealmente [BuildKit secret](https://docs.docker.com/build/building/secrets/), não `ARG` em imagens partilhadas), executa `npm ci` e apaga o `.npmrc`.
-
-### Bit (Bit.dev) ou outros registos privados
-
-O mecanismo é o mesmo: publicar `@scope/pacote`, configurar `@scope:registry=...` no `.npmrc` e autenticar com o token que a plataforma indicar. O artefacto continua a ser um tarball npm compatível com `npm install`.
+Anotar por ecrã: DataGrid / DataGridPro / Premium, `GridColDef`, `useGridApiRef`, date pickers MUI X, `ThemeProvider`, etc., para definir paridade com `HiveDataTable` e `HiveDatePicker`.
 
 ---
 
-## Resumo
+## Migração da v1 (MUI) para v2
 
-| Objetivo | O que usar |
-|----------|------------|
-| Imagem Docker sem enviar a pasta gigante `hive-tablepro/` no contexto | `vendor/geeklabssh-hive-tablepro-1.0.0.tgz` + `.dockerignore` em `hive-tablepro/` |
-| Consumo “só npm” a partir de GitHub/Bit privado | Versão semântica no `package.json`, `.npmrc` com token, `npm install` / `npm ci` |
-| Não expor código no npm público | Registry privado + pacote com acesso restrito à organização; não publicar em `registry.npmjs.org` sem controlo |
+1. Atualizar dependência para `2.x` e remover qualquer uso restante de `@geeklabssh/hive-tablepro/core/...`.
+2. Substituir `DataGrid*` por `HiveDataTable` com colunas **TanStack** (`ColumnDef`) em vez de `GridColDef`.
+3. Substituir date pickers do fork por `HiveDatePicker` (`react-day-picker` + `date-fns`).
+4. Aplicar os passos de **CSS e Tailwind** acima.
+5. Regenerar o tarball (`npm run vendor:tablepro`) ou publicar no registry privado e atualizar o lockfile.
 
 ---
 
-## CI no monorepo (GitHub Actions)
+## Publicar (GitHub Packages) e Docker
 
-No repositório **protonerp** existe o workflow `.github/workflows/publish-hive-tablepro.yml`:
+O fluxo de registry, `.npmrc` e publicação descrito nas versões anteriores mantém-se; apenas a **versão** e os **imports** mudam. Para imagens Docker sem o código fonte gigante do fork, continue a usar o tarball em `vendor/` ou instalação por registry com token.
 
-1. **Manual:** *Actions* → *Publish hive-tablepro* → *Run workflow*. Por defeito **dry run** (`npm pack` + validações). Desmarque *dry_run* para executar `npm publish` no GitHub Packages (usa `GITHUB_TOKEN` com `packages: write`).
-2. **Por tag:** faça bump da versão em `hive-tablepro/package.json`, commit, depois crie e envie uma tag `hive-tablepro-v1.0.1` (prefixo obrigatório). O workflow publica automaticamente.
+---
 
-**Nota:** Se o fork do pacote viver noutro repositório (ex.: só `GeekLabsSH/hive-tablepro`), copie o mesmo workflow para a raiz desse repo e ajuste `working-directory` para `.`.
+## CI
 
-Antes de publicar, confirme que o **scope** `@geeklabssh` corresponde ao **owner** do repositório no GitHub (utilizador ou organização, em minúsculas).
+Manter `npm run typecheck` e `npm run check-imports` antes de `npm publish`.

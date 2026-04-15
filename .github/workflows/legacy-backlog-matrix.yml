@@ -1,0 +1,32 @@
+# Clona o repositório legado público e gera docs/_generated/legacy-matrix.json (+ fragmento markdown).
+name: Legacy backlog matrix
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main, master]
+    paths:
+      - "scripts/backlog-legacy-matrix.mjs"
+      - "scripts/ensure-legacy-hive-tablepro.mjs"
+      - "scripts/extract-ts-exports.mjs"
+      - ".github/workflows/legacy-backlog-matrix.yml"
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Clone legacy GeekLabsSH/hive-tablepro
+        run: git clone --depth 1 --branch main https://github.com/GeekLabsSH/hive-tablepro.git /tmp/hive-tablepro-legacy
+      - name: Generate matrix
+        env:
+          HIVE_TABLEPRO_LEGACY_ROOT: /tmp/hive-tablepro-legacy
+          SKIP_LEGACY_CLONE: "1"
+        run: npm run backlog:legacy-matrix
+      - name: Assert artefact
+        run: test -f docs/_generated/legacy-matrix.json

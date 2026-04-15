@@ -2,18 +2,32 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "jsx": "preserve",
-    "strict": false,
+    "jsx": "react-jsx",
+    "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "allowJs": true,
+    "resolveJsonModule": true,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "@geeklabssh/hive-tablepro/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["core/**/*", "models/**/*", "utils/**/*"]
+  "include": [
+    "vite/**/*.ts",
+    "vitest.setup.ts",
+    "src/**/*",
+    "models/**/*",
+    "utils/**/*",
+    "core/**/*",
+    "playground/src/**/*",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "e2e/**/*",
+    "stories/**/*",
+    ".storybook/**/*"
+  ]
 }

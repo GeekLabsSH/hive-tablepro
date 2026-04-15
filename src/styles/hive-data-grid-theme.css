@@ -1,0 +1,174 @@
+/**
+ * Tokens semânticos da DataGrid para o ProtonWeb (e consumidores).
+ * Por defeito espelham o tema shadcn (`--border`, `--muted`, …).
+ * Sobrescreva em `:root` ou num contentor (ex. `.hive-data-grid`) após importar `styles.css`.
+ *
+ * Sem `@layer` para poder ser `@import` noutros bundles (ex. Next) sem `@tailwind base` no mesmo ficheiro.
+ */
+:root {
+  --hive-grid-chrome-border: hsl(var(--border));
+  --hive-grid-loading-overlay-bg: hsl(var(--background) / 0.6);
+  --hive-grid-loading-overlay-fg: hsl(var(--muted-foreground));
+  --hive-grid-virtual-header-row-bg: hsl(var(--muted) / 0.25);
+  --hive-grid-header-cell-bg: hsl(var(--muted) / 0.4);
+  --hive-grid-header-muted-fg: hsl(var(--muted-foreground));
+  --hive-grid-pin-row-bg: hsl(var(--card));
+  --hive-grid-pin-row-fg: hsl(var(--card-foreground));
+  --hive-grid-aggregation-row-bg: hsl(var(--muted) / 0.3);
+  --hive-grid-aggregation-fg: hsl(var(--muted-foreground));
+  --hive-grid-detail-bg: hsl(var(--muted) / 0.2);
+  --hive-grid-footer-slot-bg: hsl(var(--muted) / 0.1);
+  --hive-grid-pagination-input-border: hsl(var(--input));
+  --hive-grid-pagination-input-bg: hsl(var(--background));
+  --hive-grid-pagination-ring-offset: hsl(var(--background));
+  --hive-grid-pagination-ring: hsl(var(--ring));
+  --hive-grid-resize-handle: hsl(var(--border));
+  --hive-grid-resize-handle-active: hsl(var(--primary));
+  /**
+   * Células neutras (tema claro): passos de luminosidade visíveis vs `--background` (~100%).
+   * Hover mais claro que seleção para leitura imediata ao parar / ao selecionar linha.
+   */
+  --hive-grid-row-hover-neutral: 220 10% 93%;
+  --hive-grid-row-selected-neutral: 220 14% 82%;
+  --hive-grid-row-hover-bg: hsl(var(--muted) / 0.5);
+  --hive-grid-row-selected-bg: hsl(var(--muted));
+  --hive-grid-row-editing-bg: hsl(var(--muted) / 0.45);
+  --hive-grid-row-editing-ring: hsl(var(--primary) / 0.35);
+  --hive-grid-cell-focus-ring: hsl(var(--ring));
+  --hive-grid-cell-focus-ring-offset: hsl(var(--background));
+  /** Células sem `cellClassName`: mesmo tom que `--background` (colunas fixas usam o mesmo token em JS). */
+  --hive-grid-cell-default-bg: hsl(var(--background));
+}
+
+.dark {
+  --hive-grid-row-hover-neutral: 220 10% 34%;
+  --hive-grid-row-selected-neutral: 220 12% 26%;
+}
+
+/**
+ * Cabeçalhos da grelha: o `TableHead` shadcn usa `px-4` por defeito, o que afasta o separador de resize
+ * da borda visual entre colunas e reduz a área útil do grip.
+ */
+.hive-data-grid tbody tr.hive-data-grid-row--editing,
+.hive-data-grid .hive-data-grid-row.hive-data-grid-row--editing {
+  background-color: var(--hive-grid-row-editing-bg);
+  box-shadow: inset 0 0 0 1px var(--hive-grid-row-editing-ring);
+}
+
+.hive-data-grid [data-hive-grid-scroll] thead th {
+  padding-left: 2px;
+  padding-right: 0.125rem;
+  overflow: visible;
+  /** O `TableHead` shadcn traz `font-medium`; na grelha o cabeçalho deve ser texto normal. */
+  font-weight: 400;
+}
+
+/**
+ * Compacto: ~1px menos no texto e ícones/botões ligeiramente menores (CSS no pacote — não depende
+ * do Tailwind do consumidor compilar ficheiros do hive-tablepro).
+ */
+.hive-data-grid[data-density="compact"],
+.hive-data-grid.hive-density-compact {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.hive-data-grid[data-density="compact"] [role="gridcell"],
+.hive-data-grid[data-density="compact"] [role="columnheader"],
+.hive-data-grid.hive-density-compact [role="gridcell"],
+.hive-data-grid.hive-density-compact [role="columnheader"] {
+  font-size: inherit;
+}
+
+.hive-data-grid[data-density="compact"] button.h-8.w-8,
+.hive-data-grid.hive-density-compact button.h-8.w-8 {
+  height: 1.625rem;
+  width: 1.625rem;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* `Button size="icon"` predef.: h-10 w-10 + [&_svg]:size-4 */
+.hive-data-grid[data-density="compact"] button.h-10.w-10,
+.hive-data-grid.hive-density-compact button.h-10.w-10 {
+  height: 1.625rem;
+  width: 1.625rem;
+}
+
+/** Ícones ~12px (`h-3 w-3` = 0.75rem) em modo compacto. */
+.hive-data-grid[data-density="compact"] svg.h-4.w-4,
+.hive-data-grid.hive-density-compact svg.h-4.w-4 {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.hive-data-grid[data-density="compact"] svg.h-3.w-3,
+.hive-data-grid.hive-density-compact svg.h-3.w-3 {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.hive-data-grid[data-density="compact"] thead button svg,
+.hive-data-grid[data-density="compact"] [role="gridcell"] button svg,
+.hive-data-grid.hive-density-compact thead button svg,
+.hive-data-grid.hive-density-compact [role="gridcell"] button svg {
+  max-height: 0.75rem;
+  max-width: 0.75rem;
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+/**
+ * Lucide / ícones com `size={18}` ignoram classes Tailwind no SVG — forçar 12px na coluna de ações.
+ */
+.hive-data-grid[data-density="compact"] [data-hive-actions-cell] svg,
+.hive-data-grid.hive-density-compact [data-hive-actions-cell] svg {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+  max-width: 0.75rem !important;
+  max-height: 0.75rem !important;
+}
+
+.hive-data-grid[data-density="compact"] [data-hive-edit-root],
+.hive-data-grid.hive-density-compact [data-hive-edit-root] {
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.hive-data-grid[data-density="compact"] [data-hive-edit-root] input,
+.hive-data-grid[data-density="compact"] [data-hive-edit-root] button,
+.hive-data-grid.hive-density-compact [data-hive-edit-root] input,
+.hive-data-grid.hive-density-compact [data-hive-edit-root] button {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/**
+ * Fundos de célula neutras, hover e seleção: `!important` para vencer `background` em estilo inline
+ * nas colunas fixas (`getPinnedStickyStyle`). `.purchaseRow` / `.saleRow` ficam nas regras do Proton.
+ * Seleção com `:not(:hover)` para o hover não ser tapado pela regra de linha selecionada.
+ */
+.hive-data-grid [data-hive-grid-scroll] tbody td[role="gridcell"]:not(.purchaseRow):not(.saleRow),
+.hive-data-grid .hive-data-grid-row[role="row"] > [role="gridcell"]:not(.purchaseRow):not(.saleRow) {
+  background-color: var(--hive-grid-cell-default-bg);
+}
+
+.hive-data-grid
+  tbody
+  tr.hive-data-grid-row[data-state="selected"]:not(.hive-data-grid-row--editing):not(:hover)
+  > td[role="gridcell"]:not(.purchaseRow):not(.saleRow),
+.hive-data-grid
+  .hive-data-grid-row[role="row"][data-state="selected"]:not(.hive-data-grid-row--editing):not(:hover)
+  > [role="gridcell"]:not(.purchaseRow):not(.saleRow) {
+  background-color: hsl(var(--hive-grid-row-selected-neutral)) !important;
+}
+
+.hive-data-grid
+  tbody
+  tr.hive-data-grid-row:not(.hive-data-grid-row--editing):hover
+  > td[role="gridcell"]:not(.purchaseRow):not(.saleRow),
+.hive-data-grid
+  .hive-data-grid-row[role="row"]:not(.hive-data-grid-row--editing):hover
+  > [role="gridcell"]:not(.purchaseRow):not(.saleRow) {
+  background-color: hsl(var(--hive-grid-row-hover-neutral)) !important;
+}
