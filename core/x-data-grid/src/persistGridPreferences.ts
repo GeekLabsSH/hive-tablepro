@@ -126,3 +126,60 @@ export function writeGridPreferencesToStorage(
     /* ignore */
   }
 }
+
+const FILTER_MODEL_STORAGE_PREFIX = "hive.dtpro.filterModel.v1:";
+
+function filterModelStorageKey(persistenceKey: string): string {
+  return `${FILTER_MODEL_STORAGE_PREFIX}${persistenceKey}`;
+}
+
+/** Lê só o modelo de filtro por coluna / rápido (JSON em `localStorage`). */
+export function readPersistedFilterModel(
+  persistenceKey: string,
+  storage?: Storage | null
+): GridFilterModel | null {
+  const s = storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
+  if (!s) return null;
+  try {
+    const raw = s.getItem(filterModelStorageKey(persistenceKey));
+    if (raw == null || raw === "") return null;
+    const o = JSON.parse(raw) as unknown;
+    if (!o || typeof o !== "object") return null;
+    const x = o as Record<string, unknown>;
+    const items = Array.isArray(x.items) ? (x.items as GridFilterModel["items"]) : [];
+    const logicOperator = x.logicOperator === "Or" || x.logicOperator === "And" ? x.logicOperator : undefined;
+    const groupLogicOperator =
+      x.groupLogicOperator === "Or" || x.groupLogicOperator === "And" ? x.groupLogicOperator : undefined;
+    const quickFilterLogicOperator =
+      x.quickFilterLogicOperator === "Or" || x.quickFilterLogicOperator === "And"
+        ? x.quickFilterLogicOperator
+        : undefined;
+    const quickFilterValues = Array.isArray(x.quickFilterValues)
+      ? x.quickFilterValues.map((v) => String(v))
+      : undefined;
+    return {
+      items,
+      logicOperator,
+      groupLogicOperator,
+      quickFilterLogicOperator,
+      quickFilterValues
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Grava o modelo de filtro (falhas silenciosas). */
+export function writePersistedFilterModel(
+  persistenceKey: string,
+  model: GridFilterModel,
+  storage?: Storage | null
+): void {
+  const s = storage ?? (typeof localStorage !== "undefined" ? localStorage : null);
+  if (!s) return;
+  try {
+    s.setItem(filterModelStorageKey(persistenceKey), JSON.stringify(model));
+  } catch {
+    /* ignore */
+  }
+}

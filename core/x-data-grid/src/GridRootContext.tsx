@@ -20,6 +20,23 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   /** Valor atual do filtro rápido (painel cliente). */
   quickFilterValue: string;
   setQuickFilterValue: (v: string) => void;
+  /** Número de regras de filtro activas (painel + filtro rápido) para badge na toolbar. */
+  activeFilterCount: number;
+  /** Segunda linha de filtros no cabeçalho de colunas. */
+  headerFiltersEnabled: boolean;
+  setHeaderFiltersEnabled: (v: boolean) => void;
+  /** Limpa `filterModel.items`, `quickFilterValues` e texto de pesquisa rápida. */
+  clearAllFilters: () => void;
+  /** Integração de gráficos activa (`chartsIntegration` na grelha). */
+  chartsIntegrationEnabled?: boolean;
+  /** Abre o painel de gráficos (slot predefinido ou custom). */
+  openChartsPanel?: () => void;
+  /** `pivoting` na grelha — mostrar alternância de vista pivotada na toolbar. */
+  pivotFeatureEnabled?: boolean;
+  pivotActive?: boolean;
+  setPivotActive?: (active: boolean) => void;
+  /** Abre o painel lateral de configuração do pivot (Filas / Colunas / Valores). */
+  openPivotPanel?: () => void;
   /** Último elemento que abriu o painel global de filtros (âncora do popover). */
   filterPanelAnchorRef: React.MutableRefObject<HTMLElement | null>;
   /** Último elemento que abriu o painel de colunas (âncora do popover). */

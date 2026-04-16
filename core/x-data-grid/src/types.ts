@@ -6,8 +6,8 @@ export type GridDensity = "compact" | "standard" | "comfortable";
 /** IDs de linha compatíveis com MUI X */
 export type GridRowId = string | number;
 
-/** Modelo de linha (objeto com chave [field] ou index signature) */
-export type GridValidRowModel = Record<string, unknown> | object;
+/** Modelo de linha — `Record<string, any>` alinha ao MUI X e evita `params.row.campo` falhar por união com `object`. */
+export type GridValidRowModel = Record<string, any>;
 
 /** Alias MUI X (`GridRowModel`). */
 export type GridRowModel = GridValidRowModel;
@@ -107,20 +107,93 @@ export type GridFilterOperator =
   | "after"
   | "onOrAfter"
   | "before"
-  | "onOrBefore";
+  | "onOrBefore"
+  /** Lista separada por `;` no valor (string) ou `unknown[]` serializado. */
+  | "inList"
+  /** `singleSelect` / enum: o valor da célula tem de coincidir com **todos** os valores seleccionados. */
+  | "selectAll"
+  /** `singleSelect` / enum: o valor da célula coincide com **qualquer** valor seleccionado. */
+  | "selectAny";
 
 export interface GridFilterItem {
   id?: string | number;
   field: string;
   operator: GridFilterOperator;
   value?: unknown;
+  /**
+   * Identificador de grupo para combinar condições (E/OU dentro do grupo + entre grupos).
+   * Se **nenhum** item tiver `groupId` definido, usa-se só `logicOperator` na lista plana (compatível).
+   */
+  groupId?: number | string;
+  /**
+   * Lógica **entre** itens consecutivos do mesmo `groupId` (por ordem em `items`).
+   * O primeiro item do grupo ignora este campo.
+   */
+  groupItemLogic?: GridLogicOperator;
+  /**
+   * Ordem manual relativa a outros itens (menor = primeiro). Usado na avaliação e no painel.
+   * Se omitido, mantém-se a ordem do array `items` entre itens sem valor definido.
+   */
+  filterOrder?: number;
+  /**
+   * Lista **sem** `groupId` em nenhum item: combina esta linha com a anterior (`And` / `Or`).
+   * Se omitido, usa-se `GridFilterModel.logicOperator` para esse segmento (retrocompatível).
+   */
+  joinWithPrevious?: GridLogicOperator;
 }
 
 export interface GridFilterModel {
   items: GridFilterItem[];
   logicOperator?: GridLogicOperator;
+  /** Lógica entre **grupos** distintos (quando há `groupId` em pelo menos um item). */
+  groupLogicOperator?: GridLogicOperator;
   quickFilterValues?: string[];
   quickFilterLogicOperator?: GridLogicOperator;
+}
+
+/** Agregação mínima alinhada a pivot MUI X. */
+export type GridPivotAggFunc = "sum" | "avg" | "min" | "max" | "count" | "countDistinct";
+
+/** Granularidade derivada para colunas `date` / `dateTime` no pivot (paridade MUI). */
+export type GridPivotDateGranularity = "year" | "quarter" | "month" | "day";
+
+export interface GridPivotRowDef {
+  field: string;
+  hidden?: boolean;
+  /** Só aplicável quando a coluna de dados é `date` ou `dateTime`. */
+  dateGranularity?: GridPivotDateGranularity;
+}
+
+export interface GridPivotColumnDef {
+  field: string;
+  hidden?: boolean;
+  sort?: "asc" | "desc";
+  dateGranularity?: GridPivotDateGranularity;
+}
+
+export interface GridPivotValueDef {
+  field: string;
+  aggFunc: GridPivotAggFunc;
+  hidden?: boolean;
+}
+
+/** Modelo de pivotagem (objectos por eixo; retrocompatível via `normalizePivotModel`). */
+export interface GridPivotModel {
+  rows: GridPivotRowDef[];
+  columns: GridPivotColumnDef[];
+  values: GridPivotValueDef[];
+}
+
+export type GridChartsDatasetKind = "bar" | "line";
+
+/** Configuração leve do painel de gráficos (integração estilo MUI + renderer shadcn/recharts). */
+export interface GridChartsConfig {
+  /** Tipo de gráfico por defeito no painel. */
+  defaultKind?: GridChartsDatasetKind;
+  /** Campo numérico do eixo Y (quando há uma série simples). */
+  valueField?: string;
+  /** Campo categórico do eixo X. */
+  categoryField?: string;
 }
 
 export interface GridPaginationModel {
@@ -174,7 +247,8 @@ export interface GridValueGetterParams<
 > {
   field: string;
   row: R;
-  value?: V;
+  /** Valor bruto; `any` mantém compatibilidade com legado (`new Date(value)`, etc.). */
+  value: any;
 }
 
 export interface GridValueFormatterParams<
@@ -184,7 +258,7 @@ export interface GridValueFormatterParams<
   id: GridRowId;
   field: string;
   row: R;
-  value: V;
+  value: any;
 }
 
 export interface GridRenderCellParams<
@@ -206,7 +280,8 @@ export interface GridRenderCellParams<
  * Props por célula em edição (MUI X `GridEditCellProps` / estado interno da grelha).
  */
 export interface GridEditCellProps<V = unknown> {
-  value?: V;
+  /** Valor em edição; `any` evita quebrar validadores legados que esperam `string`, etc. */
+  value?: any;
   error?: boolean;
   helperText?: string;
   isValidating?: boolean;
@@ -318,6 +393,12 @@ export interface GridColDef<R extends GridValidRowModel = GridValidRowModel, V =
     params: GridPreProcessEditCellProps<R, V>
   ) => GridEditCellProps<V> | void | Promise<GridEditCellProps<V>>;
   renderHeader?: (params: GridRenderHeaderParams<R>) => React.ReactNode;
+  /**
+   * Colunas filhas: cabeçalho multi-linha (TanStack / paridade MUI pivot com várias dimensões em colunas).
+   */
+  children?: GridColDef<R, V>[];
+  /** Segunda linha do cabeçalho (ex.: tipo de agregação na última linha do pivot). */
+  pivotHeaderSecondary?: string;
   valueOptions?: GridValueOptionsList | ((params: GridValueOptionsParams<R>) => GridValueOptionsList);
   /**
    * `singleSelect`: editor com campo de pesquisa (filtra `valueOptions` no cliente).
@@ -334,8 +415,14 @@ export interface GridColDef<R extends GridValidRowModel = GridValidRowModel, V =
    */
   registerAPI?: unknown;
   crud?: string;
+  /** Em `async` + pesquisa SelectOption: enriquecer rótulos com redes parceiras (legado ProtonWeb). */
+  showPartnerNetworks?: boolean;
   typeGet?: unknown;
+  /** Vários `LINKPERSON` para pedido assíncrono de opções (legado ProtonWeb). */
+  multiTypeGet?: unknown[];
   maxResult?: number;
+  /** Limite de dias no editor de data (legado ProtonWeb / agendamento). */
+  maxDate?: number;
   useFixedListToAsync?: boolean;
   /** Classes Tailwind/CSS na célula (string ou função com `GridCellParams`). */
   cellClassName?: string | ((params: GridCellParams<R, V>) => string);
@@ -356,6 +443,13 @@ export interface GridColDef<R extends GridValidRowModel = GridValidRowModel, V =
     colDef: GridColDef<R, V>,
     api: GridApiCommunity<R> | null
   ) => ((cellValue: unknown) => boolean) | null;
+  /** Comparador de ordenação (MUI X); `v1`/`v2` em `any` para alinhar ao legado ProtonWeb. */
+  sortComparator?: (
+    v1: any,
+    v2: any,
+    cellParams1?: GridCellParams<R, V>,
+    cellParams2?: GridCellParams<R, V>
+  ) => number;
 }
 
 /** Parâmetros de `getActions` (MUI X; superset de `GridRowParams` + `field` / `colDef`). */
@@ -566,6 +660,7 @@ export interface GridLocaleText {
   filterNotEmpty?: string;
   filterOpContains?: string;
   filterOpEquals?: string;
+  filterOpNotEquals?: string;
   filterOpStartsWith?: string;
   filterOpEndsWith?: string;
   filterMenuOnlyEmpty?: string;
@@ -578,6 +673,9 @@ export interface GridLocaleText {
   filterOpBefore?: string;
   filterOpOnOrAfter?: string;
   filterOpOnOrBefore?: string;
+  filterOpInList?: string;
+  filterOpSelectAny?: string;
+  filterOpSelectAll?: string;
   /** Painel global de filtros (lista de `filterModel.items`). */
   filterPanelTitle?: string;
   filterPanelLogicLabel?: string;
@@ -592,6 +690,22 @@ export interface GridLocaleText {
   filterPanelAddFilter?: string;
   filterPanelAddFilterButton?: string;
   filterPanelChooseColumn?: string;
+  filterPanelGroupId?: string;
+  /** Título do bloco de itens sem `groupId` quando há outros grupos definidos. */
+  filterPanelUngroupedBlock?: string;
+  /** Dica no campo Grupo do bloco «Sem grupo»: atribuir número cria / associa ao grupo. */
+  filterPanelUngroupedAssignHint?: string;
+  /** Cabeçalho do bloco: como combinar todas as condições deste grupo (E/OU). */
+  filterPanelGroupCombineLabel?: string;
+  filterPanelGroupItemLogic?: string;
+  filterPanelGroupBetweenLabel?: string;
+  /** Ligação desta linha às anteriores **do mesmo grupo** (E/OU). */
+  filterPanelLineJoinLabel?: string;
+  /** Campo numérico de sequência (ordem global no modelo). */
+  filterPanelOrder?: string;
+  /** Rótulos curtos para selects compactos (ex.: «E» / «OU»). */
+  filterPanelLogicShortAnd?: string;
+  filterPanelLogicShortOr?: string;
   /** Painel de visibilidade de colunas (toolbar / MUI). */
   columnsPanelColumnTitleLabel?: string;
   columnsPanelSearchPlaceholder?: string;
@@ -614,6 +728,8 @@ export interface GridLocaleText {
   checkboxSelectionSelectAll?: string;
   /** Célula da coluna de seleção / rádio: selecionar esta linha. */
   checkboxSelectionSelectRow?: string;
+  /** Título visível ao lado do checkbox «selecionar todas» (ex. tradução de «Selecionar»). */
+  checkboxSelectionColumnTitle?: string;
   /** `aria-live`: ordenação removida (sem critérios). */
   gridAnnounceSortCleared?: string;
   /** `aria-live`: inclui `{detail}` (lista de colunas + direção). */

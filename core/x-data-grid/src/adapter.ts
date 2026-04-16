@@ -1,6 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import * as React from "react";
 import { muiColumnFilterFn } from "./filterFns";
+import {
+  colHasValueOptions,
+  formatSingleSelectDisplay,
+  resolveColValueOptions
+} from "./gridValueOptions";
 import { renderGridActionsFromNodes } from "./GridActionsCell";
 import type {
   GridAggregationModel,
@@ -10,9 +15,10 @@ import type {
   GridRenderCellParams,
   GridRenderHeaderParams,
   GridRowId,
-  GridValidRowModel,
-  GridValueOptionsList
+  GridValidRowModel
 } from "./types";
+
+export { colHasValueOptions, resolveColValueOptions } from "./gridValueOptions";
 
 const DATE_BR_TZ = "America/Sao_Paulo";
 
@@ -66,44 +72,6 @@ export function formatGridDateBr(raw: unknown, withTime: boolean): string {
   }
 }
 
-/** Resolve `valueOptions` estático ou função (MUI X) para a linha indicada. */
-export function resolveColValueOptions<R extends GridValidRowModel>(
-  col: GridColDef<R>,
-  id: GridRowId,
-  row: R
-): GridValueOptionsList | undefined {
-  const vo = col.valueOptions;
-  if (vo == null) return undefined;
-  if (typeof vo === "function") {
-    return vo({ id, field: col.field, row });
-  }
-  return vo;
-}
-
-/** Há opções de seleção (array não vazio ou função). */
-export function colHasValueOptions<R extends GridValidRowModel>(col: GridColDef<R>): boolean {
-  const vo = col.valueOptions;
-  if (vo == null) return false;
-  if (typeof vo === "function") return true;
-  return vo.length > 0;
-}
-
-function formatSingleSelectDisplay(
-  raw: unknown,
-  options: GridValueOptionsList | undefined
-): string {
-  if (options == null || options.length === 0) return raw == null ? "" : String(raw);
-  for (const o of options) {
-    if (o !== null && typeof o === "object" && "value" in o) {
-      const opt = o as { value: string | number; label: string };
-      if (Object.is(opt.value, raw) || String(opt.value) === String(raw)) return opt.label;
-    } else if (Object.is(o, raw) || String(o) === String(raw)) {
-      return String(o);
-    }
-  }
-  return raw == null ? "" : String(raw);
-}
-
 function mapAggregationFnId(id: string | undefined): string | undefined {
   if (!id) return undefined;
   if (id === "avg" || id === "average") return "mean";
@@ -126,12 +94,49 @@ export function buildColumnDefs<R extends GridValidRowModel>(
     disableColumnSort?: boolean;
     aggregationModel?: GridAggregationModel;
     showAggregationFooter?: boolean;
+    /** Campos que a grelha monta à parte (ex. `__select__` com `checkboxSelection`). */
+    excludeDataColumnFields?: readonly string[];
   }
 ): ColumnDef<R, unknown>[] {
   const sortOff = ctx.disableColumnSort === true;
   const aggModel = ctx.aggregationModel ?? {};
-  return columns.map((col) => {
+  const exclude = ctx.excludeDataColumnFields ?? [];
+  const colsIn =
+    exclude.length > 0 ? columns.filter((c) => !exclude.includes(c.field)) : columns;
+  return colsIn.map((col) => {
     const field = col.field;
+    if (col.children && col.children.length > 0) {
+      const childDefs = buildColumnDefs(col.children, ctx);
+      const minW = col.minWidth ?? 50;
+      const maxW = col.maxWidth ?? 2000;
+      const clampSize = (n: number) => Math.min(maxW, Math.max(minW, Math.round(n)));
+      const sumSize = childDefs.reduce((acc, d) => acc + (d.size ?? 120), 0);
+      const sumMin = childDefs.reduce((acc, d) => acc + (d.minSize ?? 50), 0);
+      const label = col.headerName ?? field;
+      return {
+        id: field,
+        header: () => {
+          const api = ctx.apiRef.current;
+          if (col.renderHeader && api) {
+            const p: GridRenderHeaderParams<R> = { field, colDef: col, api };
+            return col.renderHeader(p) as React.ReactNode;
+          }
+          return label;
+        },
+        columns: childDefs,
+        meta: { gridColDef: col },
+        enableSorting: false,
+        enableHiding: false,
+        enableColumnFilter: false,
+        enableResizing: col.resizable !== false,
+        enablePinning: col.pinnable !== false,
+        enableGrouping: false,
+        minSize: sumMin,
+        maxSize: maxW,
+        size: clampSize(col.width ?? sumSize),
+        filterFn: muiColumnFilterFn
+      } as ColumnDef<R, unknown>;
+    }
     const aggRaw = aggModel[field];
     const aggId = mapAggregationFnId(
       typeof aggRaw === "string" ? aggRaw : undefined
@@ -193,7 +198,7 @@ export function buildColumnDefs<R extends GridValidRowModel>(
               })
           }
         : { accessorKey: field as keyof R & string })
-    } as ColumnDef<R, unknown>;
+    } as unknown as ColumnDef<R, unknown>;
 
     base.cell = (info) => {
       const row = info.row.original;
@@ -283,10 +288,50 @@ export function buildColumnDefs<R extends GridValidRowModel>(
 
     base.header = () => {
       const api = ctx.apiRef.current;
-      if (!api) return col.headerName ?? field;
+      if (!api) {
+        if (col.pivotHeaderSecondary) {
+          return React.createElement(
+            "div",
+            {
+              className:
+                "flex min-w-0 flex-col items-center gap-0.5 px-1 py-0.5 text-center leading-tight text-hiveGrid-headerMuted"
+            },
+            React.createElement(
+              "span",
+              { className: "truncate text-[13px] font-medium" },
+              col.headerName ?? field
+            ),
+            React.createElement(
+              "span",
+              { className: "truncate text-[11px] font-normal opacity-90" },
+              col.pivotHeaderSecondary
+            )
+          );
+        }
+        return col.headerName ?? field;
+      }
       if (col.renderHeader) {
         const p: GridRenderHeaderParams<R> = { field, colDef: col, api };
         return col.renderHeader(p) as React.ReactNode;
+      }
+      if (col.pivotHeaderSecondary) {
+        return React.createElement(
+          "div",
+          {
+            className:
+              "flex min-w-0 flex-col items-center gap-0.5 px-1 py-0.5 text-center leading-tight text-hiveGrid-headerMuted"
+          },
+          React.createElement(
+            "span",
+            { className: "truncate text-[13px] font-medium" },
+            col.headerName ?? field
+          ),
+          React.createElement(
+            "span",
+            { className: "truncate text-[11px] font-normal opacity-90" },
+            col.pivotHeaderSecondary
+          )
+        );
       }
       return col.headerName ?? field;
     };

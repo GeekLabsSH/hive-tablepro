@@ -10,10 +10,12 @@ import type {
   GridColumnVisibilityModel,
   GridDensity,
   GridDetailPanelParams,
+  GridChartsConfig,
   GridFilterModel,
   GridLocaleText,
   GridPaginationMeta,
   GridPaginationModel,
+  GridPivotModel,
   GridPinnedColumns,
   GridRowClassNameParams,
   GridRowGroupingModel,
@@ -101,6 +103,21 @@ export type GridRowEditActionsSlotProps<R extends GridValidRowModel = GridValidR
   lt: (key: keyof GridLocaleText, fallback: string) => string;
 };
 
+export type GridPivotPanelSlotProps<R extends GridValidRowModel = GridValidRowModel> = {
+  api: GridApiCommunity<R>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  pivotModel: GridPivotModel;
+  onCommitPivotModel: (model: GridPivotModel) => void;
+};
+
+export type GridChartsPanelSlotProps<R extends GridValidRowModel = GridValidRowModel> = {
+  api: GridApiCommunity<R>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  chartsConfig: GridChartsConfig | undefined;
+};
+
 export type GridSlots<R extends GridValidRowModel = GridValidRowModel> = {
   toolbar?: React.ComponentType<unknown> | (() => React.ReactNode);
   loadingOverlay?: GridOverlaySlotComponent;
@@ -110,6 +127,10 @@ export type GridSlots<R extends GridValidRowModel = GridValidRowModel> = {
   filterPanel?: React.ComponentType<GridFilterPanelSlotProps<R>>;
   /** Substituir botões predefinidos de edição por linha (`editMode="row"` + `showRowEditActions`). */
   rowEditActions?: React.ComponentType<GridRowEditActionsSlotProps<R>>;
+  /** Painel de pivotagem (DataGrid Premium / paridade MUI). */
+  pivotPanel?: React.ComponentType<GridPivotPanelSlotProps<R>>;
+  /** Painel de gráficos ligado ao estado da grelha. */
+  chartsPanel?: React.ComponentType<GridChartsPanelSlotProps<R>>;
 };
 
 export type GridSlotProps<R extends GridValidRowModel = GridValidRowModel> = {
@@ -123,6 +144,8 @@ export type GridSlotProps<R extends GridValidRowModel = GridValidRowModel> = {
     Partial<GridFilterPanelSlotProps<R>>,
     "api" | "open" | "onOpenChange" | "filterModel" | "columns" | "onCommit" | "onEditColumnFilter" | "lt"
   >;
+  pivotPanel?: Omit<Partial<GridPivotPanelSlotProps<R>>, "api" | "open" | "onOpenChange" | "pivotModel" | "onCommitPivotModel">;
+  chartsPanel?: Omit<Partial<GridChartsPanelSlotProps<R>>, "api" | "open" | "onOpenChange">;
 };
 
 export type GridFeatureMode = "client" | "server";
@@ -174,9 +197,35 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   onFilterModelChange?: (model: GridFilterModel) => void;
   filterMode?: GridFeatureMode;
   disableColumnFilter?: boolean;
+  /** Alinhamento da pesquisa rápida na linha integrada `GridToolbarFilterColumnsDensityRow` (`start` = após os botões; `end` = `ml-auto`). */
+  toolbarQuickFilterAlign?: "start" | "end";
+  /** Na linha integrada, mostrar rótulo de texto curto junto aos ícones (Colunas, Filtros, …). */
+  toolbarShowButtonLabels?: boolean;
+  /** Segunda linha de filtros no cabeçalho (MVP: um filtro activo por campo). */
+  headerFiltersEnabled?: boolean;
+  onHeaderFiltersEnabledChange?: (enabled: boolean) => void;
   /** Texto rápido (equivalente a quick filter em várias versões MUI) */
   quickFilterValue?: string;
   onQuickFilterValueChange?: (value: string) => void;
+
+  /**
+   * Activa capacidades de pivotagem (toolbar + motor). Por defeito `false`.
+   * Com `pivotActive` e `pivotModel`, a grelha mostra o dataset pivotado.
+   */
+  pivoting?: boolean;
+  /** Pivotagem (Premium / paridade MUI). */
+  pivotModel?: GridPivotModel;
+  onPivotModelChange?: (model: GridPivotModel) => void;
+  pivotActive?: boolean;
+  onPivotActiveChange?: (active: boolean) => void;
+  pivotPanelOpen?: boolean;
+  onPivotPanelOpenChange?: (open: boolean) => void;
+
+  /**
+   * Integração de gráficos: `true` usa configuração mínima; objecto define eixos por defeito.
+   * Requer dependência `recharts` no pacote da app (peer) ou no hive.
+   */
+  chartsIntegration?: boolean | GridChartsConfig;
 
   /** Paginação */
   paginationModel?: GridPaginationModel;
@@ -447,7 +496,7 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   initialState?: {
     pagination?: { paginationModel?: GridPaginationModel };
     sorting?: { sortModel?: GridSortModel };
-    filter?: { filterModel?: GridFilterModel };
+    filter?: { filterModel?: GridFilterModel; headerFiltersEnabled?: boolean };
     detailPanel?: { expandedRowIds?: GridRowId[] };
     treeData?: { expandedRowIds?: GridRowId[] };
     rowGrouping?: { model?: GridRowGroupingModel };
@@ -528,6 +577,11 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
    */
   enableVariableRowHeight?: boolean;
 
+  /**
+   * Chave para gravar/ler **apenas** `filterModel` em `localStorage` quando `filterModel` não é controlado por prop
+   * e **não** existe `preferencesKey` (com `preferencesKey`, o filtro faz parte do JSON de preferências).
+   */
+  filterPersistenceKey?: string;
   /**
    * Chave em `localStorage` (ou `preferencesStorage`) para gravar/ler preferências (`sortModel`, filtros, etc.).
    * Inclui `columnOrder` (sempre que há chave), `columnSizing` (larguras de dados) e `rowGroupingModel` quando o agrupamento não é controlado por prop.

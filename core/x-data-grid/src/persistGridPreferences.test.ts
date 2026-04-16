@@ -6,8 +6,10 @@ import {
   parsePersistedGridPreferences,
   pickPersistableColumnSizing,
   readGridPreferencesFromStorage,
+  readPersistedFilterModel,
   stringifyPersistedGridPreferences,
-  writeGridPreferencesToStorage
+  writeGridPreferencesToStorage,
+  writePersistedFilterModel
 } from "./persistGridPreferences";
 
 describe("persistGridPreferences", () => {
@@ -73,6 +75,30 @@ describe("persistGridPreferences", () => {
     expect(parsed?.columnOrder).toEqual(["id", "name"]);
     expect(parsed?.rowGroupingModel).toEqual(["name"]);
     expect(parsed?.columnSizing).toEqual({ id: 80, name: 240 });
+  });
+
+  it("readPersistedFilterModel / writePersistedFilterModel roundtrip", () => {
+    const bag = { raw: null as string | null };
+    const storage: Storage = {
+      getItem: () => bag.raw,
+      setItem: (_k: string, v: string) => {
+        bag.raw = v;
+      },
+      removeItem: () => {},
+      clear: () => {},
+      key: () => null,
+      length: 0
+    };
+    const model = {
+      items: [{ id: "1", field: "a", operator: "=" as const, value: 1 }],
+      logicOperator: "And" as const,
+      groupLogicOperator: "Or" as const
+    };
+    writePersistedFilterModel("test-screen", model, storage);
+    const read = readPersistedFilterModel("test-screen", storage);
+    expect(read?.items).toHaveLength(1);
+    expect(read?.items?.[0]?.field).toBe("a");
+    expect(read?.groupLogicOperator).toBe("Or");
   });
 
   it("writeGridPreferencesToStorage grava JSON válido", () => {

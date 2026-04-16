@@ -72,6 +72,7 @@ import {
   TableRow
 } from "../../../src/components/ui/table";
 import { buildColumnDefs, colHasValueOptions, defaultGetRowId, resolveColValueOptions } from "./adapter";
+import { GRID_CHECKBOX_SELECTION_FIELD } from "./constants";
 import { resolveDensityDimensions } from "./gridDensityDefaults";
 import {
   createGridApi,
@@ -80,6 +81,8 @@ import {
 } from "./api";
 import { ColumnFilterDialog } from "./ColumnFilterDialog";
 import { GridColumnsPanel } from "./GridColumnsPanel";
+import { GridDefaultChartsPanel } from "./GridDefaultChartsPanel";
+import { GridDefaultPivotPanel } from "./GridDefaultPivotPanel";
 import { GridFilterPanel } from "./GridFilterPanel";
 import { GridDefaultRowEditActions } from "./GridRowEditActions";
 import { GridToolbarFilterColumnsDensityRow } from "./gridToolbar";
@@ -99,7 +102,16 @@ import type {
   GridPaginationSlotProps
 } from "./dataGridProps";
 import type { HiveGlobalFilterBag } from "./filterFns";
-import { rowPassesHiveGlobalFilter } from "./filterFns";
+import { countActiveGridFilters, rowPassesHiveGlobalFilter } from "./filterFns";
+import { GridHeaderFilterCells } from "./HeaderFilterRow";
+import { computePivotView } from "./pivotEngine";
+import { normalizePivotModel } from "./pivotModelNormalize";
+import {
+  coerceSelectPrimitive as hiveCoerceSelectPrimitive,
+  matchSelectOption as hiveSelectMatchOption,
+  normalizeSelectOptions as hiveNormalizeSelectOptions,
+  type HiveSelectOptionNorm
+} from "./selectOptionLabel";
 import type {
   GridAlignment,
   GridApiCommunity,
@@ -111,6 +123,8 @@ import type {
   GridEditCellProps,
   GridFilterModel,
   GridLocaleText,
+  GridPivotModel,
+  GridChartsConfig,
   GridPaginationModel,
   GridRenderEditCellParams,
   GridRenderHeaderParams,
@@ -133,7 +147,9 @@ import {
   mergePersistedColumnSizing,
   pickPersistableColumnSizing,
   readGridPreferencesFromStorage,
-  writeGridPreferencesToStorage
+  readPersistedFilterModel,
+  writeGridPreferencesToStorage,
+  writePersistedFilterModel
 } from "./persistGridPreferences";
 import { buildClipboardPastePlan, parseClipboardTsv } from "./clipboardPaste";
 import { announceTextForFilterModel, announceTextForSortModel } from "./gridAnnouncements";
@@ -418,6 +434,15 @@ function headerJustifyClass(a?: GridAlignment): string {
   return "justify-center";
 }
 
+/**
+ * TanStack pode expor `colSpan`/`rowSpan` como 0; em HTML só são válidos inteiros ≥1 (ou omitir o atributo).
+ * `rowspan="0"` / `colspan="0"` partem o alinhamento `<thead>`/`<tbody>` em browsers.
+ */
+function tableHeaderSpanAttr(n: number | undefined): number | undefined {
+  if (n == null || !Number.isFinite(n) || n < 1) return undefined;
+  return Math.floor(n);
+}
+
 function getOrderedLeafHeaders<R extends GridValidRowModel>(
   table: TanstackTable<R>
 ): Header<R, unknown>[] {
@@ -465,10 +490,13 @@ function leafHeaderIsDraggable<R extends GridValidRowModel>(
 ): boolean {
   if (disableColumnReorderGlobal) return false;
   const id = header.column.id;
+  if (String(id).startsWith("__pivot_hg_")) return false;
   const isPinned = header.column.getIsPinned() !== false;
   if (isPinned) return false;
   if (id === "__select__" || id === "__detail__" || id === "__tree__") return false;
-  const colDef = columnsProp.find((c) => c.field === id);
+  const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)?.gridColDef;
+  const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
+  if (colDef?.children && colDef.children.length > 0) return false;
   if (colDef?.disableReorder === true) return false;
   return true;
 }
@@ -551,7 +579,7 @@ function bodyCellDensityPaddingClass(density: GridDensity, opts?: { tight?: bool
  * Em tabelas CSS, `height`/`maxHeight` no `<td>` é muitas vezes só mínimo ou ignorado; o `<th>` do cabeçalho
  * usa `minHeight`+`height` no estilo e por isso a densidade «parece» aplicar-se só ao header.
  */
-function bodyCellContentBoxStyle(rowPx: number, cellInEdit: boolean): React.CSSProperties | undefined {
+function bodyCellContentBoxStyle(rowPx: number, cellInEdit: boolean): any {
   if (cellInEdit) {
     return {
       minHeight: rowPx,
@@ -583,59 +611,6 @@ function shallowRowSnapshotForEdit<R extends GridValidRowModel>(row: R): R {
     return { ...(row as object) } as R;
   }
   return row;
-}
-
-type HiveSelectOptionNorm = { value: string; label: string; raw: string | number };
-
-function hiveNormalizeSelectOptions(options: GridValueOptionsList): HiveSelectOptionNorm[] {
-  return options.map((o) => {
-    if (o !== null && typeof o === "object" && "value" in o) {
-      const x = o as { value: string | number; label: string };
-      return { value: String(x.value), label: x.label, raw: x.value };
-    }
-    return { value: String(o), label: String(o), raw: o as string | number };
-  });
-}
-
-function hiveCoerceSelectPrimitive(value: unknown): unknown {
-  if (value != null && typeof value === "object" && !Array.isArray(value) && "value" in (value as object)) {
-    return (value as { value: unknown }).value;
-  }
-  return value;
-}
-
-/** Corresponde valor da linha a uma opção (inclui etiqueta = "P" quando o `value` guardado é número 3, etc.). */
-function hiveSelectMatchOption(opts: HiveSelectOptionNorm[], value: unknown): HiveSelectOptionNorm | undefined {
-  if (opts.length === 0) return undefined;
-  const coerced = hiveCoerceSelectPrimitive(value);
-  const byPrimitive = opts.find(
-    (o) =>
-      Object.is(o.raw, coerced) ||
-      Object.is(o.raw, value) ||
-      String(o.raw) === String(coerced) ||
-      o.value === String(coerced) ||
-      (typeof o.raw === "number" &&
-        typeof coerced === "string" &&
-        coerced.trim() !== "" &&
-        !Number.isNaN(Number(coerced)) &&
-        o.raw === Number(coerced)) ||
-      (typeof o.raw === "number" &&
-        typeof coerced === "number" &&
-        !Number.isNaN(coerced) &&
-        o.raw === coerced) ||
-      (o.raw != null &&
-        coerced != null &&
-        typeof o.raw !== "object" &&
-        typeof coerced !== "object" &&
-        (o.raw as unknown) == (coerced as unknown))
-  );
-  if (byPrimitive) return byPrimitive;
-  const vStr = coerced == null ? "" : String(coerced).trim();
-  if (!vStr.length) return undefined;
-  const vLower = vStr.toLowerCase();
-  return opts.find(
-    (o) => o.label.trim() === vStr || o.label.trim().toLowerCase() === vLower
-  );
 }
 
 function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
@@ -1680,11 +1655,14 @@ function getPinnedStickyStyle<R extends GridValidRowModel>(
   column: Column<R, unknown>,
   table: TanstackTable<R>,
   variant: "header" | "body"
-): React.CSSProperties | undefined {
+): any {
   const pin = column.getIsPinned();
   if (!pin) return undefined;
-  /** Corpo: alinhar ao fundo do tema (`--background`) para colunas fixas sobrepostas ao scroll. */
-  const bg = variant === "header" ? "hsl(var(--muted) / 0.55)" : "hsl(var(--background))";
+  /**
+   * Fundo opaco: cabeçalhos fixos alinhados a `--hive-grid-header-cell-bg` (mesmo token que `bg-hiveGrid-headerCell`).
+   * Evita `hsl(.../0.x)` — sobre conteúdo a scrollar parece translúcido e atrapalha a leitura.
+   */
+  const bg = variant === "header" ? "var(--hive-grid-header-cell-bg)" : "var(--hive-grid-cell-default-bg)";
   if (pin === "left") {
     const leftCols = table.getLeftLeafColumns();
     let leftPx = 0;
@@ -1740,7 +1718,9 @@ function DraggableHeaderCell({
   columnWidth,
   ariaColIndex,
   fixedHeaderHeight,
-  reorderAriaLabel = "Reorder column"
+  reorderAriaLabel = "Reorder column",
+  colSpan,
+  rowSpan
 }: {
   id: string;
   disabled?: boolean;
@@ -1760,6 +1740,8 @@ function DraggableHeaderCell({
   /** `columnHeaderHeight` da grelha: altura fixa da célula de cabeçalho. */
   fixedHeaderHeight?: number;
   reorderAriaLabel?: string;
+  colSpan?: number;
+  rowSpan?: number;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
@@ -1768,6 +1750,9 @@ function DraggableHeaderCell({
   const dragStyle: React.CSSProperties = {
     ...pinStyle,
     ...(layout === "table" && columnWidth != null ? { width: columnWidth } : {}),
+    ...(layout === "grid" && columnWidth != null
+      ? { width: columnWidth, minWidth: columnWidth, maxWidth: columnWidth }
+      : {}),
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.85 : 1
@@ -1807,7 +1792,7 @@ function DraggableHeaderCell({
           fixedHeaderHeight == null && "min-h-[40px]",
           className
         )}
-        style={{ ...dragStyle, ...fixedHStyle }}
+        style={{ ...dragStyle, ...fixedHStyle } as any}
       >
         {inner}
       </div>
@@ -1816,12 +1801,14 @@ function DraggableHeaderCell({
   return (
     <TableHead
       ref={setNodeRef}
+      colSpan={tableHeaderSpanAttr(colSpan)}
+      rowSpan={tableHeaderSpanAttr(rowSpan)}
       className={cn(
-        "group/header relative overflow-visible min-h-0 font-normal",
+        "group/header relative overflow-visible min-h-0 border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal",
         fixedHeaderHeight != null && "h-full align-middle",
         className
       )}
-      style={{ ...dragStyle, ...fixedHStyle }}
+      style={{ ...dragStyle, ...fixedHStyle } as any}
       aria-colindex={ariaColIndex}
     >
       {inner}
@@ -1840,16 +1827,14 @@ function getDefaultColumnSizingInfoState(): ColumnSizingInfoState {
   };
 }
 
-function mergeRowPresentationStyle(
-  rowPresentation: DataGridRowPresentation | undefined
-): React.CSSProperties {
+function mergeRowPresentationStyle(rowPresentation: DataGridRowPresentation | undefined): any {
   if (!rowPresentation) return {};
   const s = {} as Record<string, string>;
   if (rowPresentation.rowHoverBg) s["--hive-grid-row-hover-bg"] = rowPresentation.rowHoverBg;
   if (rowPresentation.rowSelectedBg) s["--hive-grid-row-selected-bg"] = rowPresentation.rowSelectedBg;
   if (rowPresentation.rowEditingBg) s["--hive-grid-row-editing-bg"] = rowPresentation.rowEditingBg;
   if (rowPresentation.rowEditingRing) s["--hive-grid-row-editing-ring"] = rowPresentation.rowEditingRing;
-  return s as React.CSSProperties;
+  return s;
 }
 
 export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
@@ -1866,8 +1851,20 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     onFilterModelChange,
     filterMode = "client",
     disableColumnFilter,
+    toolbarQuickFilterAlign = "start",
+    toolbarShowButtonLabels = false,
+    headerFiltersEnabled: headerFiltersEnabledProp,
+    onHeaderFiltersEnabledChange,
     quickFilterValue: quickFilterProp,
     onQuickFilterValueChange,
+    pivoting = false,
+    pivotModel: pivotModelProp,
+    onPivotModelChange,
+    pivotActive: pivotActiveProp,
+    onPivotActiveChange,
+    pivotPanelOpen: pivotPanelOpenProp,
+    onPivotPanelOpenChange,
+    chartsIntegration: chartsIntegrationProp,
     paginationModel: paginationModelProp,
     onPaginationModelChange,
     paginationMode = "client",
@@ -1967,12 +1964,17 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     columnVirtualization = false,
     getEstimatedRowHeight: getEstimatedRowHeightProp,
     enableVariableRowHeight = false,
+    filterPersistenceKey,
     preferencesKey,
     preferencesStorage: preferencesStorageProp,
     preferencesDebounceMs = 400,
     onPreferencesChange,
     defaultPreferences
   } = props;
+
+  const chartsConfigResolved: GridChartsConfig | undefined =
+    chartsIntegrationProp === true ? {} : typeof chartsIntegrationProp === "object" ? chartsIntegrationProp : undefined;
+  const chartsEnabled = chartsIntegrationProp != null && chartsIntegrationProp !== false;
 
   const RowEditActionsComponent = slots?.rowEditActions ?? GridDefaultRowEditActions;
 
@@ -2170,6 +2172,76 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const filterModel = filterModelProp ?? filterInternal;
   const filterModelRef = React.useRef(filterModel);
   filterModelRef.current = filterModel;
+
+  const [headerFiltersInternal, setHeaderFiltersInternal] = React.useState(
+    () => initialState?.filter?.headerFiltersEnabled === true
+  );
+  const headerFiltersEnabled = headerFiltersEnabledProp ?? headerFiltersInternal;
+  const setHeaderFiltersEnabledCb = React.useCallback(
+    (v: boolean) => {
+      if (headerFiltersEnabledProp === undefined) setHeaderFiltersInternal(v);
+      onHeaderFiltersEnabledChange?.(v);
+    },
+    [headerFiltersEnabledProp, onHeaderFiltersEnabledChange]
+  );
+
+  const EMPTY_PIVOT_MODEL: GridPivotModel = { rows: [], columns: [], values: [] };
+  const pivotModelControlled = onPivotModelChange != null;
+  const [pivotModelInternal, setPivotModelInternal] = React.useState<GridPivotModel>(() => {
+    if (onPivotModelChange != null) return EMPTY_PIVOT_MODEL;
+    return pivotModelProp !== undefined ? normalizePivotModel(pivotModelProp) : EMPTY_PIVOT_MODEL;
+  });
+  const pivotModel = pivotModelControlled
+    ? normalizePivotModel(pivotModelProp ?? EMPTY_PIVOT_MODEL)
+    : pivotModelInternal;
+
+  const commitPivotModelFromPanel = React.useCallback(
+    (next: GridPivotModel) => {
+      const norm = normalizePivotModel(next);
+      if (onPivotModelChange != null) onPivotModelChange(norm);
+      else setPivotModelInternal(norm);
+    },
+    [onPivotModelChange]
+  );
+  /** Controlado apenas com `pivotActive` + `onPivotActiveChange`; sem callback, o toggle usa estado interno mesmo que `pivotActive` venha definido. */
+  const pivotControlled = onPivotActiveChange != null;
+  const [pivotActiveInternal, setPivotActiveInternal] = React.useState(() => {
+    if (onPivotActiveChange != null) return false;
+    if (pivotActiveProp !== undefined) return pivotActiveProp;
+    return false;
+  });
+  const pivotActive = pivotControlled ? (pivotActiveProp ?? false) : pivotActiveInternal;
+  const pivotPanelControlled = onPivotPanelOpenChange != null;
+  const [pivotPanelOpenInternal, setPivotPanelOpenInternal] = React.useState(false);
+  const pivotPanelOpenResolved = pivotPanelControlled ? (pivotPanelOpenProp ?? false) : pivotPanelOpenInternal;
+  const setPivotPanelOpenResolved = React.useCallback(
+    (open: boolean) => {
+      if (pivotPanelControlled) onPivotPanelOpenChange?.(open);
+      else setPivotPanelOpenInternal(open);
+    },
+    [pivotPanelControlled, onPivotPanelOpenChange]
+  );
+  const openPivotPanel = React.useCallback(() => {
+    setPivotPanelOpenResolved(true);
+  }, [setPivotPanelOpenResolved]);
+  const [chartsPanelOpen, setChartsPanelOpen] = React.useState(false);
+
+  const pivotModelReady =
+    pivotModel.rows.some((r) => !r.hidden) &&
+    pivotModel.columns.some((c) => !c.hidden) &&
+    pivotModel.values.some((v) => !v.hidden);
+
+  const pivotModelRef = React.useRef(pivotModel);
+  pivotModelRef.current = pivotModel;
+
+  const pivotDerived = React.useMemo(() => {
+    if (!pivoting || !pivotActive || !pivotModelReady) return null;
+    if (treeActive || groupingActive) return null;
+    return computePivotView(rows, columnsProp, pivotModel);
+  }, [pivoting, pivotActive, pivotModelReady, treeActive, groupingActive, rows, columnsProp, pivotModel]);
+
+  const effectiveColumnsForTable =
+    (pivotDerived?.columns as GridColDef<R>[] | undefined) ?? columnsProp;
 
   const onStateChangeRef = React.useRef(onStateChange);
   onStateChangeRef.current = onStateChange;
@@ -2748,6 +2820,57 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   });
   const quickFilterValue = quickFilterProp ?? quickInternal;
 
+  const filterOnlyPersistenceActive = Boolean(
+    filterPersistenceKey != null &&
+      String(filterPersistenceKey).trim() !== "" &&
+      filterModelProp === undefined &&
+      !preferencesKey
+  );
+
+  const [filterStorageHydrated, setFilterStorageHydrated] = React.useState(() => !filterOnlyPersistenceActive);
+
+  React.useLayoutEffect(() => {
+    if (!filterOnlyPersistenceActive) {
+      setFilterStorageHydrated(true);
+      return;
+    }
+    const storage = preferencesStorageProp ?? (typeof localStorage !== "undefined" ? localStorage : null);
+    if (!storage) {
+      setFilterStorageHydrated(true);
+      return;
+    }
+    const stored = readPersistedFilterModel(String(filterPersistenceKey), storage);
+    if (stored) {
+      const hasCol = (stored.items ?? []).length > 0;
+      const hasQuick = (stored.quickFilterValues ?? []).some((x) => String(x).trim() !== "");
+      if (hasCol || hasQuick) {
+        setFilterInternal({
+          items: stored.items ?? [],
+          logicOperator: stored.logicOperator,
+          groupLogicOperator: stored.groupLogicOperator,
+          quickFilterLogicOperator: stored.quickFilterLogicOperator,
+          quickFilterValues: stored.quickFilterValues
+        });
+        if (quickFilterProp === undefined && stored.quickFilterValues?.length) {
+          setQuickInternal(stored.quickFilterValues.map((x) => String(x)).join(" "));
+        }
+      }
+    }
+    setFilterStorageHydrated(true);
+  }, [
+    filterOnlyPersistenceActive,
+    filterPersistenceKey,
+    filterModelProp,
+    preferencesKey,
+    preferencesStorageProp,
+    quickFilterProp
+  ]);
+
+  const activeFilterCount = React.useMemo(
+    () => countActiveGridFilters(filterModel, quickFilterValue),
+    [filterModel, quickFilterValue]
+  );
+
   const lastEmittedModelRef = React.useRef<GridRowSelectionModel | undefined>(rowSelectionModelProp);
   const tableInstanceRef = React.useRef<TanstackTable<R> | null>(null);
   /** Âncora para Shift+clique em modo seleção por linha (sem checkboxes). */
@@ -2855,32 +2978,45 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
             : table.getIsSomePageRowsSelected()
               ? "indeterminate"
               : false;
+        const selectTitle = localeText?.checkboxSelectionColumnTitle?.trim();
         return (
-          <input
-            type="checkbox"
+          <div
             className={cn(
-              "shrink-0 cursor-pointer rounded border border-primary accent-primary",
-              compact ? "h-3 w-3" : "h-4 w-4"
+              "flex min-w-0 items-center gap-1.5",
+              compact ? "px-0.5" : "px-1"
             )}
-            checked={checked === true}
-            ref={(el) => {
-              if (el) el.indeterminate = checked === "indeterminate";
-            }}
-            onChange={(e) => {
-              const v = e.target.checked;
-              if (serverSelectAll) {
-                const notify = onRowSelectionModelChangeRef.current;
-                if (v) {
-                  notify?.({ type: "exclude", ids: [] });
-                } else {
-                  notify?.({ type: "include", ids: [] });
+          >
+            {selectTitle ? (
+              <span className="min-w-0 truncate text-xs font-medium text-foreground" title={selectTitle}>
+                {selectTitle}
+              </span>
+            ) : null}
+            <input
+              type="checkbox"
+              className={cn(
+                "shrink-0 cursor-pointer rounded border border-primary accent-primary",
+                compact ? "h-3 w-3" : "h-4 w-4"
+              )}
+              checked={checked === true}
+              ref={(el) => {
+                if (el) el.indeterminate = checked === "indeterminate";
+              }}
+              onChange={(e) => {
+                const v = e.target.checked;
+                if (serverSelectAll) {
+                  const notify = onRowSelectionModelChangeRef.current;
+                  if (v) {
+                    notify?.({ type: "exclude", ids: [] });
+                  } else {
+                    notify?.({ type: "include", ids: [] });
+                  }
+                  return;
                 }
-                return;
-              }
-              table.toggleAllPageRowsSelected(v);
-            }}
-            aria-label={localeText?.checkboxSelectionSelectAll ?? "Selecionar todas"}
-          />
+                table.toggleAllPageRowsSelected(v);
+              }}
+              aria-label={localeText?.checkboxSelectionSelectAll ?? "Selecionar todas"}
+            />
+          </div>
         );
       },
       cell: ({ row }) => {
@@ -2914,6 +3050,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     checkboxSelectionSelectAllPages,
     localeText?.checkboxSelectionSelectAll,
     localeText?.checkboxSelectionSelectRow,
+    localeText?.checkboxSelectionColumnTitle,
     density
   ]);
 
@@ -3034,10 +3171,21 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       getRowId,
       disableColumnSort,
       aggregationModel,
-      showAggregationFooter
+      showAggregationFooter,
+      ...(showSelectColumn
+        ? { excludeDataColumnFields: [GRID_CHECKBOX_SELECTION_FIELD] as const }
+        : {})
     };
-    return buildColumnDefs(columnsProp, ctx);
-  }, [columnsProp, getRowId, apiRef, disableColumnSort, aggregationModel, showAggregationFooter]);
+    return buildColumnDefs(effectiveColumnsForTable, ctx);
+  }, [
+    effectiveColumnsForTable,
+    getRowId,
+    apiRef,
+    disableColumnSort,
+    aggregationModel,
+    showAggregationFooter,
+    showSelectColumn
+  ]);
 
   const tableColumns = React.useMemo(() => {
     let cols: ColumnDef<R, unknown>[] = [...columnDefs];
@@ -3133,8 +3281,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     });
   }, [rows, rowFieldDrafts, getRowId, treeActive]);
 
+  const tableSourceRows = React.useMemo(() => {
+    if (pivotDerived != null) return pivotDerived.rows as unknown as R[];
+    if (treeActive) return treeStructure.roots;
+    return rowsWithRowEditDrafts;
+  }, [pivotDerived, treeActive, treeStructure.roots, rowsWithRowEditDrafts]);
+
   const table = useReactTable({
-    data: treeActive ? treeStructure.roots : rowsWithRowEditDrafts,
+    data: tableSourceRows,
     columns: tableColumns,
     getRowId: (row) => String(getRowId(row)),
     state: {
@@ -3400,6 +3554,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
   tableInstanceRef.current = table;
 
+  /** Com vista pivot activa, o gráfico usa o dataset fonte (`chartsIntegration.*Field` referem-se às colunas originais). */
+  const rowsForCharts = React.useMemo(() => {
+    if (pivotDerived != null) return rowsWithRowEditDrafts as R[];
+    return table.getFilteredRowModel().flatRows.map((r) => r.original);
+  }, [pivotDerived, rowsWithRowEditDrafts, table]);
+
   const tableRefForApi = React.useRef(table);
   tableRefForApi.current = table;
   /** Instância TanStack sempre atual via ref — evita recriar `gridApi` quando `table` muda de referência a cada interação. */
@@ -3487,7 +3647,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         if (processRowUpdateRef.current) {
           await Promise.resolve(processRowUpdateRef.current(merged, oldRowForPru));
         } else {
-          onRowsChangeRef.current?.([merged as GridRowUpdate<R>]);
+          onRowsChangeRef.current?.([merged as unknown as GridRowUpdate<R>]);
         }
         const next = { ...rowModesModelRef.current };
         delete next[s];
@@ -3702,7 +3862,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     columnVirtualization === true &&
     useRowVirtualization &&
     !hasPinnedColumns &&
-    orderedLeafColumns.length > 0;
+    orderedLeafColumns.length > 0 &&
+    pivotDerived == null;
 
   /** Com virtualização de colunas, não há coluna extra estável — usar `showRowEditActions={false}` ou coluna `actions` manual. */
   const showRowEditActionsEffective =
@@ -3717,7 +3878,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   );
 
   const gridAriaCounts = React.useMemo(() => {
-    const headerRowCount = table.getHeaderGroups().length;
+    const headerFilterRowExtra =
+      headerFiltersEnabled &&
+      !disableColumnFilter &&
+      !useColumnVirtualizationEffective &&
+      pivotDerived == null
+        ? 1
+        : 0;
+    const headerRowCount = table.getHeaderGroups().length + headerFilterRowExtra;
     const bodyRowCount = tableRows.length === 0 ? 1 : tableRows.length;
     const footerRowCount = aggregationFooterVisible ? 1 : 0;
     const colExtra = showRowEditActionsEffective ? 1 : 0;
@@ -3731,7 +3899,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     tableRows.length,
     aggregationFooterVisible,
     orderedLeafColumns.length,
-    showRowEditActionsEffective
+    showRowEditActionsEffective,
+    headerFiltersEnabled,
+    disableColumnFilter,
+    useColumnVirtualizationEffective,
+    pivotDerived
   ]);
 
   const leafColumnCountWithRowEdit =
@@ -3973,7 +4145,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           );
           if (!fr) return false;
           onRowsChangeRef.current([
-            { id: params.id, [params.field]: params.value } as GridRowUpdate<R>
+            { id: params.id, [params.field]: params.value } as unknown as GridRowUpdate<R>
           ]);
           return true;
         },
@@ -4030,6 +4202,57 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     [quickFilterProp, resetPaginationToFirstPage]
   );
 
+  const commitFilterModel = React.useCallback(
+    (next: GridFilterModel) => {
+      resetPaginationToFirstPage();
+      const qv = next.quickFilterValues?.filter((x) => String(x).trim() !== "") ?? [];
+      if (qv.length === 0) {
+        if (quickFilterProp === undefined) setQuickInternal("");
+        onQuickFilterValueChangeRef.current?.("");
+      }
+      if (filterModelPropRef.current === undefined) setFilterInternal(next);
+      onFilterModelChangeRef.current?.(next);
+    },
+    [quickFilterProp, resetPaginationToFirstPage]
+  );
+
+  const setPivotActiveFromToolbar = React.useCallback(
+    (next: boolean) => {
+      if (onPivotActiveChange != null) {
+        onPivotActiveChange(next);
+      } else {
+        setPivotActiveInternal(next);
+      }
+      if (next && pivoting) {
+        const m = pivotModelRef.current;
+        const ready =
+          m.rows.some((r) => !r.hidden) &&
+          m.columns.some((c) => !c.hidden) &&
+          m.values.some((v) => !v.hidden);
+        if (!ready) {
+          setPivotPanelOpenResolved(true);
+        }
+      }
+    },
+    [onPivotActiveChange, pivoting, setPivotPanelOpenResolved]
+  );
+
+  const clearAllFilters = React.useCallback(() => {
+    resetPaginationToFirstPage();
+    if (quickFilterProp === undefined) setQuickInternal("");
+    onQuickFilterValueChangeRef.current?.("");
+    const fm = filterModelRef.current;
+    const next: GridFilterModel = {
+      items: [],
+      logicOperator: "And",
+      groupLogicOperator: undefined,
+      quickFilterValues: [],
+      quickFilterLogicOperator: fm.quickFilterLogicOperator ?? "And"
+    };
+    if (filterModelPropRef.current === undefined) setFilterInternal(next);
+    onFilterModelChangeRef.current?.(next);
+  }, [quickFilterProp, resetPaginationToFirstPage]);
+
   const gridRootContextValue = React.useMemo(
     () => ({
       api: gridApi,
@@ -4038,6 +4261,16 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       setDensity: applyDensity,
       quickFilterValue,
       setQuickFilterValue: setQuickFilterValueContext,
+      activeFilterCount,
+      headerFiltersEnabled,
+      setHeaderFiltersEnabled: setHeaderFiltersEnabledCb,
+      clearAllFilters,
+      chartsIntegrationEnabled: chartsEnabled,
+      openChartsPanel: chartsEnabled ? () => setChartsPanelOpen(true) : undefined,
+      pivotFeatureEnabled: !!pivoting,
+      pivotActive,
+      setPivotActive: pivoting ? setPivotActiveFromToolbar : undefined,
+      openPivotPanel: pivoting ? openPivotPanel : undefined,
       filterPanelAnchorRef,
       columnsPanelAnchorRef,
       editToolbarCompat: {
@@ -4052,6 +4285,15 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       applyDensity,
       quickFilterValue,
       setQuickFilterValueContext,
+      activeFilterCount,
+      headerFiltersEnabled,
+      setHeaderFiltersEnabledCb,
+      clearAllFilters,
+      chartsEnabled,
+      pivoting,
+      pivotActive,
+      setPivotActiveFromToolbar,
+      openPivotPanel,
       disableColumnFilter,
       disableColumnSelector,
       disableDensitySelector
@@ -4736,6 +4978,25 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   ]);
 
   React.useEffect(() => {
+    if (!filterStorageHydrated) return;
+    if (!filterPersistenceKey || filterModelProp !== undefined || preferencesKey) return;
+    const storage = preferencesStorageProp ?? (typeof localStorage !== "undefined" ? localStorage : null);
+    if (!storage) return;
+    const t = window.setTimeout(() => {
+      writePersistedFilterModel(String(filterPersistenceKey), filterModel, storage);
+    }, preferencesDebounceMs);
+    return () => clearTimeout(t);
+  }, [
+    filterStorageHydrated,
+    filterPersistenceKey,
+    filterModelProp,
+    preferencesKey,
+    preferencesDebounceMs,
+    preferencesStorageProp,
+    JSON.stringify(filterModel)
+  ]);
+
+  React.useEffect(() => {
     if (!onRowsScrollEnd) return;
     const thresholdPx = scrollEndThreshold ?? 200;
     let raf = 0;
@@ -4817,6 +5078,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const FooterSlot = slots?.footer;
   const PaginationSlot = slots?.pagination;
   const FilterPanelSlot = slots?.filterPanel ?? GridFilterPanel;
+  const PivotPanelSlot = slots?.pivotPanel ?? GridDefaultPivotPanel;
   /** `className` vai para o contentor; o resto deve ir para o componente da toolbar (não para o `div`). */
   const toolbarSlotProps = slotProps?.toolbar ?? {};
   const { className: toolbarWrapperClass, ...toolbarComponentProps } = toolbarSlotProps;
@@ -4830,15 +5092,6 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     set.add(paginationModel.pageSize);
     return [...set].sort((a, b) => a - b);
   }, [pageSizeOptions, paginationModel.pageSize]);
-
-  const commitFilterModel = React.useCallback(
-    (next: GridFilterModel) => {
-      resetPaginationToFirstPage();
-      if (filterModelPropRef.current === undefined) setFilterInternal(next);
-      onFilterModelChangeRef.current?.(next);
-    },
-    [resetPaginationToFirstPage]
-  );
 
   const lt = (key: keyof GridLocaleText, fallback: string) => localeText?.[key] ?? fallback;
 
@@ -4941,7 +5194,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
   const buildColumnHeaderParts = (header: Header<R, unknown>) => {
     const id = header.column.id;
-    const colDef = columnsProp.find((c) => c.field === id);
+    const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)?.gridColDef;
+    const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
     const showMenu =
       !disableColumnMenu &&
       id !== "__select__" &&
@@ -5231,7 +5485,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         density === "comfortable" && "hive-density-comfortable",
         className
       )}
-      style={{ ...mergeRowPresentationStyle(rowPresentation), ...style }}
+      style={{ ...mergeRowPresentationStyle(rowPresentation), ...style } as any}
       onPointerEnter={() => {
         pointerInsideGridRef.current = true;
       }}
@@ -5247,13 +5501,18 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       ) : null}
       <div
         className={cn(
-          "flex flex-col gap-2 pb-0.5",
+          "!mt-0 flex flex-col gap-0 p-0 pl-0 pt-0",
           stickyToolbar && "sticky top-0 z-10 bg-background"
         )}
         data-hive-grid-chrome
       >
       {Toolbar != null ? (
-        <div className={cn("flex min-h-8 flex-wrap items-center gap-1.5 pb-0.5", toolbarWrapperClass)}>
+        <div
+          className={cn(
+            "flex min-h-8 w-full min-w-0 flex-wrap items-center gap-1 px-0 pb-0 pt-0",
+            toolbarWrapperClass
+          )}
+        >
           {React.isValidElement(Toolbar)
             ? React.cloneElement(
                 Toolbar,
@@ -5271,9 +5530,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           quickFilterRef={quickFilterInputRef}
           quickFilterPlaceholder={lt("filterPlaceholder", "Filtrar…")}
           showColumnsButton={!disableColumnSelector}
-          showFilterButton={!disableColumnFilter && filterMode === "client"}
+          showFilterButton={!disableColumnFilter}
           showDensitySelector={!disableDensitySelector}
-          showQuickFilter={!disableColumnFilter && filterMode === "client"}
+          showQuickFilter={!disableColumnFilter}
+          showChartsButton={chartsEnabled}
+          showPivotPanelButton={pivoting}
+          toolbarQuickFilterAlign={toolbarQuickFilterAlign}
+          showButtonLabels={toolbarShowButtonLabels}
         />
       ) : null}
 
@@ -5289,7 +5552,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
               "pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-hiveGrid-loadingOverlayBg text-sm text-hiveGrid-loadingOverlayFg",
               loadingOverlayWrapperClass
             )}
-            {...loadingOverlayForwarded}
+            {...(loadingOverlayForwarded as any)}
           >
             {/* Só o conteúdo do overlay recebe clique; scroll/redimensionar cabeçalho passam à grelha. */}
             <div className="pointer-events-auto">
@@ -5348,11 +5611,28 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                         bypass={disableColumnReorder || sortableHeaderIds.length === 0}
                         items={sortableHeaderIds}
                       >
-                        {getOrderedLeafHeaders(table).map((header, hci) => {
+                        {hg.headers.map((header, hci) => {
+                          if (header.isPlaceholder) {
+                            if (header.colSpan === 0) return null;
+                            return (
+                              <TableHead
+                                key={header.id}
+                                colSpan={tableHeaderSpanAttr(header.colSpan)}
+                                rowSpan={tableHeaderSpanAttr(header.rowSpan)}
+                                className="border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell p-0"
+                                style={{
+                                  width: header.getSize(),
+                                  ...(columnHeaderHeightPx != null ? { height: columnHeaderHeightPx } : {})
+                                }}
+                              />
+                            );
+                          }
                           const id = header.column.id;
                           const pinStyle = getPinnedStickyStyle(header.column, table, "header");
                           const canDrag = leafHeaderIsDraggable(header, columnsProp, disableColumnReorder);
-                          const colDef = columnsProp.find((c) => c.field === id);
+                          const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
+                            ?.gridColDef;
+                          const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
                           const ha = colDef?.headerAlign ?? colDef?.align;
                           const headerExtraClass =
                             colDef != null
@@ -5366,11 +5646,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                             const parts = buildColumnHeaderParts(header);
                             return (
                               <DraggableHeaderCell
-                                key={id}
+                                key={header.id}
                                 id={String(id)}
                                 disabled={false}
                                 pinStyle={pinStyle}
-                                columnWidth={header.column.getSize()}
+                                columnWidth={header.getSize()}
+                                colSpan={tableHeaderSpanAttr(header.colSpan)}
+                                rowSpan={tableHeaderSpanAttr(header.rowSpan)}
                                 ariaColIndex={hci + 1}
                                 fixedHeaderHeight={columnHeaderHeightPx}
                                 reorderAriaLabel={lt("columnReorderAria", "Reordenar coluna")}
@@ -5392,12 +5674,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           const inner = renderColumnHeaderInner(header);
                           return (
                             <TableHead
-                              key={id}
-                              style={{ width: header.column.getSize(), ...pinStyle }}
+                              key={header.id}
+                              colSpan={tableHeaderSpanAttr(header.colSpan)}
+                              rowSpan={tableHeaderSpanAttr(header.rowSpan)}
+                              style={{ width: header.getSize(), ...pinStyle }}
                               role="columnheader"
                               aria-colindex={hci + 1}
                               className={cn(
-                                "group/header relative overflow-visible min-h-0 font-normal text-hiveGrid-headerMuted",
+                                "group/header relative overflow-visible min-h-0 border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
                                 hci > 0 && HEADER_COL_DIVIDER_CLASS,
                                 columnHeaderHeightPx != null && "h-full align-middle",
                                 alignTextClass(ha),
@@ -5412,9 +5696,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           );
                         })}
                       </HeaderSortableWrap>
-                      {showRowEditActionsEffective ? (
+                      {showRowEditActionsEffective && hi === 0 ? (
                         <TableHead
                           role="columnheader"
+                          rowSpan={table.getHeaderGroups().length > 1 ? table.getHeaderGroups().length : undefined}
                           aria-colindex={orderedLeafColumns.length + 1}
                           className={cn(
                             "group/header relative w-[min(160px,14vw)] text-right font-normal text-hiveGrid-headerMuted",
@@ -5423,7 +5708,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           )}
                           style={
                             columnHeaderHeightPx != null
-                              ? { height: columnHeaderHeightPx }
+                              ? {
+                                  height:
+                                    table.getHeaderGroups().length > 1
+                                      ? columnHeaderHeightPx * table.getHeaderGroups().length
+                                      : columnHeaderHeightPx
+                                }
                               : undefined
                           }
                         >
@@ -5434,6 +5724,36 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       ) : null}
                     </TableRow>
                   ))}
+                  {headerFiltersEnabled &&
+                  !disableColumnFilter &&
+                  !useColumnVirtualizationEffective &&
+                  pivotDerived == null ? (
+                    <TableRow
+                      role="row"
+                      aria-rowindex={table.getHeaderGroups().length + 1}
+                      className="bg-muted/20"
+                    >
+                      <HeaderSortableWrap
+                        bypass={disableColumnReorder || sortableHeaderIds.length === 0}
+                        items={sortableHeaderIds}
+                      >
+                        <GridHeaderFilterCells<R>
+                          headers={getOrderedLeafHeaders(table)}
+                          columns={columnsProp}
+                          filterModel={filterModel}
+                          onCommit={commitFilterModel}
+                          lt={lt}
+                          densityPaddingClass={headerCellDensityPaddingClass(density, {})}
+                        />
+                      </HeaderSortableWrap>
+                      {showRowEditActionsEffective ? (
+                        <TableHead
+                          role="presentation"
+                          className="w-[min(160px,14vw)] border-l border-hiveGrid-chromeBorder p-0"
+                        />
+                      ) : null}
+                    </TableRow>
+                  ) : null}
                 </TableHeader>
                 <TableBody>
                   {tableRows.length === 0 && !loading ? (
@@ -5445,7 +5765,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           aria-colindex={1}
                           aria-colspan={gridAriaCounts.ariaColCount}
                           className={cn("p-0 align-middle", noRowsOverlayWrapperClass)}
-                          {...noRowsOverlayForwarded}
+                          {...(noRowsOverlayForwarded as any)}
                         >
                           {React.createElement(
                             NoRowsOverlaySlot,
@@ -5812,7 +6132,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
               aria-colcount={gridAriaCounts.ariaColCount}
               aria-label={lt("gridAriaLabel", "Grelha de dados")}
             >
-              {table.getHeaderGroups().map((hg, hi) => (
+              {table.getHeaderGroups().map((hg, hi) => {
+                const flexPivotHeaders =
+                  !useColumnVirtualizationEffective && table.getHeaderGroups().length > 1;
+                return (
                 <div
                   key={hg.id}
                   data-hive-header-row=""
@@ -5821,7 +6144,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                   className={
                     useColumnVirtualizationEffective
                       ? "group/header-strip relative w-full min-w-max border-b border-hiveGrid-chromeBorder bg-hiveGrid-virtualHeaderRow"
-                      : "group/header-strip grid w-full min-w-max border-b border-hiveGrid-chromeBorder bg-hiveGrid-virtualHeaderRow"
+                      : flexPivotHeaders
+                        ? "group/header-strip flex w-full min-w-max flex-nowrap border-b border-hiveGrid-chromeBorder bg-hiveGrid-virtualHeaderRow"
+                        : "group/header-strip grid w-full min-w-max border-b border-hiveGrid-chromeBorder bg-hiveGrid-virtualHeaderRow"
                   }
                   style={
                     useColumnVirtualizationEffective
@@ -5831,12 +6156,20 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           minHeight: columnHeaderHeightPx ?? 40,
                           height: columnHeaderHeightPx ?? undefined
                         }
-                      : {
-                          gridTemplateColumns: gridTemplateColumnsRowEdit,
-                          ...(columnHeaderHeightPx != null
-                            ? { minHeight: columnHeaderHeightPx }
-                            : {})
-                        }
+                      : flexPivotHeaders
+                        ? {
+                            minWidth: table.getTotalSize(),
+                            width: table.getTotalSize(),
+                            ...(columnHeaderHeightPx != null
+                              ? { minHeight: columnHeaderHeightPx, height: columnHeaderHeightPx }
+                              : {})
+                          }
+                        : {
+                            gridTemplateColumns: gridTemplateColumnsRowEdit,
+                            ...(columnHeaderHeightPx != null
+                              ? { minHeight: columnHeaderHeightPx }
+                              : {})
+                          }
                   }
                 >
                   {useColumnVirtualizationEffective ? (
@@ -5848,7 +6181,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                         const hci = vc.index;
                         const pinStyle = getPinnedStickyStyle(header.column, table, "header");
                         const inner = renderColumnHeaderInner(header);
-                        const colDef = columnsProp.find((c) => c.field === id);
+                        const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
+                          ?.gridColDef;
+                        const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
                         const ha = colDef?.headerAlign ?? colDef?.align;
                         const headerExtraClassVirt =
                           colDef != null
@@ -5893,11 +6228,27 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                     bypass={disableColumnReorder || sortableHeaderIds.length === 0}
                     items={sortableHeaderIds}
                   >
-                    {getOrderedLeafHeaders(table).map((header, hci) => {
+                    {hg.headers.map((header, hci) => {
+                      if (header.isPlaceholder) {
+                        if (header.colSpan === 0) return null;
+                        return (
+                          <div
+                            key={header.id}
+                            role="presentation"
+                            style={{
+                              width: flexPivotHeaders ? header.getSize() : undefined,
+                              flex: flexPivotHeaders ? "none" : undefined,
+                              minWidth: flexPivotHeaders ? header.getSize() : undefined
+                            }}
+                          />
+                        );
+                      }
                       const id = header.column.id;
                       const pinStyle = getPinnedStickyStyle(header.column, table, "header");
                       const canDrag = leafHeaderIsDraggable(header, columnsProp, disableColumnReorder);
-                      const colDef = columnsProp.find((c) => c.field === id);
+                      const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
+                        ?.gridColDef;
+                      const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
                       const ha = colDef?.headerAlign ?? colDef?.align;
                       const headerExtraClassVirt =
                         colDef != null
@@ -5911,11 +6262,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                         const parts = buildColumnHeaderParts(header);
                         return (
                           <DraggableHeaderCell
-                            key={id}
+                            key={header.id}
                             id={String(id)}
                             disabled={false}
                             layout="grid"
                             pinStyle={pinStyle}
+                            columnWidth={flexPivotHeaders ? header.getSize() : undefined}
+                            colSpan={tableHeaderSpanAttr(header.colSpan)}
+                            rowSpan={tableHeaderSpanAttr(header.rowSpan)}
                             ariaColIndex={hci + 1}
                             fixedHeaderHeight={columnHeaderHeightPx}
                             reorderAriaLabel={lt("columnReorderAria", "Reordenar coluna")}
@@ -5937,11 +6291,18 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       const inner = renderColumnHeaderInner(header);
                       return (
                         <div
-                          key={id}
+                          key={header.id}
                           role="columnheader"
                           aria-colindex={hci + 1}
                           style={{
                             ...pinStyle,
+                            ...(flexPivotHeaders
+                              ? {
+                                  width: header.getSize(),
+                                  minWidth: header.getSize(),
+                                  flexShrink: 0
+                                }
+                              : {}),
                             ...(columnHeaderHeightPx != null
                               ? {
                                   minHeight: columnHeaderHeightPx,
@@ -5965,18 +6326,25 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       );
                     })}
                   </HeaderSortableWrap>
-                  {showRowEditActionsEffective ? (
+                  {showRowEditActionsEffective &&
+                  (flexPivotHeaders ? hi === 0 : hi === table.getHeaderGroups().length - 1) ? (
                     <div
                       role="columnheader"
                       aria-colindex={orderedLeafColumns.length + 1}
                       className={cn(
-                        "relative flex items-center justify-end border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell px-2 text-sm font-normal text-hiveGrid-headerMuted",
+                        "relative flex shrink-0 items-center justify-end border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell px-2 text-sm font-normal text-hiveGrid-headerMuted",
                         columnHeaderHeightPx == null && "min-h-[40px]"
                       )}
                       style={
-                        columnHeaderHeightPx != null
-                          ? { minHeight: columnHeaderHeightPx, height: columnHeaderHeightPx }
-                          : undefined
+                        flexPivotHeaders
+                          ? {
+                              width: "min(160px,14vw)",
+                              minHeight: (columnHeaderHeightPx ?? 40) * table.getHeaderGroups().length,
+                              alignSelf: "stretch"
+                            }
+                          : columnHeaderHeightPx != null
+                            ? { minHeight: columnHeaderHeightPx, height: columnHeaderHeightPx, width: "min(160px,14vw)" }
+                            : { width: "min(160px,14vw)" }
                       }
                     >
                       {lt("rowEditActionsColumnHeader", "Ações")}
@@ -5985,7 +6353,40 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                     </>
                   )}
                 </div>
-              ))}
+                );
+              })}
+              {headerFiltersEnabled &&
+              !disableColumnFilter &&
+              !useColumnVirtualizationEffective &&
+              pivotDerived == null ? (
+                <div
+                  role="row"
+                  aria-rowindex={table.getHeaderGroups().length + 1}
+                  className="grid w-full min-w-max border-b border-hiveGrid-chromeBorder bg-muted/20"
+                  style={{
+                    gridTemplateColumns: gridTemplateColumnsRowEdit,
+                    minHeight: 44
+                  }}
+                >
+                  <HeaderSortableWrap
+                    bypass={disableColumnReorder || sortableHeaderIds.length === 0}
+                    items={sortableHeaderIds}
+                  >
+                    <GridHeaderFilterCells<R>
+                      useDivCells
+                      headers={getOrderedLeafHeaders(table)}
+                      columns={columnsProp}
+                      filterModel={filterModel}
+                      onCommit={commitFilterModel}
+                      lt={lt}
+                      densityPaddingClass={headerCellDensityPaddingClass(density, {})}
+                    />
+                  </HeaderSortableWrap>
+                  {showRowEditActionsEffective ? (
+                    <div role="presentation" className="min-w-[108px]" />
+                  ) : null}
+                </div>
+              ) : null}
               {tableRows.length === 0 && !loading ? (
                 NoRowsOverlaySlot ? (
                   <div
@@ -5993,7 +6394,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       "flex min-h-24 items-center justify-center text-sm text-hiveGrid-headerMuted",
                       noRowsOverlayWrapperClass
                     )}
-                    {...noRowsOverlayForwarded}
+                    {...(noRowsOverlayForwarded as any)}
                   >
                     {React.createElement(
                       NoRowsOverlaySlot,
@@ -6662,7 +7063,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           </div>
         </div>
         ))}
-      {!disableColumnFilter && filterMode === "client" ? (
+      {!disableColumnFilter ? (
         <FilterPanelSlot
           api={gridApi}
           open={filterPanelOpen}
@@ -6704,6 +7105,25 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         onCommit={commitFilterModel}
         lt={lt}
       />
+      {pivoting ? (
+        <PivotPanelSlot
+          api={gridApi}
+          open={pivotPanelOpenResolved}
+          onOpenChange={setPivotPanelOpenResolved}
+          pivotModel={pivotModel}
+          onCommitPivotModel={commitPivotModelFromPanel}
+          {...(slotProps?.pivotPanel as Record<string, unknown>)}
+        />
+      ) : null}
+      {chartsEnabled ? (
+        <GridDefaultChartsPanel<R>
+          open={chartsPanelOpen}
+          onOpenChange={setChartsPanelOpen}
+          rows={rowsForCharts}
+          columns={columnsProp}
+          config={chartsConfigResolved}
+        />
+      ) : null}
     </div>
     </GridRootProvider>
     </TooltipProvider>
@@ -6711,4 +7131,3 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 }
 
 export const DataGridPro = DataGrid;
-export const DataGridPremium = DataGrid;

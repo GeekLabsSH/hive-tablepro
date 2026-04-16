@@ -1,9 +1,15 @@
 import * as React from "react";
 import {
+  AdjustmentsHorizontalIcon,
+  ArrowPathIcon,
   Bars3BottomLeftIcon,
+  ArrowDownTrayIcon,
+  ChartBarIcon,
   FunnelIcon,
   MagnifyingGlassIcon,
-  Squares2X2Icon
+  QueueListIcon,
+  Squares2X2Icon,
+  TableCellsIcon
 } from "@heroicons/react/24/outline";
 import { Button } from "../../../src/components/ui/button";
 import { Input } from "../../../src/components/ui/input";
@@ -30,6 +36,14 @@ export type GridToolbarProps = React.HTMLAttributes<HTMLDivElement> & {
   customSubtitleText?: React.ReactNode;
 };
 
+function hasToolbarTitle(title?: React.ReactNode, customSubtitleText?: React.ReactNode) {
+  const hasTitle =
+    title != null &&
+    title !== "" &&
+    !(typeof title === "string" && title.trim() === "");
+  return hasTitle || Boolean(customSubtitleText);
+}
+
 export function GridToolbar({
   className,
   children,
@@ -37,11 +51,15 @@ export function GridToolbar({
   customSubtitleText,
   ...props
 }: GridToolbarProps) {
+  const showTitleBlock = hasToolbarTitle(title, customSubtitleText);
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)} {...props}>
-      {title != null || customSubtitleText ? (
+    <div
+      className={cn("flex w-full min-w-0 flex-wrap items-center gap-2", className)}
+      {...(props as any)}
+    >
+      {showTitleBlock ? (
         <div className="flex min-h-0 min-w-0 flex-col justify-center gap-0.5 pr-2">
-          {title != null ? (
+          {title != null && title !== "" ? (
             <span className="truncate text-sm font-medium leading-none">{title}</span>
           ) : null}
           {customSubtitleText ? (
@@ -57,32 +75,42 @@ export function GridToolbar({
 }
 
 export function GridToolbarContainer(props: GridToolbarProps) {
-  return <GridToolbar {...props} />;
+  return <GridToolbar {...(props as any)} />;
 }
 
 export function GridToolbarColumnsButton({
   className,
   title = "Colunas",
+  showLabel,
+  children,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
   const { api } = useGridApiContext();
+  const icon = children ?? <Squares2X2Icon className="h-4 w-4 shrink-0" aria-hidden />;
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
           type="button"
           variant="outline"
-          size="icon"
-          className={cn("h-8 w-8 shrink-0", className)}
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
           data-grid-toolbar-columns
           aria-label={title}
           onClick={(e) => {
             api?.showColumnsPanel?.(e.currentTarget);
             props.onClick?.(e);
           }}
-          {...props}
+          {...(props as any)}
         >
-          {props.children ?? <Squares2X2Icon className="h-4 w-4" aria-hidden />}
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
         </Button>
       </TooltipTrigger>
       <TooltipContent side="bottom">{title}</TooltipContent>
@@ -93,32 +121,53 @@ export function GridToolbarColumnsButton({
 export function GridToolbarFilterButton({
   className,
   title = "Filtros",
+  showLabel,
+  children,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
   const { api } = useGridApiContext();
   const root = useGridRootContext();
+  const n = root?.activeFilterCount ?? 0;
+  const icon = children ?? <FunnelIcon className="h-4 w-4 shrink-0" aria-hidden />;
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className={cn("h-8 w-8 shrink-0", className)}
-          aria-label={title}
-          ref={(el) => {
-            if (root?.filterPanelAnchorRef) root.filterPanelAnchorRef.current = el;
-          }}
-          onClick={(e) => {
-            const el = e.currentTarget;
-            if (root?.filterPanelAnchorRef) root.filterPanelAnchorRef.current = el;
-            api?.showFilterPanel?.(el);
-            props.onClick?.(e);
-          }}
-          {...props}
-        >
-          {props.children ?? <FunnelIcon className="h-4 w-4" aria-hidden />}
-        </Button>
+        <span className="relative inline-flex shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size={showLabel ? "sm" : "icon"}
+            className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+            aria-label={title}
+            ref={(el) => {
+              if (root?.filterPanelAnchorRef) root.filterPanelAnchorRef.current = el;
+            }}
+            onClick={(e) => {
+              const el = e.currentTarget;
+              if (root?.filterPanelAnchorRef) root.filterPanelAnchorRef.current = el;
+              api?.showFilterPanel?.(el);
+              props.onClick?.(e);
+            }}
+            {...(props as any)}
+          >
+            {showLabel ? (
+              <>
+                {icon}
+                <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+              </>
+            ) : (
+              icon
+            )}
+          </Button>
+          {n > 0 ? (
+            <span
+              className="pointer-events-none absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-none text-primary-foreground"
+              aria-hidden
+            >
+              {n > 99 ? "99+" : n}
+            </span>
+          ) : null}
+        </span>
       </TooltipTrigger>
       <TooltipContent side="bottom">{title}</TooltipContent>
     </Tooltip>
@@ -131,20 +180,52 @@ export function GridToolbarExport({
   csvOptions,
   excelOptions,
   children,
+  title = "Exportar",
+  showLabel,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   printOptions?: { title?: string };
   csvOptions?: { fileName?: string; utf8WithBom?: boolean };
   excelOptions?: { fileName?: string; sheetName?: string };
+  /** Rótulo acessível + tooltip quando não há `children`. */
+  title?: string;
+  showLabel?: boolean;
 }) {
   const { api } = useGridApiContext();
+  const icon = children ?? <ArrowDownTrayIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  const hasCustomChildren = children != null && children !== false;
+  const size = hasCustomChildren ? "sm" : showLabel ? "sm" : "icon";
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className={className} {...props}>
-          {children ?? "Exportar"}
-        </Button>
-      </DropdownMenuTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size={size}
+              className={cn(
+                hasCustomChildren ? "" : showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0",
+                className
+              )}
+              aria-label={title}
+              {...(props as any)}
+            >
+              {hasCustomChildren ? (
+                icon
+              ) : showLabel ? (
+                <>
+                  {icon}
+                  <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+                </>
+              ) : (
+                icon
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">{title}</TooltipContent>
+      </Tooltip>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
@@ -172,6 +253,210 @@ export function GridToolbarExport({
   );
 }
 
+export function GridToolbarHeaderFiltersButton({
+  className,
+  title = "Filtros no cabeçalho",
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  const on = root?.headerFiltersEnabled ?? false;
+  const icon = children ?? <QueueListIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant={on ? "secondary" : "outline"}
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+          aria-label={title}
+          aria-pressed={on}
+          onClick={(e) => {
+            root?.setHeaderFiltersEnabled?.(!on);
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{title}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function GridToolbarPivotPanelButton({
+  className,
+  title = "Configurar pivot",
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  if (!root?.pivotFeatureEnabled || root.openPivotPanel == null) return null;
+  const icon = children ?? <AdjustmentsHorizontalIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+          aria-label={title}
+          onClick={(e) => {
+            root.openPivotPanel?.();
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{title}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function GridToolbarPivotToggleButton({
+  className,
+  title = "Pivot",
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  if (!root?.pivotFeatureEnabled) return null;
+  const on = root.pivotActive ?? false;
+  const icon = children ?? <TableCellsIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant={on ? "secondary" : "outline"}
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+          aria-label={title}
+          aria-pressed={on}
+          onClick={(e) => {
+            root.setPivotActive?.(!on);
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{title}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function GridToolbarChartsButton({
+  className,
+  title = "Gráficos",
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  if (!root?.chartsIntegrationEnabled) return null;
+  const icon = children ?? <ChartBarIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+          aria-label={title}
+          onClick={(e) => {
+            root.openChartsPanel?.();
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{title}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+export function GridToolbarClearFiltersButton({
+  className,
+  title = "Limpar filtros",
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  const disabled = (root?.activeFilterCount ?? 0) === 0;
+  const icon = children ?? <ArrowPathIcon className="h-4 w-4 shrink-0" aria-hidden />;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size={showLabel ? "sm" : "icon"}
+          className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+          aria-label={title}
+          disabled={disabled}
+          onClick={(e) => {
+            if (!disabled) root?.clearAllFilters?.();
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{title}</TooltipContent>
+    </Tooltip>
+  );
+}
+
 const densityLabels: Record<GridDensity, string> = {
   compact: "Compacto",
   standard: "Padrão",
@@ -194,26 +479,28 @@ function DensityGlyph({ density }: { density: GridDensity }) {
 export function GridToolbarDensitySelector({
   className,
   title = "Densidade",
+  showLabel,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { title?: string }) {
+}: React.HTMLAttributes<HTMLDivElement> & { title?: string; showLabel?: boolean }) {
   const ctx = useGridRootContext();
   const d = ctx?.density ?? "standard";
   const setD = ctx?.setDensity;
 
   return (
-    <div className={cn("flex items-center", className)} {...props}>
+    <div className={cn("flex items-center", className)} {...(props as any)}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             type="button"
             variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0"
+            size={showLabel ? "sm" : "icon"}
+            className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0")}
             disabled={!setD}
             aria-label={title}
             title={title}
           >
-            <Bars3BottomLeftIcon className="h-4 w-4" aria-hidden />
+            <Bars3BottomLeftIcon className="h-4 w-4 shrink-0" aria-hidden />
+            {showLabel ? <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span> : null}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-52">
@@ -269,7 +556,7 @@ export const GridToolbarQuickFilter = React.forwardRef<
           value={v}
           onChange={(e) => setV?.(e.target.value)}
           placeholder={placeholder ?? "Pesquisar…"}
-          {...props}
+          {...(props as any)}
         />
       </div>
     );
@@ -282,14 +569,14 @@ export const GridToolbarQuickFilter = React.forwardRef<
       value={v}
       onChange={(e) => setV?.(e.target.value)}
       placeholder={placeholder ?? "Filtrar…"}
-      {...props}
+      {...(props as any)}
     />
   );
 });
 GridToolbarQuickFilter.displayName = "GridToolbarQuickFilter";
 
 /**
- * Linha padrão da grelha: Colunas / Filtros / pesquisa rápida / Densidade (último botão).
+ * Linha padrão da grelha: Colunas / Filtros / … / Densidade e, por defeito, pesquisa rápida a seguir (à esquerda).
  * Use com `hideBuiltInFilterAndColumnsRow` e `slots.toolbar`, ou confie na barra integrada do `DataGrid`.
  */
 export function GridToolbarFilterColumnsDensityRow({
@@ -299,7 +586,14 @@ export function GridToolbarFilterColumnsDensityRow({
   showColumnsButton = true,
   showFilterButton = true,
   showDensitySelector = true,
-  showQuickFilter = true
+  showQuickFilter = true,
+  showHeaderFiltersToggle = true,
+  showClearFiltersButton = true,
+  showChartsButton = true,
+  showPivotPanelButton = true,
+  /** `start` = após os botões, sem empurrar para a direita; `end` = `ml-auto` na pesquisa. */
+  toolbarQuickFilterAlign = "start",
+  showButtonLabels = false
 }: {
   className?: string;
   quickFilterPlaceholder?: string;
@@ -308,29 +602,51 @@ export function GridToolbarFilterColumnsDensityRow({
   showFilterButton?: boolean;
   showDensitySelector?: boolean;
   showQuickFilter?: boolean;
+  showHeaderFiltersToggle?: boolean;
+  showClearFiltersButton?: boolean;
+  showChartsButton?: boolean;
+  showPivotPanelButton?: boolean;
+  toolbarQuickFilterAlign?: "start" | "end";
+  showButtonLabels?: boolean;
 }) {
   const hasChrome =
-    showColumnsButton || showFilterButton || showDensitySelector || showQuickFilter;
+    showColumnsButton ||
+    showFilterButton ||
+    showDensitySelector ||
+    showQuickFilter ||
+    showHeaderFiltersToggle ||
+    showClearFiltersButton ||
+    showChartsButton ||
+    showPivotPanelButton;
   if (!hasChrome) return null;
+
+  const quick = showQuickFilter ? (
+    <GridToolbarQuickFilter
+      ref={quickFilterRef}
+      variant="minimal"
+      className={cn("shrink-0", toolbarQuickFilterAlign === "end" && "ml-auto")}
+      placeholder={quickFilterPlaceholder}
+    />
+  ) : null;
 
   return (
     <div
       className={cn(
-        "flex min-h-8 w-full flex-wrap items-center gap-1 pb-0.5 [&_button]:border-border [&_button]:bg-background",
+        "flex min-h-8 w-full min-w-0 flex-wrap items-center gap-1 px-0 pb-0 pt-0 [&_button]:border-border [&_button]:bg-background",
         className
       )}
     >
-      {showColumnsButton ? <GridToolbarColumnsButton /> : null}
-      {showFilterButton ? <GridToolbarFilterButton /> : null}
-      {showDensitySelector ? <GridToolbarDensitySelector /> : null}
-      {showQuickFilter ? (
-        <GridToolbarQuickFilter
-          ref={quickFilterRef}
-          variant="minimal"
-          placeholder={quickFilterPlaceholder}
-        />
-      ) : null}
-      
+      <div className="flex min-w-0 flex-wrap items-center gap-1">
+        {showColumnsButton ? <GridToolbarColumnsButton showLabel={showButtonLabels} /> : null}
+        {showFilterButton ? <GridToolbarFilterButton showLabel={showButtonLabels} /> : null}
+        {showHeaderFiltersToggle ? <GridToolbarHeaderFiltersButton showLabel={showButtonLabels} /> : null}
+        {showClearFiltersButton ? <GridToolbarClearFiltersButton showLabel={showButtonLabels} /> : null}
+        {showChartsButton ? <GridToolbarChartsButton showLabel={showButtonLabels} /> : null}
+        {showPivotPanelButton ? <GridToolbarPivotPanelButton showLabel={showButtonLabels} /> : null}
+        <GridToolbarPivotToggleButton showLabel={showButtonLabels} />
+        {showDensitySelector ? <GridToolbarDensitySelector showLabel={showButtonLabels} /> : null}
+      </div>
+      {quick}
     </div>
   );
 }

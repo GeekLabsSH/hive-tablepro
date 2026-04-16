@@ -92,7 +92,7 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
         setValueText("");
         return;
       }
-      if (isSingleSelect && existing.operator === "equals") {
+      if (isSingleSelect && (existing.operator === "equals" || existing.operator === "!=")) {
         const m = normOpts.find(
           (o) =>
             Object.is(o.raw, existing.value) ||
@@ -102,7 +102,7 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
         setValueText(m?.value ?? normOpts[0]?.value ?? "");
         return;
       }
-      if (isBoolean && existing.operator === "equals") {
+      if (isBoolean && (existing.operator === "equals" || existing.operator === "!=")) {
         const v = existing.value;
         setValueText(v === true || v === "true" || String(v).toLowerCase() === "true" ? "true" : "false");
         return;
@@ -134,13 +134,13 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
     if (operator === "isEmpty" || operator === "isNotEmpty") {
       item = { field, operator };
     } else if (isSingleSelect) {
-      if (operator !== "equals") return;
+      if (operator !== "equals" && operator !== "!=") return;
       const m = normOpts.find((o) => o.value === valueText);
       if (!m) return;
-      item = { field, operator: "equals", value: m.raw };
+      item = { field, operator, value: m.raw };
     } else if (isBoolean) {
-      if (operator !== "equals") return;
-      item = { field, operator: "equals", value: valueText === "true" };
+      if (operator !== "equals" && operator !== "!=") return;
+      item = { field, operator, value: valueText === "true" };
     } else if (isNumber) {
       const n = Number(valueText.replace(",", "."));
       if (!Number.isFinite(n)) return;

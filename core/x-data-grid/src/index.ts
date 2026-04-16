@@ -2,12 +2,15 @@
 
 export { isDataCellInteractiveTarget } from "./isDataCellInteractiveTarget";
 export { createGridApi } from "./api";
-export { DataGrid, DataGridPro, DataGridPremium } from "./DataGrid";
+export { DataGrid, DataGridPro } from "./DataGrid";
+export { DataGridPremium } from "./DataGridPremium";
 export { hiveTableproObserve } from "./observability";
 export type { HiveTableproObserveEntry } from "./observability";
 export { GridErrorBoundary } from "./GridErrorBoundary";
 export type { GridErrorBoundaryFallbackRender, GridErrorBoundaryProps } from "./GridErrorBoundary";
 export { GridFilterPanel } from "./GridFilterPanel";
+export { GridDefaultPivotPanel } from "./GridDefaultPivotPanel";
+export { normalizePivotModel } from "./pivotModelNormalize";
 export { GridColumnsPanel } from "./GridColumnsPanel";
 export {
   GRID_DENSITY_DEFAULTS,
@@ -22,15 +25,17 @@ export {
   parsePersistedGridPreferences,
   pickPersistableColumnSizing,
   readGridPreferencesFromStorage,
+  readPersistedFilterModel,
   stringifyPersistedGridPreferences,
-  writeGridPreferencesToStorage
+  writeGridPreferencesToStorage,
+  writePersistedFilterModel
 } from "./persistGridPreferences";
 export type { PersistedGridPreferences } from "./persistGridPreferences";
 
 export { GRID_CHECKBOX_SELECTION_COL_DEF, GRID_CHECKBOX_SELECTION_FIELD } from "./constants";
 export { gridStringOrNumberComparator } from "./comparators";
 export { GridEditInputCell, GridActionsCellItem } from "./GridCells";
-export type { GridActionsCellItemProps } from "./GridCells";
+export type { GridEditInputCellProps, GridActionsCellItemProps } from "./GridCells";
 export {
   GridToolbar,
   GridToolbarContainer,
@@ -39,7 +44,12 @@ export {
   GridToolbarExport,
   GridToolbarDensitySelector,
   GridToolbarQuickFilter,
-  GridToolbarFilterColumnsDensityRow
+  GridToolbarFilterColumnsDensityRow,
+  GridToolbarHeaderFiltersButton,
+  GridToolbarClearFiltersButton,
+  GridToolbarChartsButton,
+  GridToolbarPivotPanelButton,
+  GridToolbarPivotToggleButton
 } from "./gridToolbar";
 export type { GridToolbarProps, GridToolbarQuickFilterProps } from "./gridToolbar";
 export { GridDefaultRowEditActions } from "./GridRowEditActions";
@@ -60,6 +70,7 @@ export type {
   GridDetailPanelParams,
   GridExcelExportOptions,
   GridFilterItem,
+  GridChartsConfig,
   GridFilterModel,
   GridFilterOperator,
   GridGetActionsParams,
@@ -68,6 +79,12 @@ export type {
   GridPaginationMeta,
   GridPaginationModel,
   GridPinnedColumns,
+  GridPivotAggFunc,
+  GridPivotColumnDef,
+  GridPivotDateGranularity,
+  GridPivotModel,
+  GridPivotRowDef,
+  GridPivotValueDef,
   GridPrintExportOptions,
   GridRenderCellParams,
   GridRenderEditCellParams,
@@ -111,10 +128,12 @@ export {
 export type {
   DataGridProps,
   DataGridRowPresentation,
+  GridChartsPanelSlotProps,
   GridFilterPanelSlotProps,
   GridFooterSlotProps,
   GridOverlaySlotComponent,
   GridPaginationSlotProps,
+  GridPivotPanelSlotProps,
   GridRowEditActionsSlotProps,
   GridSlotProps,
   GridSlots

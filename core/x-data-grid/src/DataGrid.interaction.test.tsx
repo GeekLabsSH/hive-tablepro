@@ -45,7 +45,9 @@ const defaultProps = {
 const MAX_PROFILER_COMMITS = 250;
 
 function renderGrid(
-  extra?: Partial<React.ComponentProps<typeof DataGrid<Row>>> & { apiRef?: React.MutableRefObject<GridApiCommunity<Row> | null> }
+  extra?: Partial<React.ComponentProps<typeof DataGrid<Row>>> & {
+    apiRef?: React.MutableRefObject<GridApiCommunity<Row> | null>;
+  }
 ) {
   let profilerCommits = 0;
   const onRender: ProfilerOnRenderCallback = (
@@ -64,9 +66,10 @@ function renderGrid(
     }
   };
 
+  const { apiRef, ...gridProps } = extra ?? {};
   const view = render(
     <Profiler id="hive-datagrid-test" onRender={onRender}>
-      <DataGrid<Row> {...defaultProps} {...extra} />
+      <DataGrid<Row> {...defaultProps} {...gridProps} {...(apiRef ? { apiRef } : {})} />
     </Profiler>
   );
 
@@ -318,9 +321,9 @@ describe("DataGrid — interações não devem explodir commits de render", () =
   it("select pesquisável: ArrowDown no filtro destaca a primeira opção filtrada (não salta)", async () => {
     const user = userEvent.setup({ delay: null });
     renderGrid({
-      rows: rowsPick,
-      columns: columnsPick,
-      getRowId: (r: RowPick) => r.id,
+      rows: rowsPick as unknown as Row[],
+      columns: columnsPick as unknown as GridColDef<Row>[],
+      getRowId: (r: Row) => (r as unknown as RowPick).id,
       editMode: "row",
       processRowUpdate: async (r) => r,
       showRowEditActions: true,
@@ -379,9 +382,9 @@ describe("DataGrid — interações não devem explodir commits de render", () =
       }
     ];
     renderGrid({
-      rows: rowsPick,
-      columns: cols,
-      getRowId: (r: RowPick) => r.id,
+      rows: rowsPick as unknown as Row[],
+      columns: cols as unknown as GridColDef<Row>[],
+      getRowId: (r: Row) => (r as unknown as RowPick).id,
       editMode: "row",
       processRowUpdate: async (r) => r,
       showRowEditActions: true,

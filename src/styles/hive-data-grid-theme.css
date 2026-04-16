@@ -10,7 +10,8 @@
   --hive-grid-loading-overlay-bg: hsl(var(--background) / 0.6);
   --hive-grid-loading-overlay-fg: hsl(var(--muted-foreground));
   --hive-grid-virtual-header-row-bg: hsl(var(--muted) / 0.25);
-  --hive-grid-header-cell-bg: hsl(var(--muted) / 0.4);
+  /** Opaco: cabeçalhos (e colunas fixas) não devem mostrar o conteúdo por baixo ao scrollar. */
+  --hive-grid-header-cell-bg: hsl(var(--muted));
   --hive-grid-header-muted-fg: hsl(var(--muted-foreground));
   --hive-grid-pin-row-bg: hsl(var(--card));
   --hive-grid-pin-row-fg: hsl(var(--card-foreground));

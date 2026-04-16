@@ -1,10 +1,16 @@
 import type { Cell, FilterFn, Row } from "@tanstack/react-table";
+import {
+  colHasValueOptions,
+  formatSingleSelectDisplay,
+  resolveColValueOptions
+} from "./gridValueOptions";
 import type {
   GridApiCommunity,
   GridColDef,
   GridFilterItem,
   GridFilterModel,
   GridFilterOperator,
+  GridRowId,
   GridValidRowModel
 } from "./types";
 
@@ -17,6 +23,35 @@ function str(v: unknown): string {
 function num(v: unknown): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : NaN;
+}
+
+function parseInListTokens(value: unknown): string[] {
+  if (value == null) return [];
+  if (Array.isArray(value)) {
+    return value.map((x) => String(x).trim()).filter(Boolean);
+  }
+  return String(value)
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function asMultiSelectValues(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value;
+  if (value == null) return [];
+  const s = String(value).trim();
+  if (!s) return [];
+  try {
+    const j = JSON.parse(s) as unknown;
+    if (Array.isArray(j)) return j;
+  } catch {
+    /* ignore */
+  }
+  return parseInListTokens(value).map((x) => x as unknown);
+}
+
+function valuesEqualCaseInsensitive(a: unknown, b: unknown): boolean {
+  return String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
 }
 
 function toTime(v: unknown): number {
@@ -57,8 +92,12 @@ export function applyGridFilterOperator(
       return cs !== "";
     case "=":
       return num(cell) === num(value);
-    case "!=":
-      return num(cell) !== num(value);
+    case "!=": {
+      const cn = num(cell);
+      const vn = num(value);
+      if (Number.isFinite(cn) && Number.isFinite(vn)) return cn !== vn;
+      return !valuesEqualCaseInsensitive(cell, value);
+    }
     case ">":
       return num(cell) > num(value);
     case ">=":
@@ -79,6 +118,36 @@ export function applyGridFilterOperator(
       return Number.isFinite(cellT) && Number.isFinite(valT) && cellT < valT;
     case "onOrBefore":
       return Number.isFinite(cellT) && Number.isFinite(valT) && cellT <= valT;
+    case "inList": {
+      const tokens = parseInListTokens(value);
+      if (tokens.length === 0) return true;
+      const cn = num(cell);
+      if (Number.isFinite(cn)) {
+        return tokens.some((t) => {
+          const tn = num(t);
+          return Number.isFinite(tn) && tn === cn;
+        });
+      }
+      const csl = cs.trim().toLowerCase();
+      return tokens.some((t) => t.trim().toLowerCase() === csl);
+    }
+    case "selectAny": {
+      const opts = asMultiSelectValues(value);
+      if (opts.length === 0) return true;
+      return opts.some((o) => valuesEqualCaseInsensitive(cell, o));
+    }
+    case "selectAll": {
+      const opts = asMultiSelectValues(value);
+      if (opts.length === 0) return true;
+      if (Array.isArray(cell)) {
+        const cells = cell.map((x) => String(x).trim().toLowerCase());
+        return opts.every((o) =>
+          cells.some((c) => c === String(o ?? "").trim().toLowerCase())
+        );
+      }
+      if (opts.length === 1) return valuesEqualCaseInsensitive(cell, opts[0]);
+      return false;
+    }
     default:
       return true;
   }
@@ -93,19 +162,100 @@ export function rowMatchesFilterItem<R extends GridValidRowModel>(
   return applyGridFilterOperator(cell, item.operator, item.value);
 }
 
+function itemHasMeaningfulFilter(it: GridFilterItem): boolean {
+  if (it.operator === "isEmpty" || it.operator === "isNotEmpty") return true;
+  if (it.operator === "inList" || it.operator === "selectAny" || it.operator === "selectAll") {
+    const v = it.value;
+    if (Array.isArray(v)) return v.length > 0;
+    return String(v ?? "").trim() !== "";
+  }
+  return it.value !== undefined && it.value !== null && String(it.value).trim() !== "";
+}
+
 /**
- * Combina `filterModel.items` com `logicOperator` (And = todos, Or = qualquer).
+ * Conta filtros de coluna activos + tokens de `quickFilterValues` + `quickFilterValue` espelhado em modelo.
+ */
+export function countActiveGridFilters(model: GridFilterModel, quickTyped?: string): number {
+  let n = (model.items ?? []).filter(itemHasMeaningfulFilter).length;
+  const qv = model.quickFilterValues?.map((x) => String(x).trim()).filter(Boolean) ?? [];
+  n += qv.length;
+  if (quickTyped != null && quickTyped.trim() !== "" && qv.length === 0) n += 1;
+  return n;
+}
+
+/** Chave estável do grupo para `groupId` (itens sem grupo → `__flat__`). */
+export function gridFilterGroupKey(id: GridFilterItem["groupId"]): string {
+  if (id === undefined || id === null) return "__flat__";
+  return String(id);
+}
+
+/** Ordena cópia dos itens por `filterOrder`, com empate pela ordem original em `items`. */
+export function sortFilterItemsByOrder(items: GridFilterItem[]): GridFilterItem[] {
+  return items
+    .map((it, index) => ({ it, index }))
+    .sort((a, b) => {
+      const oa = a.it.filterOrder;
+      const ob = b.it.filterOrder;
+      if (oa != null && ob != null && oa !== ob) return oa - ob;
+      if (oa != null && ob == null) return -1;
+      if (oa == null && ob != null) return 1;
+      return a.index - b.index;
+    })
+    .map(({ it }) => it);
+}
+
+/**
+ * Combina `filterModel.items` com `logicOperator` (And = todos, Or = qualquer), ou com grupos
+ * (`groupId` + `groupItemLogic` + `groupLogicOperator`) quando pelo menos um item define `groupId`.
  * Quick filter não entra aqui — trata-se à parte.
  */
 export function rowPassesFilterModel<R extends GridValidRowModel>(
   row: Row<R>,
   model: GridFilterModel
 ): boolean {
-  const items = model.items ?? [];
-  if (items.length === 0) return true;
-  const logic = model.logicOperator ?? "And";
-  const preds = items.map((it) => rowMatchesFilterItem(row, it));
-  return logic === "Or" ? preds.some(Boolean) : preds.every(Boolean);
+  const rawItems = model.items ?? [];
+  if (rawItems.length === 0) return true;
+  const items = sortFilterItemsByOrder(rawItems);
+
+  const useGroups = rawItems.some((it) => it.groupId !== undefined && it.groupId !== null);
+  if (!useGroups) {
+    const fallback = model.logicOperator ?? "And";
+    let acc = rowMatchesFilterItem(row, items[0]!);
+    for (let i = 1; i < items.length; i++) {
+      const join = items[i]!.joinWithPrevious ?? fallback;
+      const next = rowMatchesFilterItem(row, items[i]!);
+      acc = join === "Or" ? acc || next : acc && next;
+    }
+    return acc;
+  }
+
+  const seen = new Set<string>();
+  const groupOrder: string[] = [];
+  for (const it of items) {
+    const k = gridFilterGroupKey(it.groupId);
+    if (!seen.has(k)) {
+      seen.add(k);
+      groupOrder.push(k);
+    }
+  }
+
+  const betweenGroups = model.groupLogicOperator ?? "And";
+  const groupResults: boolean[] = [];
+
+  for (const gk of groupOrder) {
+    const groupItems = items.filter((it) => gridFilterGroupKey(it.groupId) === gk);
+    if (groupItems.length === 0) continue;
+    let acc = rowMatchesFilterItem(row, groupItems[0]!);
+    for (let i = 1; i < groupItems.length; i++) {
+      const join = groupItems[i]!.groupItemLogic ?? "And";
+      const next = rowMatchesFilterItem(row, groupItems[i]!);
+      acc = join === "Or" ? acc || next : acc && next;
+    }
+    groupResults.push(acc);
+  }
+
+  if (groupResults.length === 0) return true;
+  return betweenGroups === "Or" ? groupResults.some(Boolean) : groupResults.every(Boolean);
 }
 
 /** Filtro por coluna com operadores estilo MUI X */
@@ -145,9 +295,44 @@ function cellMatchesQuickToken<R extends GridValidRowModel>(
   }
   const needle = filterValue.trim().toLowerCase();
   if (!needle) return false;
-  return String(cell.getValue() ?? "")
-    .toLowerCase()
-    .includes(needle);
+
+  const raw = cell.getValue();
+  const hay: string[] = [];
+  const pushNorm = (v: unknown) => {
+    const s = v == null ? "" : String(v).trim();
+    if (s.length > 0) hay.push(s.toLowerCase());
+  };
+  pushNorm(raw);
+
+  if (colDef?.valueFormatter) {
+    try {
+      pushNorm(
+        colDef.valueFormatter({
+          id: cell.row.id as GridRowId,
+          field: id,
+          row: cell.row.original,
+          value: raw as never
+        })
+      );
+    } catch {
+      /* evitar quebrar a pesquisa rápida se o formatador lançar */
+    }
+  }
+
+  const selectLike =
+    colDef != null &&
+    colDef.type !== "boolean" &&
+    colDef.type !== "actions" &&
+    (colDef.type === "singleSelect" ||
+      colDef.async === true ||
+      (colHasValueOptions(colDef) && colDef.type !== "date" && colDef.type !== "dateTime"));
+
+  if (selectLike) {
+    const opts = resolveColValueOptions(colDef, cell.row.id as GridRowId, cell.row.original);
+    pushNorm(formatSingleSelectDisplay(raw, opts));
+  }
+
+  return hay.some((h) => h.includes(needle));
 }
 
 /** Quick filter: texto livre — qualquer coluna visível contém o texto */

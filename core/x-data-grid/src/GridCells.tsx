@@ -17,11 +17,16 @@ function wrapRichTooltip(node: React.ReactElement, tooltip: React.ReactNode | un
   );
 }
 
+export type GridEditInputCellProps<R extends GridValidRowModel = GridValidRowModel, V = unknown> =
+  GridRenderEditCellParams<R, V> & {
+    inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  };
+
 /** Célula de edição por defeito (input texto), compatível com MUI `GridEditInputCell`. */
 export function GridEditInputCell<R extends GridValidRowModel = GridValidRowModel, V = unknown>(
-  params: GridRenderEditCellParams<R, V>
+  params: GridEditInputCellProps<R, V>
 ) {
-  const { id, field, value, api, hasFocus, colDef, commit, cancel } = params;
+  const { id, field, value, api, hasFocus, colDef, commit, cancel, inputProps } = params;
   const gridRoot = useGridRootContext();
   const density = gridRoot?.density ?? "standard";
   const isCompact = density === "compact";
@@ -41,6 +46,7 @@ export function GridEditInputCell<R extends GridValidRowModel = GridValidRowMode
         !isCompact && !isComfortable && "px-2 text-sm leading-tight",
         typeof colDef.cellClassName === "string" ? colDef.cellClassName : undefined
       )}
+      {...(inputProps as any)}
       value={local}
       autoFocus={hasFocus}
       onChange={(e) => setLocal(e.target.value)}
