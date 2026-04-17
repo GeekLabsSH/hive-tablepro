@@ -132,6 +132,7 @@ export type {
   GridScrollToIndexesOptions,
   GridSortItem,
   GridSortModel,
+  GridServerColumnFiltersSearchPayload,
   GridStateSnapshot,
   GridSubscriptionEvent,
   GridValidRowModel,

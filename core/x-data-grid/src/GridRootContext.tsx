@@ -43,6 +43,16 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   columnsPanelAnchorRef: React.MutableRefObject<HTMLElement | null>;
   /** Props que o `EditToolbar` do ProtonWeb lê via `useGridRootProps` / contexto. */
   editToolbarCompat?: GridEditToolbarCompatProps;
+  /** Filtros de coluna só por servidor (`DataGrid.serverDrivenColumnFilters`). */
+  serverDrivenColumnFilters?: boolean;
+  /** Filtros de coluna editados ainda não aplicados à última pesquisa. */
+  columnFiltersSearchPending?: boolean;
+  /** Confirma e dispara `onServerColumnFiltersSearch`. */
+  applyColumnFiltersSearch?: () => void;
+  /** Rótulo do botão «Aplicar filtros» (i18n). */
+  applyColumnFiltersSearchLabel?: string;
+  /** Tooltip quando há alterações por aplicar. */
+  applyColumnFiltersSearchPendingTooltip?: string;
 };
 
 const Ctx = React.createContext<GridRootContextValue | null>(null);

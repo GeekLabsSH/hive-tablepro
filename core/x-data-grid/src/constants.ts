@@ -1,5 +1,8 @@
 import type { GridColDef } from "./types";
 
+/** Debounce (ms) antes de chamar `loadEditValueOptions` nos filtros assíncronos (= / multiselect). */
+export const ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS = 1000;
+
 /** Campo interno da coluna de seleção (checkbox / rádio), alinhado ao DataGrid. */
 export const GRID_CHECKBOX_SELECTION_FIELD = "__select__" as const;
 

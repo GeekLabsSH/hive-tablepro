@@ -689,10 +689,24 @@ export interface GridLocaleText {
   filterPanelClose?: string;
   filterPanelAddFilter?: string;
   filterPanelAddFilterButton?: string;
+  /** Campo de pesquisa para `singleSelect` assíncrono no painel de filtros. */
+  filterPanelAsyncSelectSearch?: string;
+  /** Placeholder quando ainda não há opções carregadas (select assíncrono). */
+  filterPanelAsyncSelectEmpty?: string;
+  /** Texto quando a pesquisa assíncrona ainda não foi disparada (campo vazio após debounce). */
+  filterPanelAsyncSelectIdleHint?: string;
+  /** Enquanto `loadEditValueOptions` está a resolver no painel de filtros. */
+  filterPanelAsyncSelectLoading?: string;
+  /** Secção de valores já escolhidos no multiselect assíncrono do painel / cabeçalho. */
+  filterPanelAsyncMultiPicked?: string;
+  /** Opção inicial «Selecionar…» no valor de filtro `singleSelect` (= / !=). */
+  filterPanelValuePick?: string;
   filterPanelChooseColumn?: string;
   filterPanelGroupId?: string;
   /** Título do bloco de itens sem `groupId` quando há outros grupos definidos. */
   filterPanelUngroupedBlock?: string;
+  /** Bloco fixo dos filtros criados na linha de cabeçalho (`groupId` reservado). */
+  filterPanelHeaderFiltersGroup?: string;
   /** Dica no campo Grupo do bloco «Sem grupo»: atribuir número cria / associa ao grupo. */
   filterPanelUngroupedAssignHint?: string;
   /** Cabeçalho do bloco: como combinar todas as condições deste grupo (E/OU). */
@@ -740,7 +754,20 @@ export interface GridLocaleText {
   gridAnnounceFilterCleared?: string;
   /** `aria-live`: inclui `{count}` (regras + filtro rápido). */
   gridAnnounceFilterActive?: string;
+  /** Toolbar: aplicar filtros de coluna à pesquisa no servidor. */
+  toolbarApplyColumnFilters?: string;
+  /** Tooltip quando o modelo de filtro de colunas ainda não foi aplicado à última pesquisa. */
+  toolbarApplyColumnFiltersPendingTooltip?: string;
 }
+
+/** Payload ao confirmar pesquisa com `serverDrivenColumnFilters`. */
+export type GridServerColumnFiltersSearchPayload<
+  R extends GridValidRowModel = GridValidRowModel
+> = {
+  filterModel: GridFilterModel;
+  sortModel: GridSortModel;
+  paginationModel: GridPaginationModel;
+};
 
 /** Subconjunto imperativo da GridApi usado em produção */
 export interface GridApiCommunity<R extends GridValidRowModel = GridValidRowModel> {
@@ -765,6 +792,13 @@ export interface GridApiCommunity<R extends GridValidRowModel = GridValidRowMode
   /** Estado atual (leitura) */
   getSortModel: () => GridSortModel;
   getFilterModel: () => GridFilterModel;
+  /**
+   * Com `serverDrivenColumnFilters`: `true` se `filterModel.items` difere do último conjunto aplicado
+   * à pesquisa (botão «Aplicar» em destaque).
+   */
+  getColumnFiltersSearchPending: () => boolean;
+  /** Confirma filtros de coluna e dispara `onServerColumnFiltersSearch` (e repõe página 0 se interno). */
+  applyColumnFiltersSearch: () => void;
   getPaginationModel: () => GridPaginationModel;
   getColumnVisibilityModel: () => GridColumnVisibilityModel;
   setPinnedColumns: (model: GridPinnedColumns) => void;

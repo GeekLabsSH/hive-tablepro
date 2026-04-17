@@ -55,8 +55,8 @@ export const TextField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
           InputProps?.className,
           className
         )}
-        {...(inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-        {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+        {...(inputProps as unknown as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+        {...(props as unknown as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
       />
     ) : (
       <div className={cn("relative flex items-center", fullWidth && "w-full")}>

@@ -99,7 +99,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentPublicProps>
           className={cn(
             "p-1",
             position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+              "max-h-[min(20rem,55vh)] w-full min-w-[var(--radix-select-trigger-width)] overflow-y-auto"
           )}
         >
           {children}

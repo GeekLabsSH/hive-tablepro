@@ -1,12 +1,13 @@
 import type {
   GridColDef,
+  GridFilterItem,
   GridFilterOperator,
   GridLocaleText,
   GridRowId,
   GridValidRowModel,
   GridValueOptionsList
 } from "./types";
-import { colHasValueOptions } from "./adapter";
+import { colHasValueOptions, colHasFilterableSingleSelect } from "./adapter";
 
 export type FilterOpChoice = { value: GridFilterOperator; label: string };
 
@@ -19,6 +20,40 @@ function rawMatchesNormOpt(raw: unknown, opt: NormOpt): boolean {
 /**
  * Chaves `normOpts.value` correspondentes ao valor guardado no filtro (um raw ou array de raws).
  */
+/** Chaves string para multiselect a partir do valor persistido (sem depender de `normOpts`). */
+export function rawKeysFromFilterMultiValue(filterValue: unknown): string[] {
+  if (filterValue === undefined || filterValue === null) return [];
+  if (filterValue === "") return [];
+  if (typeof filterValue === "boolean") return [];
+  if (Array.isArray(filterValue)) {
+    const mapped = filterValue
+      .filter((x) => x !== undefined && x !== null && x !== "")
+      .map((x) => String(x));
+    /** Um único `0` costuma ser ruído ao mudar de «Igual a» para «Seleção» sem escolha real. */
+    if (mapped.length === 1 && mapped[0] === "0") return [];
+    return mapped;
+  }
+  const s = String(filterValue);
+  if (s === "0" && (filterValue === 0 || filterValue === "0")) return [];
+  return [s];
+}
+
+/**
+ * Valores brutos (ids/chaves) num item de filtro `singleSelect` assíncrono, para pré-carregar rótulos no painel.
+ */
+export function collectRemoteSingleSelectRawKeysFromFilterItem(item: GridFilterItem): string[] {
+  const { operator, value } = item;
+  if (value === undefined || value === null || value === "") return [];
+  if (operator === "selectAny" || operator === "selectAll") {
+    return rawKeysFromFilterMultiValue(value);
+  }
+  if (operator === "equals" || operator === "!=" || operator === "is" || operator === "not" || operator === "=") {
+    if (typeof value === "string" && value.trim() === "") return [];
+    return [String(value)];
+  }
+  return [];
+}
+
 export function normKeysFromFilterRawValue(filterValue: unknown, normOpts: NormOpt[]): string[] {
   if (filterValue === undefined || filterValue === null) return [];
   if (Array.isArray(filterValue)) {
@@ -111,7 +146,7 @@ export function getFilterOperatorChoices<R extends GridValidRowModel>(
   const isDateTime = colDef.type === "dateTime";
   const isDateKind = isDate || isDateTime;
   const isSingleSelect =
-    colDef.type === "singleSelect" && colDef != null && colHasValueOptions(colDef);
+    colDef.type === "singleSelect" && colDef != null && colHasFilterableSingleSelect(colDef);
   if (isSingleSelect) return enumLikeOperators(lt);
   if (isBoolean) return enumLikeOperators(lt);
   if (isDateKind) return dateOperators(lt);
@@ -125,7 +160,7 @@ export function defaultFilterOperatorForCol<R extends GridValidRowModel>(
   if (!colDef) return "contains";
   if (colDef.type === "number") return "=";
   if (colDef.type === "date" || colDef.type === "dateTime") return "is";
-  if (colDef.type === "singleSelect" && colHasValueOptions(colDef)) return "equals";
+  if (colDef.type === "singleSelect" && colHasFilterableSingleSelect(colDef)) return "equals";
   if (colDef.type === "boolean") return "equals";
   return "contains";
 }
@@ -146,7 +181,7 @@ export function buildCommittedFilterItem<R extends GridValidRowModel>(args: {
   const isDateTime = colDef?.type === "dateTime";
   const isDateKind = isDate || isDateTime;
   const isSingleSelect =
-    colDef?.type === "singleSelect" && colDef != null && colHasValueOptions(colDef);
+    colDef?.type === "singleSelect" && colDef != null && colHasFilterableSingleSelect(colDef);
 
   if (operator === "isEmpty" || operator === "isNotEmpty") {
     return { field, operator };
@@ -159,7 +194,12 @@ export function buildCommittedFilterItem<R extends GridValidRowModel>(args: {
       const keys = multiValues?.length ? multiValues : [];
       if (keys.length === 0) return { field, operator, value: [] };
       const raw = keys
-        .map((k) => normOpts.find((o) => o.value === k)?.raw)
+        .map((k) => {
+          const o = normOpts.find((x) => x.value === k);
+          if (o && o.raw !== undefined && o.raw !== null) return o.raw;
+          const n = Number(k);
+          return Number.isFinite(n) ? n : undefined;
+        })
         .filter((x): x is string | number => x !== undefined);
       if (raw.length === 0) return { field, operator, value: [] };
       return { field, operator, value: raw };
@@ -223,7 +263,12 @@ export function filterRowValueStateFromItem<R extends GridValidRowModel>(args: {
         String(o.raw) === String(v) ||
         o.value === String(v)
     );
-    return m?.value ?? normOpts[0]?.value ?? "";
+    if (m) return m.value;
+    /** `singleSelect` assíncrono: `normOpts` pode ainda estar vazio — manter chave estável para o id. */
+    if (v !== undefined && v !== null && !(typeof v === "string" && v.trim() === "")) {
+      return String(v);
+    }
+    return normOpts[0]?.value ?? "";
   }
   if (isBoolean && (existing.operator === "equals" || existing.operator === "!=")) {
     const v = existing.value;

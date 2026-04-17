@@ -118,6 +118,63 @@ export function GridToolbarColumnsButton({
   );
 }
 
+export function GridToolbarApplyColumnFiltersButton({
+  className,
+  title,
+  showLabel,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
+  const root = useGridRootContext();
+  if (!root?.serverDrivenColumnFilters) return null;
+  const pending = root.columnFiltersSearchPending === true;
+  const label = title ?? root.applyColumnFiltersSearchLabel ?? "Buscar";
+  const tip = pending
+    ? (root.applyColumnFiltersSearchPendingTooltip ??
+      "Os filtros de coluna ainda não foram aplicados à pesquisa.")
+    : label;
+  const icon =
+    children ?? (
+      <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+    );
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size={showLabel ? "sm" : "icon"}
+          className={cn(
+            showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0",
+            /** `ring-offset` aumentava a caixa; `ring-inset` mantém o mesmo tamanho que os outros ícones */
+            pending && "ring-inset ring-2 ring-amber-500/90 ring-offset-0",
+            className
+          )}
+          aria-label={label}
+          aria-busy={false}
+          onClick={(e) => {
+            root.applyColumnFiltersSearch?.();
+            props.onClick?.(e);
+          }}
+          {...(props as any)}
+        >
+          {showLabel ? (
+            <>
+              {icon}
+              <span className="max-w-[7rem] truncate text-xs font-medium">{label}</span>
+            </>
+          ) : (
+            icon
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs text-pretty">
+        {tip}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 export function GridToolbarFilterButton({
   className,
   title = "Filtros",
@@ -591,6 +648,7 @@ export function GridToolbarFilterColumnsDensityRow({
   showClearFiltersButton = true,
   showChartsButton = true,
   showPivotPanelButton = true,
+  showApplyColumnFiltersButton = false,
   /** `start` = após os botões, sem empurrar para a direita; `end` = `ml-auto` na pesquisa. */
   toolbarQuickFilterAlign = "start",
   showButtonLabels = false
@@ -606,6 +664,7 @@ export function GridToolbarFilterColumnsDensityRow({
   showClearFiltersButton?: boolean;
   showChartsButton?: boolean;
   showPivotPanelButton?: boolean;
+  showApplyColumnFiltersButton?: boolean;
   toolbarQuickFilterAlign?: "start" | "end";
   showButtonLabels?: boolean;
 }) {
@@ -617,7 +676,8 @@ export function GridToolbarFilterColumnsDensityRow({
     showHeaderFiltersToggle ||
     showClearFiltersButton ||
     showChartsButton ||
-    showPivotPanelButton;
+    showPivotPanelButton ||
+    showApplyColumnFiltersButton;
   if (!hasChrome) return null;
 
   const quick = showQuickFilter ? (
@@ -639,6 +699,9 @@ export function GridToolbarFilterColumnsDensityRow({
       <div className="flex min-w-0 flex-wrap items-center gap-1">
         {showColumnsButton ? <GridToolbarColumnsButton showLabel={showButtonLabels} /> : null}
         {showFilterButton ? <GridToolbarFilterButton showLabel={showButtonLabels} /> : null}
+        {showApplyColumnFiltersButton ? (
+          <GridToolbarApplyColumnFiltersButton showLabel={showButtonLabels} />
+        ) : null}
         {showHeaderFiltersToggle ? <GridToolbarHeaderFiltersButton showLabel={showButtonLabels} /> : null}
         {showClearFiltersButton ? <GridToolbarClearFiltersButton showLabel={showButtonLabels} /> : null}
         {showChartsButton ? <GridToolbarChartsButton showLabel={showButtonLabels} /> : null}

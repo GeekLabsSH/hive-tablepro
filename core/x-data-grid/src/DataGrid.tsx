@@ -760,9 +760,8 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   const shown = React.useMemo(() => {
     const ft = filterQ.trim().toLowerCase();
     if (loadEditValueOptions) {
-      const base = remoteOpts ?? [];
-      if (!ft.length) return base;
-      return base.filter((o) => o.label.toLowerCase().includes(ft));
+      /** A API já recebe `filterQ` em `loadEditValueOptions`; não filtrar de novo por substring no cliente. */
+      return remoteOpts ?? [];
     }
     if (!ft.length) return allOpts;
     return allOpts.filter((o) => o.label.toLowerCase().includes(ft));
@@ -1969,7 +1968,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     preferencesStorage: preferencesStorageProp,
     preferencesDebounceMs = 400,
     onPreferencesChange,
-    defaultPreferences
+    defaultPreferences,
+    serverDrivenColumnFilters = false,
+    onServerColumnFiltersSearch
   } = props;
 
   const chartsConfigResolved: GridChartsConfig | undefined =
@@ -1982,6 +1983,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   sortModelPropRef.current = sortModelProp;
   const filterModelPropRef = React.useRef(filterModelProp);
   filterModelPropRef.current = filterModelProp;
+  const onServerColumnFiltersSearchRef = React.useRef(onServerColumnFiltersSearch);
+  onServerColumnFiltersSearchRef.current = onServerColumnFiltersSearch;
   const paginationModelPropRef = React.useRef(paginationModelProp);
   paginationModelPropRef.current = paginationModelProp;
   const columnVisibilityPropRef = React.useRef(columnVisibilityProp);
@@ -2172,6 +2175,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const filterModel = filterModelProp ?? filterInternal;
   const filterModelRef = React.useRef(filterModel);
   filterModelRef.current = filterModel;
+
+  const sortModelRef = React.useRef(sortModel);
+  sortModelRef.current = sortModel;
+
+  const [appliedColumnFilterItemsJson, setAppliedColumnFilterItemsJson] = React.useState<string>(() =>
+    JSON.stringify([])
+  );
 
   const [headerFiltersInternal, setHeaderFiltersInternal] = React.useState(
     () => initialState?.filter?.headerFiltersEnabled === true
@@ -2650,6 +2660,21 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     setPaginationInternal((prev) => (prev.page === 0 ? prev : { ...prev, page: 0 }));
   }, []);
 
+  const runServerColumnFiltersSearchRef = React.useRef<() => void>(() => {});
+  const runServerColumnFiltersSearch = React.useCallback(() => {
+    if (!serverDrivenColumnFilters) return;
+    const fm = filterModelRef.current;
+    setAppliedColumnFilterItemsJson(JSON.stringify(fm.items ?? []));
+    const pm = paginationModelPropRef.current ?? paginationInternalRef.current;
+    onServerColumnFiltersSearchRef.current?.({
+      filterModel: fm,
+      sortModel: [...sortModelRef.current],
+      paginationModel: { page: 0, pageSize: pm.pageSize }
+    });
+    resetPaginationToFirstPage();
+  }, [serverDrivenColumnFilters, resetPaginationToFirstPage]);
+  runServerColumnFiltersSearchRef.current = runServerColumnFiltersSearch;
+
   const [visibilityInternal, setVisibilityInternal] = React.useState<Record<string, boolean>>(
     () => columnVisibilityProp ?? initialState?.columns?.columnVisibilityModel ?? {}
   );
@@ -2777,6 +2802,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     if (sortModelProp === undefined && sortToApply?.length) setSortInternal(sortToApply);
     if (filterModelProp === undefined && filterToApply)
       setFilterInternal({ ...filterToApply, items: filterToApply.items ?? [] });
+    if (serverDrivenColumnFilters && filterModelProp === undefined) {
+      const items = filterToApply?.items ?? [];
+      setAppliedColumnFilterItemsJson(JSON.stringify(items));
+    }
     if (paginationModelProp === undefined && paginationToApply) setPaginationInternal(paginationToApply);
     if (columnVisibilityProp === undefined && visibilityToApply)
       setVisibilityInternal(visibilityToApply);
@@ -2810,7 +2839,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     rowGroupingModelProp,
     baseOrder,
     treeActive,
-    columnsProp
+    columnsProp,
+    serverDrivenColumnFilters
   ]);
 
   const [quickInternal, setQuickInternal] = React.useState(() => {
@@ -2832,6 +2862,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   React.useLayoutEffect(() => {
     if (!filterOnlyPersistenceActive) {
       setFilterStorageHydrated(true);
+      if (serverDrivenColumnFilters) {
+        setAppliedColumnFilterItemsJson(JSON.stringify([]));
+      }
       return;
     }
     const storage = preferencesStorageProp ?? (typeof localStorage !== "undefined" ? localStorage : null);
@@ -2855,6 +2888,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           setQuickInternal(stored.quickFilterValues.map((x) => String(x)).join(" "));
         }
       }
+      if (serverDrivenColumnFilters) {
+        setAppliedColumnFilterItemsJson(JSON.stringify(stored.items ?? []));
+      }
+    } else if (serverDrivenColumnFilters) {
+      setAppliedColumnFilterItemsJson(JSON.stringify([]));
     }
     setFilterStorageHydrated(true);
   }, [
@@ -2863,13 +2901,22 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     filterModelProp,
     preferencesKey,
     preferencesStorageProp,
-    quickFilterProp
+    quickFilterProp,
+    serverDrivenColumnFilters
   ]);
 
   const activeFilterCount = React.useMemo(
     () => countActiveGridFilters(filterModel, quickFilterValue),
     [filterModel, quickFilterValue]
   );
+
+  const columnFiltersSearchPending = React.useMemo(() => {
+    if (!serverDrivenColumnFilters) return false;
+    return JSON.stringify(filterModel.items ?? []) !== appliedColumnFilterItemsJson;
+  }, [serverDrivenColumnFilters, filterModel, appliedColumnFilterItemsJson]);
+
+  const columnFiltersSearchPendingRef = React.useRef(columnFiltersSearchPending);
+  columnFiltersSearchPendingRef.current = columnFiltersSearchPending;
 
   const lastEmittedModelRef = React.useRef<GridRowSelectionModel | undefined>(rowSelectionModelProp);
   const tableInstanceRef = React.useRef<TanstackTable<R> | null>(null);
@@ -3213,6 +3260,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       quickTyped: quickFilterProp ?? quickInternal,
       filterModel,
       disableQuick: !!disableColumnFilter,
+      serverDrivenColumnFilters: !!serverDrivenColumnFilters,
       getApi: () => apiHolder.current,
       columnsByField: columnsByFieldForFilter
     };
@@ -3222,6 +3270,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     quickInternal,
     JSON.stringify(filterModel),
     disableColumnFilter,
+    serverDrivenColumnFilters,
     columnsByFieldForFilter
   ]);
 
@@ -4167,7 +4216,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         },
         getDensity: () => densityRef.current,
         setDensity: (d) => applyDensity(d),
-        commitRowEditSave: (rowId: GridRowId) => completeRowEditSaveRef.current(rowId)
+        commitRowEditSave: (rowId: GridRowId) => completeRowEditSaveRef.current(rowId),
+        getColumnFiltersSearchPending: () => columnFiltersSearchPendingRef.current,
+        applyColumnFiltersSearch: () => {
+          runServerColumnFiltersSearchRef.current();
+        }
       }),
     [
       getTableForApi,
@@ -4251,7 +4304,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     };
     if (filterModelPropRef.current === undefined) setFilterInternal(next);
     onFilterModelChangeRef.current?.(next);
-  }, [quickFilterProp, resetPaginationToFirstPage]);
+    if (serverDrivenColumnFilters) {
+      setAppliedColumnFilterItemsJson(JSON.stringify([]));
+    }
+  }, [quickFilterProp, resetPaginationToFirstPage, serverDrivenColumnFilters]);
 
   const gridRootContextValue = React.useMemo(
     () => ({
@@ -4277,7 +4333,15 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         disableColumnFilter: !!disableColumnFilter,
         disableColumnSelector: !!disableColumnSelector,
         disableDensitySelector: !!disableDensitySelector
-      }
+      },
+      serverDrivenColumnFilters: !!serverDrivenColumnFilters,
+      columnFiltersSearchPending,
+      applyColumnFiltersSearch: runServerColumnFiltersSearch,
+      applyColumnFiltersSearchLabel:
+        localeText?.toolbarApplyColumnFilters ?? "Buscar",
+      applyColumnFiltersSearchPendingTooltip:
+        localeText?.toolbarApplyColumnFiltersPendingTooltip ??
+        "Os filtros de coluna ainda não foram aplicados à pesquisa."
     }),
     [
       gridApi,
@@ -4296,7 +4360,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       openPivotPanel,
       disableColumnFilter,
       disableColumnSelector,
-      disableDensitySelector
+      disableDensitySelector,
+      serverDrivenColumnFilters,
+      columnFiltersSearchPending,
+      runServerColumnFiltersSearch,
+      localeText
     ]
   );
 
@@ -5206,7 +5274,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const ha = colDef?.headerAlign ?? colDef?.align;
     const alignHead = alignTextClass(ha);
     const justifyHead = headerJustifyClass(ha);
-    const canSortClient = sortingMode === "client" && header.column.getCanSort();
+    const canSortInteractive = !disableColumnSort && header.column.getCanSort();
     const canColumnFilterUi =
       !disableColumnFilter &&
       filterMode === "client" &&
@@ -5245,7 +5313,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         node
       );
 
-    const sortControl = canSortClient
+    const sortControl = canSortInteractive
       ? wrapHeaderDescription(
           <button
             type="button"
@@ -5281,10 +5349,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
     const menu =
       showMenu &&
-      (canColumnFilterUi ||
-        canPinUi ||
-        (sortingMode === "client" && header.column.getCanSort()) ||
-        header.column.getCanHide()) ? (
+      (canColumnFilterUi || canPinUi || canSortInteractive || header.column.getCanHide()) ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -5311,7 +5376,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
               {colDef?.headerName ?? fieldStr}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {sortingMode === "client" && header.column.getCanSort() ? (
+            {canSortInteractive ? (
               <>
                 <DropdownMenuItem onClick={() => header.column.toggleSorting(false)}>
                   {lt("sortAscending", "Ordenar ascendente")}
@@ -5374,8 +5439,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 ) : null}
               </>
             ) : null}
-            {canColumnFilterUi &&
-            (canPinUi || (sortingMode === "client" && header.column.getCanSort()) || header.column.getCanHide()) ? (
+            {canColumnFilterUi && (canPinUi || canSortInteractive || header.column.getCanHide()) ? (
               <DropdownMenuSeparator />
             ) : null}
             {canPinUi ? (
@@ -5535,6 +5599,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           showQuickFilter={!disableColumnFilter}
           showChartsButton={chartsEnabled}
           showPivotPanelButton={pivoting}
+          showApplyColumnFiltersButton={!!serverDrivenColumnFilters}
           toolbarQuickFilterAlign={toolbarQuickFilterAlign}
           showButtonLabels={toolbarShowButtonLabels}
         />
@@ -7007,7 +7072,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 {lt("rowsPerPage", "Linhas por página")}
               </span>
               <select
-                className="h-8 w-[4.5rem] rounded-md border border-hiveGrid-paginationInputBorder bg-hiveGrid-paginationInputBg px-2 text-sm shadow-sm ring-offset-hiveGrid-paginationRingOffset focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hiveGrid-paginationRing"
+                className="h-8 w-[4.5rem] rounded-md border border-input bg-background px-2 text-sm text-foreground shadow-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={String(paginationModel.pageSize)}
                 aria-label={lt("rowsPerPage", "Linhas por página")}
                 onChange={(e) => {

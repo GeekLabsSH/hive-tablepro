@@ -26,6 +26,7 @@ import type {
   GridRowSelectionModel,
   GridRowTransaction,
   GridRowUpdate,
+  GridServerColumnFiltersSearchPayload,
   GridSortModel,
   GridStateSnapshot,
   GridValidRowModel
@@ -207,6 +208,14 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   /** Texto rápido (equivalente a quick filter em várias versões MUI) */
   quickFilterValue?: string;
   onQuickFilterValueChange?: (value: string) => void;
+
+  /**
+   * Se `true`, `filterModel.items` não filtra linhas no cliente — só a pesquisa rápida (toolbar) restringe o dataset local.
+   * Combinar com `paginationMode="server"` e `onServerColumnFiltersSearch` / `api.applyColumnFiltersSearch()`.
+   */
+  serverDrivenColumnFilters?: boolean;
+  /** Chamado ao aplicar filtros de coluna à pesquisa (botão da toolbar ou API). */
+  onServerColumnFiltersSearch?: (payload: GridServerColumnFiltersSearchPayload<R>) => void;
 
   /**
    * Activa capacidades de pivotagem (toolbar + motor). Por defeito `false`.

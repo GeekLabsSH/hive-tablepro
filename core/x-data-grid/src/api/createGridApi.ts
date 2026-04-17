@@ -82,6 +82,8 @@ export type CreateGridApiOptions<R extends GridValidRowModel> = {
   commitRowEditSave?: (rowId: GridRowId) => void | Promise<void>;
   getDensity: () => GridDensity;
   setDensity: (d: GridDensity) => void;
+  getColumnFiltersSearchPending?: () => boolean;
+  applyColumnFiltersSearch?: () => void;
 };
 
 /**
@@ -406,6 +408,12 @@ export function createGridApi<R extends GridValidRowModel>(
     },
     setDensity(d) {
       opts.setDensity(d);
+    },
+    getColumnFiltersSearchPending() {
+      return opts.getColumnFiltersSearchPending?.() ?? false;
+    },
+    applyColumnFiltersSearch() {
+      opts.applyColumnFiltersSearch?.();
     }
   };
 }

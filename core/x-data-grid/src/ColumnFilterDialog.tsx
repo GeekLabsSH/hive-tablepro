@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "../../../src/components/ui/select";
-import { colHasValueOptions, resolveColValueOptions } from "./adapter";
+import { colHasValueOptions, colHasFilterableSingleSelect, resolveColValueOptions } from "./adapter";
 import {
   defaultFilterOperatorForCol,
   getFilterOperatorChoices,
@@ -67,13 +67,51 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
   const isDate = colDef?.type === "date";
   const isDateTime = colDef?.type === "dateTime";
   const isDateKind = isDate || isDateTime;
-  const isSingleSelect = colDef?.type === "singleSelect" && colDef != null && colHasValueOptions(colDef);
+  const isRemoteSingleSelect =
+    colDef?.type === "singleSelect" &&
+    colDef != null &&
+    colDef.loadEditValueOptions != null &&
+    !colHasValueOptions(colDef);
+  const isSingleSelect = colDef?.type === "singleSelect" && colDef != null && colHasFilterableSingleSelect(colDef);
+
+  const [remoteSelectQuery, setRemoteSelectQuery] = React.useState("");
+  const [remoteNormOpts, setRemoteNormOpts] = React.useState<ReturnType<typeof normalizeValueOptions>>([]);
+
+  React.useEffect(() => {
+    if (!isRemoteSingleSelect || !colDef?.loadEditValueOptions) {
+      setRemoteNormOpts([]);
+      return;
+    }
+    let cancelled = false;
+    const t = window.setTimeout(() => {
+      void colDef
+        .loadEditValueOptions!(remoteSelectQuery, {
+          id: "__filter__" as GridRowId,
+          row: {} as R,
+          field: colDef.field
+        })
+        .then((raw) => {
+          if (!cancelled) setRemoteNormOpts(normalizeValueOptions(raw ?? []));
+        })
+        .catch(() => {
+          if (!cancelled) setRemoteNormOpts([]);
+        });
+    }, 280);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, [isRemoteSingleSelect, colDef, remoteSelectQuery]);
 
   const normOpts = React.useMemo(() => {
     if (!isSingleSelect || !colDef) return [];
-    const list = resolveColValueOptions(colDef, "__filter__" as GridRowId, {} as R);
-    return list?.length ? normalizeValueOptions(list as GridValueOptionsList) : [];
-  }, [isSingleSelect, colDef]);
+    if (colHasValueOptions(colDef)) {
+      const list = resolveColValueOptions(colDef, "__filter__" as GridRowId, {} as R);
+      return list?.length ? normalizeValueOptions(list as GridValueOptionsList) : [];
+    }
+    if (isRemoteSingleSelect) return remoteNormOpts;
+    return [];
+  }, [isSingleSelect, colDef, isRemoteSingleSelect, remoteNormOpts]);
 
   const choices = React.useMemo((): OpChoice[] => getFilterOperatorChoices(colDef, lt), [colDef, lt]);
 
@@ -176,18 +214,21 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
             <label htmlFor="hive-col-filter-op" className="text-sm font-medium leading-none">
               {lt("columnFilterOperatorLabel", "Operador")}
             </label>
-            <select
-              id="hive-col-filter-op"
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              value={operator}
-              onChange={(e) => setOperator(e.target.value as GridFilterOperator)}
-            >
-              {choices.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
+            <Select value={operator} onValueChange={(v) => setOperator(v as GridFilterOperator)}>
+              <SelectTrigger
+                id="hive-col-filter-op"
+                className="h-10 w-full rounded-md border border-input bg-background text-sm"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" className="z-[500] max-h-60">
+                {choices.map((c) => (
+                  <SelectItem key={c.value} value={c.value} className="text-sm">
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {needsValue ? (
             isSingleSelect ? (
@@ -195,6 +236,15 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
                 <span className="text-sm font-medium leading-none">
                   {lt("columnFilterValueLabel", "Valor")}
                 </span>
+                {isRemoteSingleSelect ? (
+                  <Input
+                    className="h-10"
+                    value={remoteSelectQuery}
+                    onChange={(e) => setRemoteSelectQuery(e.target.value)}
+                    placeholder={lt("filterPanelAsyncSelectSearch", "Pesquisar…")}
+                    aria-label={lt("filterPanelAsyncSelectSearch", "Pesquisar…")}
+                  />
+                ) : null}
                 <Select value={valueText} onValueChange={setValueText}>
                   <SelectTrigger className="h-10" aria-label={lt("columnFilterValueLabel", "Valor")}>
                     <SelectValue placeholder={lt("columnFilterValueLabel", "Valor")} />

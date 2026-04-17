@@ -4,6 +4,7 @@ import {
   applyGridFilterOperator,
   rowMatchesQuickSubstring,
   rowPassesFilterModel,
+  rowPassesHiveGlobalFilter,
   sortFilterItemsByOrder,
   type HiveGlobalFilterBag
 } from "./filterFns";
@@ -143,5 +144,42 @@ describe("filterFns", () => {
       groupLogicOperator: "And"
     };
     expect(rowPassesFilterModel(row, model)).toBe(true);
+  });
+
+  it("rowPassesHiveGlobalFilter com serverDrivenColumnFilters ignora items de coluna", () => {
+    const row = {
+      getValue: (f: string) => (f === "a" ? 99 : 0),
+      getVisibleCells: () => []
+    } as unknown as Row<Record<string, unknown>>;
+    const bag: HiveGlobalFilterBag<Record<string, unknown>> = {
+      __hive: true,
+      quickTyped: "",
+      filterModel: {
+        items: [{ field: "a", operator: "=", value: 1 }],
+        logicOperator: "And"
+      },
+      disableQuick: true,
+      serverDrivenColumnFilters: true
+    };
+    expect(rowPassesHiveGlobalFilter(row, bag)).toBe(true);
+  });
+
+  it("rowPassesHiveGlobalFilter com serverDrivenColumnFilters aplica quickTyped", () => {
+    const original = { id: "r1", name: "Alpha" };
+    const shell = { id: "r1", original, getVisibleCells: (): unknown[] => [] };
+    const cells = [
+      { column: { id: "name" }, row: shell, getValue: () => "Alpha" }
+    ];
+    shell.getVisibleCells = () => cells;
+    const row = shell as unknown as Row<Record<string, unknown>>;
+    const bag: HiveGlobalFilterBag<Record<string, unknown>> = {
+      __hive: true,
+      quickTyped: "Beta",
+      filterModel: { items: [] },
+      disableQuick: false,
+      serverDrivenColumnFilters: true,
+      columnsByField: new Map()
+    };
+    expect(rowPassesHiveGlobalFilter(row, bag)).toBe(false);
   });
 });

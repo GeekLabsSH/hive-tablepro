@@ -22,6 +22,12 @@ export function colHasValueOptions<R extends GridValidRowModel>(col: GridColDef<
   return vo.length > 0;
 }
 
+/** `singleSelect` com opções estáticas ou carregamento assíncrono (`loadEditValueOptions` / `async`). */
+export function colHasFilterableSingleSelect<R extends GridValidRowModel>(col: GridColDef<R>): boolean {
+  if (col.type !== "singleSelect") return false;
+  return colHasValueOptions(col) || col.async === true || col.loadEditValueOptions != null;
+}
+
 /** Rótulo de célula `singleSelect` alinhado ao render por defeito da grelha. */
 export function formatSingleSelectDisplay(
   raw: unknown,

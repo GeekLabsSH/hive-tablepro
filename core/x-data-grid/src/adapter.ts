@@ -18,7 +18,11 @@ import type {
   GridValidRowModel
 } from "./types";
 
-export { colHasValueOptions, resolveColValueOptions } from "./gridValueOptions";
+export {
+  colHasValueOptions,
+  colHasFilterableSingleSelect,
+  resolveColValueOptions
+} from "./gridValueOptions";
 
 const DATE_BR_TZ = "America/Sao_Paulo";
 

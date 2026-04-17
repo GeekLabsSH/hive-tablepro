@@ -183,10 +183,20 @@ export function countActiveGridFilters(model: GridFilterModel, quickTyped?: stri
   return n;
 }
 
+/**
+ * `groupId` fixo para filtros criados pela **linha de filtro do cabeçalho** da grelha.
+ * Aparecem no painel «Filtros ativos» sob o bloco **Colunas** (ver `GridFilterPanel`).
+ */
+export const HIVE_FILTER_HEADER_GROUP_ID = "__hive_columns__" as const;
+
 /** Chave estável do grupo para `groupId` (itens sem grupo → `__flat__`). */
 export function gridFilterGroupKey(id: GridFilterItem["groupId"]): string {
   if (id === undefined || id === null) return "__flat__";
   return String(id);
+}
+
+export function isHiveFilterHeaderGroupKey(gk: string): boolean {
+  return gk === HIVE_FILTER_HEADER_GROUP_ID;
 }
 
 /** Ordena cópia dos itens por `filterOrder`, com empate pela ordem original em `items`. */
@@ -275,6 +285,11 @@ export type HiveGlobalFilterBag<R extends GridValidRowModel> = {
   quickTyped: string;
   filterModel: GridFilterModel;
   disableQuick: boolean;
+  /**
+   * Quando `true`, `filterModel.items` não restringe linhas no cliente (filtros de coluna só via servidor);
+   * `quickFilterValues` / texto rápido continuam a filtrar localmente.
+   */
+  serverDrivenColumnFilters?: boolean;
   getApi?: () => GridApiCommunity<R> | null;
   columnsByField?: Map<string, GridColDef<R>>;
 };
@@ -375,6 +390,9 @@ export function rowPassesHiveGlobalFilter<R extends GridValidRowModel>(
     } else if (bag.quickTyped.trim() !== "") {
       if (!rowMatchesQuickSubstring(row, bag.quickTyped, bag)) return false;
     }
+  }
+  if (bag.serverDrivenColumnFilters) {
+    return rowPassesFilterModel(row, { ...bag.filterModel, items: [] });
   }
   return rowPassesFilterModel(row, bag.filterModel);
 }

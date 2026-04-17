@@ -32,7 +32,11 @@ export {
 } from "./persistGridPreferences";
 export type { PersistedGridPreferences } from "./persistGridPreferences";
 
-export { GRID_CHECKBOX_SELECTION_COL_DEF, GRID_CHECKBOX_SELECTION_FIELD } from "./constants";
+export {
+  ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS,
+  GRID_CHECKBOX_SELECTION_COL_DEF,
+  GRID_CHECKBOX_SELECTION_FIELD
+} from "./constants";
 export { gridStringOrNumberComparator } from "./comparators";
 export { GridEditInputCell, GridActionsCellItem } from "./GridCells";
 export type { GridEditInputCellProps, GridActionsCellItemProps } from "./GridCells";
@@ -49,7 +53,8 @@ export {
   GridToolbarClearFiltersButton,
   GridToolbarChartsButton,
   GridToolbarPivotPanelButton,
-  GridToolbarPivotToggleButton
+  GridToolbarPivotToggleButton,
+  GridToolbarApplyColumnFiltersButton
 } from "./gridToolbar";
 export type { GridToolbarProps, GridToolbarQuickFilterProps } from "./gridToolbar";
 export { GridDefaultRowEditActions } from "./GridRowEditActions";
@@ -115,7 +120,8 @@ export type {
   GridEditCellProps,
   GridPreProcessEditCellProps,
   GridSortItem,
-  GridRowMode
+  GridRowMode,
+  GridServerColumnFiltersSearchPayload
 } from "./types";
 
 export {
