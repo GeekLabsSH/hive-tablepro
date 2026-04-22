@@ -12,6 +12,6 @@ export function isDataCellInteractiveTarget(target: EventTarget | null): boolean
   const el = htmlEventTarget(target);
   if (!el?.closest) return false;
   return !!el.closest(
-    "button, a, input, textarea, select, [role='checkbox'], [role='radio'], [role='combobox'], [role='searchbox'], [role='option'], [data-radix-collection-item], [data-hive-edit-root], [data-hive-actions-cell]"
+    "button, a, input, textarea, select, [role='checkbox'], [role='radio'], [role='combobox'], [role='searchbox'], [role='option'], [data-radix-collection-item], [data-radix-tooltip-trigger], [data-hive-edit-root], [data-hive-actions-cell]"
   );
 }

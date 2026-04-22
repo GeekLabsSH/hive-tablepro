@@ -31,7 +31,7 @@ function GridActionsCellLayout({
   return (
     <div
       className={cn(
-        "flex h-full min-w-0 items-center gap-0.5 pr-1",
+        "flex h-full w-full min-h-0 min-w-0 items-center gap-0.5 pr-1",
         actionsJustifyClass(align)
       )}
       data-hive-actions-cell=""
@@ -49,6 +49,7 @@ function GridActionsCellLayout({
                 compact ? "h-[15px] w-[15px] min-h-0 min-w-0" : "h-8 w-8"
               )}
               aria-label="Mais ações"
+              onPointerDown={(e) => e.stopPropagation()}
             >
               <EllipsisVerticalIcon
                 className="h-3 w-3 shrink-0 text-foreground/55 hover:text-foreground"

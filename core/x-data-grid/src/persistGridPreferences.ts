@@ -29,6 +29,18 @@ export type PersistedGridPreferences = {
   columnSizing?: Record<string, number>;
 };
 
+/** Primeira ocorrência ganha (ordem estável). */
+function dedupeColumnOrderIds(ids: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const id of ids) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+
 /**
  * Funde uma ordem guardada com a ordem canónica atual (novas colunas passam a seguir `baseOrder`).
  */
@@ -36,17 +48,18 @@ export function mergePersistedColumnOrder(
   baseOrder: readonly string[],
   stored: string[] | undefined
 ): string[] {
-  if (!stored?.length) return [...baseOrder];
-  const baseSet = new Set(baseOrder);
+  const baseDeduped = dedupeColumnOrderIds(baseOrder);
+  if (!stored?.length) return [...baseDeduped];
+  const baseSet = new Set(baseDeduped);
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const id of stored) {
+  for (const id of dedupeColumnOrderIds(stored)) {
     if (baseSet.has(id) && !seen.has(id)) {
       out.push(id);
       seen.add(id);
     }
   }
-  for (const id of baseOrder) {
+  for (const id of baseDeduped) {
     if (!seen.has(id)) out.push(id);
   }
   return out;

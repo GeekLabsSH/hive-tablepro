@@ -111,6 +111,7 @@ export function GridActionsCellItem({
           color === "error" && "text-destructive",
           className
         )}
+        onPointerDown={(e) => e.stopPropagation()}
         onClick={onClick}
       >
         {icon ? <span className="mr-2 flex shrink-0">{icon}</span> : null}
@@ -145,6 +146,10 @@ export function GridActionsCellItem({
         color === "error" && "text-destructive",
         className
       )}
+      onPointerDown={(e) => {
+        /** Evita que o `click` da linha / seleção implícita “coma” o primeiro toque nos ícones. */
+        e.stopPropagation();
+      }}
       onClick={onClick}
     >
       <span className="inline-flex shrink-0 items-center justify-center [&_svg]:h-3 [&_svg]:w-3">

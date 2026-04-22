@@ -87,6 +87,7 @@ import { GridFilterPanel } from "./GridFilterPanel";
 import { GridDefaultRowEditActions } from "./GridRowEditActions";
 import { GridToolbarFilterColumnsDensityRow } from "./gridToolbar";
 import { isDataCellInteractiveTarget } from "./isDataCellInteractiveTarget";
+
 import {
   isGlobalSelectAllExclude,
   normalizeSelectionIds,
@@ -948,14 +949,23 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
     isCompact ? "px-1.5 py-0.5 text-[11px] leading-tight" : isComfortable ? "px-2 py-2 text-base" : "px-2 py-1.5 text-sm"
   );
 
-  /** Painel fixo 200×500px (altura máx. respeita viewport); lista ocupa o resto com scroll. */
+  /**
+   * Só o painel do popover (lista + pesquisa). Não mexer em `chromeRow` / `triggerBtnClass` — é a célula
+   * de filtro na grelha (chevron, X, texto). Altura: conteúdo até max; scroll na lista quando há muitas opções.
+   */
   const popoverPanelClass = cn(
     "z-[9999] flex w-[200px] min-w-[200px] max-w-[200px] flex-col overflow-hidden border border-border p-0 shadow-md",
-    "h-[min(500px,calc(100dvh-16px))] max-h-[min(500px,calc(100dvh-16px))]"
+    "max-h-[min(500px,calc(100dvh-16px))] min-h-0"
   );
 
   const listScrollClass = cn(
-    "min-h-0 flex-1 overflow-y-auto overflow-x-hidden rounded-none bg-popover",
+    "min-h-0 overflow-y-auto overflow-x-hidden rounded-none bg-popover",
+    /** Sem `flex-1`: evita esticar a lista até ~500px com poucas opções; `max-h` = painel máx. menos faixa de pesquisa. */
+    isCompact
+      ? "max-h-[calc(min(500px,100dvh-16px)-2.25rem)]"
+      : isComfortable
+        ? "max-h-[calc(min(500px,100dvh-16px)-3.75rem)]"
+        : "max-h-[calc(min(500px,100dvh-16px)-3.25rem)]",
     isCompact ? "text-[11px] leading-tight" : isComfortable ? "text-base" : "text-sm"
   );
 
@@ -3914,9 +3924,17 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     orderedLeafColumns.length > 0 &&
     pivotDerived == null;
 
+  /** Já existe coluna de ações no modelo (`getActions` / `type: "actions"`) — não acrescentar segunda «Ações» (Gravar/Cancelar). */
+  const hasDedicatedActionsColumn = React.useMemo(
+    () => columnsProp.some((c) => c.type === "actions" || c.getActions != null),
+    [columnsProp]
+  );
+
   /** Com virtualização de colunas, não há coluna extra estável — usar `showRowEditActions={false}` ou coluna `actions` manual. */
   const showRowEditActionsEffective =
-    showRowEditActionsUi && !useColumnVirtualizationEffective;
+    showRowEditActionsUi &&
+    !useColumnVirtualizationEffective &&
+    !hasDedicatedActionsColumn;
 
   const gridTemplateColumnsRowEdit = React.useMemo(
     () =>
@@ -6064,6 +6082,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                         bodyCellIconCrossAxisClass(fieldStr, gridColDef)
                                       )}
                                       style={bodyCellContentBoxStyle(rowPx, showsBodyCellEditor)}
+                                      {...(!row.getIsGrouped() &&
+                                      (gridColDef?.type === "actions" || gridColDef?.getActions != null)
+                                        ? { "data-hive-actions-cell": "" as const }
+                                        : {})}
                                     >
                                       {truncateView ? (
                                         <div className="min-h-0 min-w-0 w-full max-w-full flex-1 truncate leading-normal">
@@ -6792,6 +6814,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                     {...(!row.getIsGrouped()
                                       ? {
                                           "data-hive-cell": "",
+                                          ...(gridColDef?.type === "actions" || gridColDef?.getActions != null
+                                            ? { "data-hive-actions-cell": "" as const }
+                                            : {}),
                                           "data-row-id": encodeURIComponent(String(getRowId(row.original))),
                                           "data-field": encodeURIComponent(String(cell.column.id)),
                                           tabIndex: -1

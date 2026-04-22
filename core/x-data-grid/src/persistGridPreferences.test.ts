@@ -65,6 +65,16 @@ describe("persistGridPreferences", () => {
     expect(mergePersistedColumnOrder(base, undefined)).toEqual(base);
   });
 
+  it("mergePersistedColumnOrder remove duplicados na base e no guardado", () => {
+    const base = ["__select__", "actions", "a", "actions", "b"];
+    expect(mergePersistedColumnOrder(base, ["actions", "b", "actions", "a"])).toEqual([
+      "actions",
+      "b",
+      "a",
+      "__select__"
+    ]);
+  });
+
   it("stringify + parse com columnOrder, rowGroupingModel e columnSizing", () => {
     const json = stringifyPersistedGridPreferences({
       columnOrder: ["id", "name"],
