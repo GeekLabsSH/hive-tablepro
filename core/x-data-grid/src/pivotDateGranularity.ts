@@ -1,6 +1,7 @@
 import type { GridColDef, GridPivotColumnDef, GridPivotDateGranularity, GridPivotRowDef, GridValidRowModel } from "./types";
 
-function parseToDate(raw: unknown): Date | null {
+/** Interpreta valores de células `date` / `dateTime` (paridade grelha / gráficos / pivot). */
+export function gridParseCellDate(raw: unknown): Date | null {
   if (raw == null || raw === "") return null;
   if (raw instanceof Date) return Number.isNaN(raw.getTime()) ? null : raw;
   if (typeof raw === "number" && Number.isFinite(raw)) {
@@ -23,7 +24,7 @@ export function pivotDimensionKey<R extends GridValidRowModel>(
   const raw = (row as Record<string, unknown>)[def.field];
   const g = def.dateGranularity;
   if (g && colDef && (colDef.type === "date" || colDef.type === "dateTime")) {
-    const d = parseToDate(raw);
+    const d = gridParseCellDate(raw);
     if (!d) return "";
     const y = d.getFullYear();
     const m = d.getMonth() + 1;

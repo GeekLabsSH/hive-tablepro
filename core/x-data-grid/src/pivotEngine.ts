@@ -1,6 +1,6 @@
 import { pivotDimensionDisplayLabel, pivotDimensionKey, slugPivotKeyPart } from "./pivotDateGranularity";
 import { normalizePivotModel } from "./pivotModelNormalize";
-import { sanitizePivotValueAggs } from "./pivotValueAggUtils";
+import { applyPivotAggToRawValues, sanitizePivotValueAggs } from "./pivotValueAggUtils";
 import { resolveSingleSelectDisplayLabel } from "./selectOptionLabel";
 import type {
   GridColDef,
@@ -13,59 +13,6 @@ import type {
 } from "./types";
 
 const ROW_SEP = "\x1e";
-
-function num(v: unknown): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : NaN;
-}
-
-function applyNumericAgg(values: number[], agg: "sum" | "avg" | "min" | "max"): number {
-  const nums = values.filter((x) => Number.isFinite(x));
-  if (nums.length === 0) return 0;
-  switch (agg) {
-    case "sum":
-      return nums.reduce((a, b) => a + b, 0);
-    case "avg":
-      return nums.reduce((a, b) => a + b, 0) / nums.length;
-    case "min":
-      return Math.min(...nums);
-    case "max":
-      return Math.max(...nums);
-    default:
-      return 0;
-  }
-}
-
-function distinctRawKey(v: unknown): string {
-  if (v == null) return "\0__null__";
-  if (typeof v === "object") return JSON.stringify(v);
-  return String(v);
-}
-
-function applyAggRaw<R extends GridValidRowModel>(
-  rawValues: unknown[],
-  agg: GridPivotAggFunc,
-  colDef: GridColDef<R> | undefined
-): number {
-  const nums = rawValues.map((v) => num(v)).filter((n) => Number.isFinite(n));
-  switch (agg) {
-    case "count":
-      return rawValues.length;
-    case "countDistinct": {
-      const set = new Set<string>();
-      for (const v of rawValues) set.add(distinctRawKey(v));
-      return set.size;
-    }
-    case "sum":
-    case "avg":
-    case "min":
-    case "max":
-      if (nums.length === 0) return 0;
-      return applyNumericAgg(nums, agg);
-    default:
-      return 0;
-  }
-}
 
 /** Exibição em PT: evita NaN na UI e alinha a casas decimais (ex.: 0,00). */
 function formatPivotMetricCellPt(value: unknown): string {
@@ -191,7 +138,7 @@ export function computePivotView<R extends GridValidRowModel>(
       for (const { def, key } of valSlots) {
         const pivotField = `pivot_${slugPivotKeyPart(ck)}__${slugPivotKeyPart(def.field)}_${def.aggFunc}`;
         const raw = cell.get(key) ?? [];
-        out[pivotField] = applyAggRaw(raw, def.aggFunc, colOf(sourceColumns, def.field));
+        out[pivotField] = applyPivotAggToRawValues(raw, def.aggFunc);
       }
     }
     return out;

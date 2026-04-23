@@ -1,5 +1,67 @@
 import type { GridColDef, GridPivotAggFunc, GridPivotModel, GridValidRowModel } from "./types";
 
+function num(v: unknown): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function applyNumericAgg(values: number[], agg: "sum" | "avg" | "min" | "max"): number {
+  const nums = values.filter((x) => Number.isFinite(x));
+  if (nums.length === 0) return 0;
+  switch (agg) {
+    case "sum":
+      return nums.reduce((a, b) => a + b, 0);
+    case "avg":
+      return nums.reduce((a, b) => a + b, 0) / nums.length;
+    case "min":
+      return Math.min(...nums);
+    case "max":
+      return Math.max(...nums);
+    default:
+      return 0;
+  }
+}
+
+function distinctRawKey(v: unknown): string {
+  if (v == null) return "\0__null__";
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+}
+
+/** Rótulos PT alinhados ao painel de pivotagem (métricas). */
+export const PIVOT_AGG_FUNC_LABELS_PT: Record<GridPivotAggFunc, string> = {
+  sum: "soma",
+  avg: "média",
+  min: "mín",
+  max: "máx",
+  count: "contagem",
+  countDistinct: "contagem distinta"
+};
+
+/**
+ * Aplica a mesma agregação que o motor de pivotagem a uma lista de valores brutos de célula.
+ */
+export function applyPivotAggToRawValues(rawValues: unknown[], agg: GridPivotAggFunc): number {
+  const nums = rawValues.map((v) => num(v)).filter((n) => Number.isFinite(n));
+  switch (agg) {
+    case "count":
+      return rawValues.length;
+    case "countDistinct": {
+      const set = new Set<string>();
+      for (const v of rawValues) set.add(distinctRawKey(v));
+      return set.size;
+    }
+    case "sum":
+    case "avg":
+    case "min":
+    case "max":
+      if (nums.length === 0) return 0;
+      return applyNumericAgg(nums, agg);
+    default:
+      return 0;
+  }
+}
+
 export function skipPivotLayoutField(f: string): boolean {
   return f === "__select__" || f === "__detail__" || f === "__tree__" || f.startsWith("pivot_");
 }

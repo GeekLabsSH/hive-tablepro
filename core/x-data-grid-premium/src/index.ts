@@ -8,6 +8,10 @@ export { DataGrid, DataGridPro } from "../../x-data-grid/src/DataGrid";
 
 export type {
   GridChartsConfig,
+  GridChartsDatasetKind,
+  GridChartsDateFilter,
+  GridChartsDateFilterMode,
+  GridChartsValueSeries,
   GridPivotAggFunc,
   GridPivotColumnDef,
   GridPivotDateGranularity,

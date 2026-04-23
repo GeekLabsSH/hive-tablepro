@@ -28,6 +28,7 @@ import {
   canAddFieldToPivotValues,
   defaultAggForPivotValueField,
   isPivotAxisCandidate,
+  PIVOT_AGG_FUNC_LABELS_PT,
   sanitizePivotValueAggs
 } from "./pivotValueAggUtils";
 
@@ -38,15 +39,6 @@ function isDateCol<R extends GridValidRowModel>(c: GridColDef<R> | undefined): b
 function colLabel<R extends GridValidRowModel>(c: GridColDef<R>): string {
   return (c.headerName ?? c.field).trim() || c.field;
 }
-
-const AGG_PT: Record<GridPivotAggFunc, string> = {
-  sum: "soma",
-  avg: "média",
-  min: "mín",
-  max: "máx",
-  count: "contagem",
-  countDistinct: "contagem distinta"
-};
 
 const DATE_GRAN: { v: GridPivotDateGranularity; l: string }[] = [
   { v: "year", l: "Ano" },
@@ -437,13 +429,13 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
                         size="sm"
                         className="h-7 shrink-0 rounded-full border-neutral-300 bg-neutral-50 px-2.5 text-xs font-medium dark:border-neutral-500 dark:bg-neutral-900 dark:text-neutral-100"
                       >
-                        {AGG_PT[def.aggFunc]}
+                        {PIVOT_AGG_FUNC_LABELS_PT[def.aggFunc]}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="z-[1200]">
                       {aggChoicesForPivotValueField(colByField(def.field)).map((a) => (
                         <DropdownMenuItem key={a} onClick={() => setAgg(i, a)}>
-                          {AGG_PT[a]}
+                          {PIVOT_AGG_FUNC_LABELS_PT[a]}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>

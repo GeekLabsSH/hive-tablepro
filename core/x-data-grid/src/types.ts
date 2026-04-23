@@ -184,16 +184,46 @@ export interface GridPivotModel {
   values: GridPivotValueDef[];
 }
 
-export type GridChartsDatasetKind = "bar" | "line";
+export type GridChartsDatasetKind = "bar" | "line" | "area";
+
+/** Métrica no eixo Y (várias séries suportadas). */
+export interface GridChartsValueSeries {
+  field: string;
+  aggFunc?: GridPivotAggFunc;
+}
+
+/** Modo de filtro temporal sobre uma coluna `date` / `dateTime` antes de agregar o gráfico. */
+export type GridChartsDateFilterMode = "off" | "exact" | "range";
+
+export interface GridChartsDateFilter {
+  field: string;
+  mode: GridChartsDateFilterMode;
+  /** Dia inclusivo `YYYY-MM-DD` quando `mode === "exact"`. */
+  exactDate?: string;
+  /** Inclusivo, `YYYY-MM-DD`, quando `mode === "range"`. */
+  rangeStart?: string;
+  rangeEnd?: string;
+}
 
 /** Configuração leve do painel de gráficos (integração estilo MUI + renderer shadcn/recharts). */
 export interface GridChartsConfig {
   /** Tipo de gráfico por defeito no painel. */
   defaultKind?: GridChartsDatasetKind;
-  /** Campo numérico do eixo Y (quando há uma série simples). */
-  valueField?: string;
   /** Campo categórico do eixo X. */
   categoryField?: string;
+  /**
+   * Quando `categoryField` é `date` ou `dateTime`, agrupa o eixo X (paridade com pivotagem).
+   * Sem valor, usa-se rótulo bruto da célula.
+   */
+  categoryDateGranularity?: GridPivotDateGranularity;
+  /** Campo numérico do eixo Y (série única; ignorado se `valueSeries` tiver entradas). */
+  valueField?: string;
+  /** Agregação da série única. */
+  valueAggFunc?: GridPivotAggFunc;
+  /** Várias métricas no eixo Y (cada uma com campo e agregação). */
+  valueSeries?: GridChartsValueSeries[];
+  /** Filtra linhas por intervalo ou dia antes de construir o dataset do gráfico. */
+  dateFilter?: GridChartsDateFilter;
 }
 
 export interface GridPaginationModel {
