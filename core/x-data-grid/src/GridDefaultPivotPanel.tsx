@@ -223,7 +223,7 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
     draft.values.some((v) => !v.hidden);
 
   const zoneMenu = (zone: Zone, index: number, len: number, field: string) => (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
@@ -234,7 +234,7 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
           <EllipsisVerticalIcon className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="z-[1200]">
+      <DropdownMenuContent align="end" className="z-[1400]">
         <DropdownMenuItem disabled={index === 0} onClick={() => shift(zone, index, -1)}>
           Subir
         </DropdownMenuItem>
@@ -323,13 +323,13 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
                     className="flex items-center justify-between gap-1 rounded px-1 py-0.5 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                   >
                     <span className="min-w-0 flex-1 truncate text-gray-800 dark:text-gray-200">{colLabel(c)}</span>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button type="button" variant="outline" size="sm" className="h-7 shrink-0 px-2 text-xs">
                           +
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="z-[1200]">
+                      <DropdownMenuContent align="end" className="z-[1400]">
                         <DropdownMenuItem onClick={() => addRow(c.field)}>Adicionar a Linhas</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => addCol(c.field)}>Adicionar a Colunas</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => addVal(c.field)}>Adicionar a Valores</DropdownMenuItem>
@@ -421,7 +421,7 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
                   <span className="min-w-0 flex-1 truncate text-sm text-neutral-900 dark:text-neutral-100">
                     {colLabel(colByField(def.field) ?? ({ field: def.field } as GridColDef<R>))}
                   </span>
-                  <DropdownMenu>
+                  <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
                       <Button
                         type="button"
@@ -432,7 +432,7 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
                         {PIVOT_AGG_FUNC_LABELS_PT[def.aggFunc]}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="z-[1200]">
+                    <DropdownMenuContent align="end" className="z-[1400]">
                       {aggChoicesForPivotValueField(colByField(def.field)).map((a) => (
                         <DropdownMenuItem key={a} onClick={() => setAgg(i, a)}>
                           {PIVOT_AGG_FUNC_LABELS_PT[a]}

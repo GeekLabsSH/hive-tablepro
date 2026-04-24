@@ -221,7 +221,7 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
               >
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent position="popper" className="z-[500] max-h-60">
+              <SelectContent position="popper" className="z-[1200] max-h-60">
                 {choices.map((c) => (
                   <SelectItem key={c.value} value={c.value} className="text-sm">
                     {c.label}
@@ -249,7 +249,7 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
                   <SelectTrigger className="h-10" aria-label={lt("columnFilterValueLabel", "Valor")}>
                     <SelectValue placeholder={lt("columnFilterValueLabel", "Valor")} />
                   </SelectTrigger>
-                  <SelectContent position="popper" className="max-h-60">
+                  <SelectContent position="popper" className="z-[1200] max-h-60">
                     {normOpts.map((o) => (
                       <SelectItem key={o.value} value={o.value}>
                         {o.label}
@@ -267,7 +267,7 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
                   <SelectTrigger className="h-10" aria-label={lt("columnFilterValueLabel", "Valor")}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent position="popper">
+                  <SelectContent position="popper" className="z-[1200]">
                     <SelectItem value="true">{lt("filterBooleanTrue", "Sim")}</SelectItem>
                     <SelectItem value="false">{lt("filterBooleanFalse", "Não")}</SelectItem>
                   </SelectContent>

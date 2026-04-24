@@ -1,0 +1,16 @@
+{
+    "isRebasing": false,
+    "patches": [
+        {
+            "didApply": true,
+            "patchContentHash": "4844418e94f7ba43a46686d79399e6124a1265f0ce2c8803cd94b33483f999c2",
+            "patchFilename": "@geeklabssh+hive-tablepro+3.0.3.patch"
+        },
+        {
+            "didApply": true,
+            "patchContentHash": "ce89e40818c5b2ab322de11b51bb56b3b0825fdb221040951f53ec004f571898",
+            "patchFilename": "@geeklabssh+hive-tablepro+3.0.7.patch"
+        }
+    ],
+    "version": 1
+}
