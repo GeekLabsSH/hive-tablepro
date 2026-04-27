@@ -25,6 +25,7 @@ import type {
 } from "./types";
 import {
   aggChoicesForPivotValueField,
+  buildPivotValueSampleFromRows,
   canAddFieldToPivotValues,
   defaultAggForPivotValueField,
   isPivotAxisCandidate,
@@ -41,10 +42,12 @@ function colLabel<R extends GridValidRowModel>(c: GridColDef<R>): string {
 }
 
 const DATE_GRAN: { v: GridPivotDateGranularity; l: string }[] = [
-  { v: "year", l: "Ano" },
-  { v: "quarter", l: "Trimestre" },
+  { v: "day", l: "Dia" },
+  { v: "week", l: "Semana" },
   { v: "month", l: "Mês" },
-  { v: "day", l: "Dia" }
+  { v: "quarter", l: "Trimestre" },
+  { v: "semester", l: "Semestre" },
+  { v: "year", l: "Ano" }
 ];
 
 function cloneModel(m: GridPivotModel): GridPivotModel {
@@ -54,7 +57,7 @@ function cloneModel(m: GridPivotModel): GridPivotModel {
 type Zone = "rows" | "columns" | "values";
 
 export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPivotPanelSlotProps<R>) {
-  const { api, open, onOpenChange, pivotModel, onCommitPivotModel } = props;
+  const { api, open, onOpenChange, pivotModel, onCommitPivotModel, sourceRows } = props;
   const columns = api.getAllColumns();
 
   const [draft, setDraft] = React.useState<GridPivotModel>(() => cloneModel(pivotModel));
@@ -69,10 +72,10 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
       lastCommittedRef.current = cloneModel(pivotModel);
       return;
     }
-    const next = sanitizePivotValueAggs(cloneModel(pivotModel), columns);
+    const next = sanitizePivotValueAggs(cloneModel(pivotModel), columns, sourceRows);
     setDraft(next);
     lastCommittedRef.current = cloneModel(pivotModel);
-  }, [open, pivotModel, columns]);
+  }, [open, pivotModel, columns, sourceRows]);
 
   const axisCols = React.useMemo(() => columns.filter(isPivotAxisCandidate), [columns]);
 
@@ -100,7 +103,12 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
   };
   const addVal = (field: string) => {
     const c = colByField(field);
-    const next: GridPivotValueDef = { field, aggFunc: defaultAggForPivotValueField(c), hidden: false };
+    const sample = buildPivotValueSampleFromRows(sourceRows, field);
+    const next: GridPivotValueDef = {
+      field,
+      aggFunc: defaultAggForPivotValueField(c, { valueSample: sample }),
+      hidden: false
+    };
     setDraft((d) => ({ ...d, values: [...d.values, next] }));
   };
 
@@ -125,7 +133,16 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
           return {
             ...d,
             rows: rest,
-            values: [...d.values, { field: item.field, aggFunc: defaultAggForPivotValueField(colByField(item.field)), hidden: false }]
+            values: [
+              ...d.values,
+              {
+                field: item.field,
+                aggFunc: defaultAggForPivotValueField(colByField(item.field), {
+                  valueSample: buildPivotValueSampleFromRows(sourceRows, item.field)
+                }),
+                hidden: false
+              }
+            ]
           };
         return { ...d, rows: rest };
       }
@@ -140,7 +157,16 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
           return {
             ...d,
             columns: rest,
-            values: [...d.values, { field: item.field, aggFunc: defaultAggForPivotValueField(colByField(item.field)), hidden: false }]
+            values: [
+              ...d.values,
+              {
+                field: item.field,
+                aggFunc: defaultAggForPivotValueField(colByField(item.field), {
+                  valueSample: buildPivotValueSampleFromRows(sourceRows, item.field)
+                }),
+                hidden: false
+              }
+            ]
           };
         return { ...d, columns: rest };
       }
@@ -433,7 +459,9 @@ export function GridDefaultPivotPanel<R extends GridValidRowModel>(props: GridPi
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="z-[1400]">
-                      {aggChoicesForPivotValueField(colByField(def.field)).map((a) => (
+                      {aggChoicesForPivotValueField(colByField(def.field), {
+                        valueSample: buildPivotValueSampleFromRows(sourceRows, def.field)
+                      }).map((a) => (
                         <DropdownMenuItem key={a} onClick={() => setAgg(i, a)}>
                           {PIVOT_AGG_FUNC_LABELS_PT[a]}
                         </DropdownMenuItem>

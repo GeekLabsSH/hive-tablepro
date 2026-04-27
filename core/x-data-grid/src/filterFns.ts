@@ -396,3 +396,192 @@ export function rowPassesHiveGlobalFilter<R extends GridValidRowModel>(
   }
   return rowPassesFilterModel(row, bag.filterModel);
 }
+
+function getDataCellRaw<R extends GridValidRowModel>(
+  data: R,
+  field: string,
+  colDef: GridColDef<R> | undefined,
+  rowId: GridRowId
+): unknown {
+  const raw0 = (data as Record<string, unknown>)[field];
+  if (!colDef?.valueGetter) return raw0;
+  try {
+    return colDef.valueGetter({
+      field,
+      id: rowId,
+      row: data,
+      value: raw0
+    } as never);
+  } catch {
+    return raw0;
+  }
+}
+
+function dataValueMatchesQuickToken<R extends GridValidRowModel>(
+  id: string,
+  raw: unknown,
+  data: R,
+  rowId: GridRowId,
+  filterValue: string,
+  bag: HiveGlobalFilterBag<R>
+): boolean {
+  if (id === "__select__" || id === "__detail__" || id === "__tree__") return false;
+  const colDef = bag.columnsByField?.get(id);
+  const api = bag.getApi?.() ?? null;
+  if (colDef?.getApplyQuickFilterFn) {
+    const fn = colDef.getApplyQuickFilterFn(filterValue, colDef, api);
+    if (fn === null) return false;
+    return fn(raw);
+  }
+  const needle = filterValue.trim().toLowerCase();
+  if (!needle) return false;
+  const hay: string[] = [];
+  const pushNorm = (v: unknown) => {
+    const s = v == null ? "" : String(v).trim();
+    if (s.length > 0) hay.push(s.toLowerCase());
+  };
+  pushNorm(raw);
+  if (colDef?.valueFormatter) {
+    try {
+      pushNorm(
+        colDef.valueFormatter({
+          id: rowId,
+          field: id,
+          row: data,
+          value: raw as never
+        })
+      );
+    } catch {
+      /* ignore */
+    }
+  }
+  const selectLike =
+    colDef != null &&
+    colDef.type !== "boolean" &&
+    colDef.type !== "actions" &&
+    (colDef.type === "singleSelect" ||
+      colDef.async === true ||
+      (colHasValueOptions(colDef) && colDef.type !== "date" && colDef.type !== "dateTime"));
+  if (selectLike) {
+    const opts = resolveColValueOptions(colDef, rowId, data);
+    pushNorm(formatSingleSelectDisplay(raw, opts));
+  }
+  return hay.some((h) => h.includes(needle));
+}
+
+function dataMatchesQuickSubstring<R extends GridValidRowModel>(
+  data: R,
+  q: string,
+  bag: HiveGlobalFilterBag<R>,
+  rowId: GridRowId
+): boolean {
+  const needle = q.trim();
+  if (!needle) return true;
+  const cols = bag.columnsByField;
+  if (!cols?.size) return true;
+  for (const [id, colDef] of cols) {
+    const raw = getDataCellRaw(data, id, colDef, rowId);
+    if (dataValueMatchesQuickToken(id, raw, data, rowId, needle, bag)) return true;
+  }
+  return false;
+}
+
+function dataMatchesQuickFilterValues<R extends GridValidRowModel>(
+  data: R,
+  values: string[],
+  logic: "And" | "Or",
+  bag: HiveGlobalFilterBag<R>,
+  rowId: GridRowId
+): boolean {
+  if (!values.length) return true;
+  const tokens = values.map((v) => String(v).trim()).filter(Boolean);
+  if (!tokens.length) return true;
+  const checks = tokens.map((token) => dataMatchesQuickSubstring(data, token, bag, rowId));
+  return logic === "Or" ? checks.some(Boolean) : checks.every(Boolean);
+}
+
+function dataMatchesFilterItem<R extends GridValidRowModel>(
+  data: R,
+  item: GridFilterItem,
+  bag: HiveGlobalFilterBag<R>,
+  rowId: GridRowId
+): boolean {
+  const col = bag.columnsByField?.get(item.field);
+  const cell = getDataCellRaw(data, item.field, col, rowId);
+  return applyGridFilterOperator(cell, item.operator, item.value);
+}
+
+function dataPassesFilterModel<R extends GridValidRowModel>(
+  data: R,
+  model: GridFilterModel,
+  bag: HiveGlobalFilterBag<R>,
+  rowId: GridRowId
+): boolean {
+  const rawItems = model.items ?? [];
+  if (rawItems.length === 0) return true;
+  const items = sortFilterItemsByOrder(rawItems);
+
+  const useGroups = rawItems.some((it) => it.groupId !== undefined && it.groupId !== null);
+  if (!useGroups) {
+    const fallback = model.logicOperator ?? "And";
+    let acc = dataMatchesFilterItem(data, items[0]!, bag, rowId);
+    for (let i = 1; i < items.length; i++) {
+      const join = items[i]!.joinWithPrevious ?? fallback;
+      const next = dataMatchesFilterItem(data, items[i]!, bag, rowId);
+      acc = join === "Or" ? acc || next : acc && next;
+    }
+    return acc;
+  }
+
+  const seen = new Set<string>();
+  const groupOrder: string[] = [];
+  for (const it of items) {
+    const k = gridFilterGroupKey(it.groupId);
+    if (!seen.has(k)) {
+      seen.add(k);
+      groupOrder.push(k);
+    }
+  }
+
+  const betweenGroups = model.groupLogicOperator ?? "And";
+  const groupResults: boolean[] = [];
+
+  for (const gk of groupOrder) {
+    const groupItems = items.filter((it) => gridFilterGroupKey(it.groupId) === gk);
+    if (groupItems.length === 0) continue;
+    let acc = dataMatchesFilterItem(data, groupItems[0]!, bag, rowId);
+    for (let i = 1; i < groupItems.length; i++) {
+      const join = groupItems[i]!.groupItemLogic ?? "And";
+      const next = dataMatchesFilterItem(data, groupItems[i]!, bag, rowId);
+      acc = join === "Or" ? acc || next : acc && next;
+    }
+    groupResults.push(acc);
+  }
+
+  if (groupResults.length === 0) return true;
+  return betweenGroups === "Or" ? groupResults.some(Boolean) : groupResults.every(Boolean);
+}
+
+/**
+ * Mesma regra que `rowPassesHiveGlobalFilter` para linhas TanStack, aplicada ao objecto de dados `R`
+ * (ex.: agregar pivot/gráficos sobre todas as linhas filtradas sem paginação).
+ */
+export function dataPassesHiveGlobalFilter<R extends GridValidRowModel>(
+  data: R,
+  bag: HiveGlobalFilterBag<R>,
+  rowId: GridRowId
+): boolean {
+  if (!bag.disableQuick) {
+    const qLogic = bag.filterModel.quickFilterLogicOperator ?? "And";
+    const qVals = bag.filterModel.quickFilterValues?.filter((x) => String(x).trim() !== "") ?? [];
+    if (qVals.length > 0) {
+      if (!dataMatchesQuickFilterValues(data, qVals.map(String), qLogic, bag, rowId)) return false;
+    } else if (bag.quickTyped.trim() !== "") {
+      if (!dataMatchesQuickSubstring(data, bag.quickTyped, bag, rowId)) return false;
+    }
+  }
+  if (bag.serverDrivenColumnFilters) {
+    return dataPassesFilterModel(data, { ...bag.filterModel, items: [] }, bag, rowId);
+  }
+  return dataPassesFilterModel(data, bag.filterModel, bag, rowId);
+}

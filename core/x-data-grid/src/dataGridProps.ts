@@ -110,6 +110,8 @@ export type GridPivotPanelSlotProps<R extends GridValidRowModel = GridValidRowMo
   onOpenChange: (open: boolean) => void;
   pivotModel: GridPivotModel;
   onCommitPivotModel: (model: GridPivotModel) => void;
+  /** Linhas fonte (mesmo `rows` do DataGrid) para inferir métricas numéricas sem `type: "number"`. */
+  sourceRows?: R[];
 };
 
 export type GridChartsPanelSlotProps<R extends GridValidRowModel = GridValidRowModel> = {

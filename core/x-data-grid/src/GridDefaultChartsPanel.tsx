@@ -1,18 +1,27 @@
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import * as React from "react";
+import { Button } from "../../../src/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle
 } from "../../../src/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "../../../src/components/ui/dropdown-menu";
 import { gridParseCellDate, pivotDimensionDisplayLabel, pivotDimensionKey } from "./pivotDateGranularity";
 import {
   applyPivotAggToRawValues,
   aggChoicesForPivotValueField,
+  buildPivotValueSampleFromRows,
   canAddFieldToPivotValues,
   defaultAggForPivotValueField,
-  PIVOT_AGG_FUNC_LABELS_PT
+  PIVOT_AGG_FUNC_LABELS_PT,
+  treatsColumnAsNumericPivotMetric
 } from "./pivotValueAggUtils";
 import { resolveSingleSelectDisplayLabel } from "./selectOptionLabel";
 import type {
@@ -42,10 +51,12 @@ const DATE_FILTER_MODE_LABELS: Record<GridChartsDateFilterMode, string> = {
 };
 
 const CAT_DATE_GRAN_OPTIONS: { value: "" | GridPivotDateGranularity; label: string }[] = [
-  { value: "", label: "Dia (YYYY-MM-DD)" },
-  { value: "year", label: "Ano" },
+  { value: "", label: "Dia (calendário)" },
+  { value: "week", label: "Semana (segunda a domingo)" },
+  { value: "month", label: "Mês" },
   { value: "quarter", label: "Trimestre" },
-  { value: "month", label: "Mês" }
+  { value: "semester", label: "Semestre" },
+  { value: "year", label: "Ano" }
 ];
 
 const SERIE_COLORS = ["#3b82f6", "#22c55e", "#ca8a04", "#a855f7", "#f97316", "#14b8a6"];
@@ -66,12 +77,20 @@ function isCategoryColumn<R extends GridValidRowModel>(c: GridColDef<R>): boolea
 }
 
 function pickDefaultFields<R extends GridValidRowModel>(
-  columns: GridColDef<R>[]
+  columns: GridColDef<R>[],
+  rows: R[]
 ): { categoryField: string; valueField: string } | null {
   const cat = columns.find(isCategoryColumn)?.field ?? null;
   const pivotVals = columns.filter(canAddFieldToPivotValues);
   const val =
-    pivotVals.find((c) => c.type === "number")?.field ?? pivotVals[0]?.field ?? null;
+    pivotVals.find((c) => c.type === "number")?.field ??
+    pivotVals.find((c) =>
+      treatsColumnAsNumericPivotMetric(c, {
+        valueSample: buildPivotValueSampleFromRows(rows, c.field)
+      })
+    )?.field ??
+    pivotVals[0]?.field ??
+    null;
   if (!cat || !val) return null;
   return { categoryField: cat, valueField: val };
 }
@@ -79,11 +98,13 @@ function pickDefaultFields<R extends GridValidRowModel>(
 function sanitizeChartValueAgg<R extends GridValidRowModel>(
   valueField: string,
   agg: GridPivotAggFunc,
-  columns: GridColDef<R>[]
+  columns: GridColDef<R>[],
+  rows: R[]
 ): GridPivotAggFunc {
   const cd = columns.find((c) => c.field === valueField);
-  const allowed = aggChoicesForPivotValueField(cd);
-  return allowed.includes(agg) ? agg : defaultAggForPivotValueField(cd);
+  const fieldOpts = { valueSample: buildPivotValueSampleFromRows(rows, valueField) };
+  const allowed = aggChoicesForPivotValueField(cd, fieldOpts);
+  return allowed.includes(agg) ? agg : defaultAggForPivotValueField(cd, fieldOpts);
 }
 
 function startOfLocalDayMs(d: Date): number {
@@ -177,7 +198,8 @@ function newSeriesId(): string {
 function seriesFromConfig<R extends GridValidRowModel>(
   config: GridChartsConfig | undefined,
   defaults: { categoryField: string; valueField: string } | null,
-  columns: GridColDef<R>[]
+  columns: GridColDef<R>[],
+  rows: R[]
 ): SeriesRow[] {
   const valueFieldSet = new Set(columns.filter(canAddFieldToPivotValues).map((c) => c.field));
 
@@ -185,27 +207,35 @@ function seriesFromConfig<R extends GridValidRowModel>(
   if (vs && vs.length > 0) {
     const mapped = vs.slice(0, MAX_CHART_SERIES)
       .filter((s) => valueFieldSet.has(s.field))
-      .map((s, i) => ({
-        id: `cfg-${i}-${s.field}`,
-        field: s.field,
-        agg: sanitizeChartValueAgg(
-          s.field,
-          s.aggFunc ?? defaultAggForPivotValueField(columns.find((c) => c.field === s.field)),
-          columns
-        )
-      }));
+      .map((s, i) => {
+        const cd = columns.find((c) => c.field === s.field);
+        const fo = { valueSample: buildPivotValueSampleFromRows(rows, s.field) };
+        return {
+          id: `cfg-${i}-${s.field}`,
+          field: s.field,
+          agg: sanitizeChartValueAgg(
+            s.field,
+            s.aggFunc ?? defaultAggForPivotValueField(cd, fo),
+            columns,
+            rows
+          )
+        };
+      });
     if (mapped.length > 0) return mapped;
   }
   const vf = config?.valueField ?? defaults?.valueField ?? "";
   if (!vf || !valueFieldSet.has(vf)) return [];
+  const cdVf = columns.find((c) => c.field === vf);
+  const foVf = { valueSample: buildPivotValueSampleFromRows(rows, vf) };
   return [
     {
       id: "sr-0",
       field: vf,
       agg: sanitizeChartValueAgg(
         vf,
-        config?.valueAggFunc ?? defaultAggForPivotValueField(columns.find((c) => c.field === vf)),
-        columns
+        config?.valueAggFunc ?? defaultAggForPivotValueField(cdVf, foVf),
+        columns,
+        rows
       )
     }
   ];
@@ -252,7 +282,7 @@ function buildChartDataset<R extends GridValidRowModel>(
     const point: Record<string, string | number> = { name: cell.label };
     series.forEach((s, idx) => {
       const rawVals = cell.buckets.get(idx) ?? [];
-      const agg = sanitizeChartValueAgg(s.field, s.agg, columns);
+      const agg = sanitizeChartValueAgg(s.field, s.agg, columns, rows);
       point[`s${idx}`] = applyPivotAggToRawValues(rawVals, agg);
     });
     return point;
@@ -292,7 +322,7 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
   const { open, onOpenChange, rows, columns, config, title = "Gráfico (dados visíveis)" } = props;
   const [Recharts, setRecharts] = React.useState<typeof import("recharts") | null>(null);
 
-  const defaults = React.useMemo(() => pickDefaultFields(columns), [columns]);
+  const defaults = React.useMemo(() => pickDefaultFields(columns, rows), [columns, rows]);
   const [chartKind, setChartKind] = React.useState<GridChartsDatasetKind>(() =>
     normalizeChartKind(config?.defaultKind)
   );
@@ -300,7 +330,7 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
   const [categoryDateGranularity, setCategoryDateGranularity] = React.useState<"" | GridPivotDateGranularity>(
     () => config?.categoryDateGranularity ?? ""
   );
-  const [series, setSeries] = React.useState<SeriesRow[]>(() => seriesFromConfig(config, defaults, columns));
+  const [series, setSeries] = React.useState<SeriesRow[]>(() => seriesFromConfig(config, defaults, columns, rows));
   const [dateFilter, setDateFilter] = React.useState<DateFilterDraft>(() => ({
     field: config?.dateFilter?.field ?? "",
     mode: config?.dateFilter?.mode ?? "off",
@@ -311,11 +341,11 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
 
   React.useEffect(() => {
     if (!open) return;
-    const d = pickDefaultFields(columns);
+    const d = pickDefaultFields(columns, rows);
     setChartKind(normalizeChartKind(config?.defaultKind));
     setCategoryField(config?.categoryField ?? d?.categoryField ?? "");
     setCategoryDateGranularity(config?.categoryDateGranularity ?? "");
-    setSeries(seriesFromConfig(config, d, columns));
+    setSeries(seriesFromConfig(config, d, columns, rows));
     setDateFilter({
       field: config?.dateFilter?.field ?? "",
       mode: config?.dateFilter?.mode ?? "off",
@@ -336,7 +366,8 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
     config?.dateFilter?.exactDate,
     config?.dateFilter?.rangeStart,
     config?.dateFilter?.rangeEnd,
-    columns
+    columns,
+    rows
   ]);
 
   React.useEffect(() => {
@@ -368,12 +399,12 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
         return {
           ...s,
           field: nf,
-          agg: sanitizeChartValueAgg(nf, s.agg, columns)
+          agg: sanitizeChartValueAgg(nf, s.agg, columns, rows)
         };
       });
       return changed ? out : prev;
     });
-  }, [valueColumns, columns]);
+  }, [valueColumns, columns, rows]);
 
   const dateColumns = React.useMemo(
     () => columns.filter((c) => !skipChartField(c.field) && isDateLikeCol(c)),
@@ -410,10 +441,11 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
       const used = new Set(prev.map((p) => p.field));
       const nextCol = valueColumns.find((c) => !used.has(c.field)) ?? valueColumns[0];
       if (!nextCol) return prev;
-      const agg = defaultAggForPivotValueField(nextCol);
+      const fo = { valueSample: buildPivotValueSampleFromRows(rows, nextCol.field) };
+      const agg = defaultAggForPivotValueField(nextCol, fo);
       return [...prev, { id: newSeriesId(), field: nextCol.field, agg }];
     });
-  }, [valueColumns]);
+  }, [valueColumns, rows]);
 
   const removeSeries = React.useCallback((id: string) => {
     setSeries((prev) => (prev.length <= 1 ? prev : prev.filter((s) => s.id !== id)));
@@ -427,27 +459,33 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
             ? {
                 ...s,
                 field,
-                agg: sanitizeChartValueAgg(
-                  field,
-                  s.agg,
-                  columns
-                )
+                agg: sanitizeChartValueAgg(field, s.agg, columns, rows)
               }
             : s
         )
       );
     },
-    [columns]
+    [columns, rows]
   );
 
   const updateSeriesAgg = React.useCallback((id: string, agg: GridPivotAggFunc) => {
-    setSeries((prev) => prev.map((s) => (s.id === id ? { ...s, agg } : s)));
-  }, []);
+    setSeries((prev) =>
+      prev.map((s) => {
+        if (s.id !== id) return s;
+        return { ...s, agg: sanitizeChartValueAgg(s.field, agg, columns, rows) };
+      })
+    );
+  }, [columns, rows]);
 
-  const selectCls =
+  const dateInputCls =
     "mt-1 h-9 w-full rounded-md border border-gray-300 bg-white px-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100";
-  const compactSelectCls =
-    "h-8 min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-1.5 text-xs text-gray-900 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100";
+  const chartMenuTriggerClass =
+    "mt-1 h-9 w-full justify-between gap-2 rounded-md border border-gray-300 bg-white px-2 text-sm font-normal text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800";
+  const seriesFieldMenuTriggerClass =
+    "h-8 min-w-0 flex-1 justify-between gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-xs font-normal text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800";
+  const seriesAggMenuTriggerClass =
+    "h-8 max-w-[10rem] shrink-0 justify-between gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-xs font-normal text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800";
+  const menuContentClass = "z-[1400] max-h-[min(70vh,20rem)] w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto p-1";
 
   const hasData = chartData.length > 0 && series.length > 0;
 
@@ -461,41 +499,64 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
           <div className="space-y-4 border-b border-gray-200 pb-4 dark:border-gray-700">
             <p className="text-xs text-gray-600 dark:text-gray-400">
               Configure o tipo de gráfico, a categoria (eixo X), uma ou mais métricas (eixo Y) e, opcionalmente,
-              filtre as linhas por uma coluna de data. Os dados reflectem as linhas visíveis na grelha.
+              filtre as linhas por uma coluna de data. Os dados incluem todas as linhas que passam o filtro da grelha
+              (sem limite de paginação).
             </p>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="block text-xs font-medium text-gray-800 dark:text-gray-200">Tipo de gráfico</label>
-                <select
-                  className={selectCls}
-                  value={chartKind}
-                  onChange={(e) => setChartKind(normalizeChartKind(e.target.value))}
-                >
-                  {(Object.keys(CHART_KIND_LABELS) as GridChartsDatasetKind[]).map((k) => (
-                    <option key={k} value={k}>
-                      {CHART_KIND_LABELS[k]}
-                    </option>
-                  ))}
-                </select>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button type="button" variant="outline" className={chartMenuTriggerClass}>
+                      <span className="min-w-0 truncate">{CHART_KIND_LABELS[chartKind]}</span>
+                      <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className={menuContentClass}>
+                    {(Object.keys(CHART_KIND_LABELS) as GridChartsDatasetKind[]).map((k) => (
+                      <DropdownMenuItem key={k} onClick={() => setChartKind(normalizeChartKind(k))}>
+                        {CHART_KIND_LABELS[k]}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-800 dark:text-gray-200">Categoria (eixo X)</label>
-                <select
-                  className={selectCls}
-                  value={categoryField}
-                  onChange={(e) => {
-                    setCategoryField(e.target.value);
-                    setCategoryDateGranularity("");
-                  }}
-                >
-                  <option value="">—</option>
-                  {categoryColumns.map((c) => (
-                    <option key={c.field} value={c.field}>
-                      {colLabel(c)}
-                    </option>
-                  ))}
-                </select>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button type="button" variant="outline" className={chartMenuTriggerClass}>
+                      <span className="min-w-0 truncate">
+                        {categoryField
+                          ? colLabel(categoryColumns.find((c) => c.field === categoryField) ?? ({ field: categoryField } as GridColDef<R>))
+                          : "—"}
+                      </span>
+                      <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className={menuContentClass}>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setCategoryField("");
+                        setCategoryDateGranularity("");
+                      }}
+                    >
+                      —
+                    </DropdownMenuItem>
+                    {categoryColumns.map((c) => (
+                      <DropdownMenuItem
+                        key={c.field}
+                        onClick={() => {
+                          setCategoryField(c.field);
+                          setCategoryDateGranularity("");
+                        }}
+                      >
+                        {colLabel(c)}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
@@ -504,19 +565,26 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                 <label className="block text-xs font-medium text-gray-800 dark:text-gray-200">
                   Agrupamento da data no eixo X
                 </label>
-                <select
-                  className={selectCls}
-                  value={categoryDateGranularity}
-                  onChange={(e) =>
-                    setCategoryDateGranularity((e.target.value || "") as "" | GridPivotDateGranularity)
-                  }
-                >
-                  {CAT_DATE_GRAN_OPTIONS.map((o) => (
-                    <option key={o.value || "day-cal"} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button type="button" variant="outline" className={chartMenuTriggerClass}>
+                      <span className="min-w-0 truncate">
+                        {CAT_DATE_GRAN_OPTIONS.find((o) => o.value === categoryDateGranularity)?.label ?? "Dia (calendário)"}
+                      </span>
+                      <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className={menuContentClass}>
+                    {CAT_DATE_GRAN_OPTIONS.map((o) => (
+                      <DropdownMenuItem
+                        key={o.value || "day-cal"}
+                        onClick={() => setCategoryDateGranularity((o.value || "") as "" | GridPivotDateGranularity)}
+                      >
+                        {o.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : null}
 
@@ -541,7 +609,10 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                 <ul className="mt-2 space-y-2">
                   {series.map((s, idx) => {
                     const cd = columns.find((c) => c.field === s.field);
-                    const aggOpts = aggChoicesForPivotValueField(cd);
+                    const aggOpts = aggChoicesForPivotValueField(cd, {
+                      valueSample: buildPivotValueSampleFromRows(rows, s.field)
+                    });
+                    const fieldLabel = colLabel(cd ?? ({ field: s.field } as GridColDef<R>));
                     return (
                       <li
                         key={s.id}
@@ -550,28 +621,36 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         <span className="w-5 shrink-0 text-center text-xs text-gray-500 dark:text-gray-400">
                           {idx + 1}
                         </span>
-                        <select
-                          className={compactSelectCls}
-                          value={s.field}
-                          onChange={(e) => updateSeriesField(s.id, e.target.value)}
-                        >
-                          {valueColumns.map((c) => (
-                            <option key={c.field} value={c.field}>
-                              {colLabel(c)}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className={`${compactSelectCls} max-w-[9rem]`}
-                          value={s.agg}
-                          onChange={(e) => updateSeriesAgg(s.id, e.target.value as GridPivotAggFunc)}
-                        >
-                          {aggOpts.map((a) => (
-                            <option key={a} value={a}>
-                              {PIVOT_AGG_FUNC_LABELS_PT[a]}
-                            </option>
-                          ))}
-                        </select>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button type="button" variant="outline" className={seriesFieldMenuTriggerClass}>
+                              <span className="min-w-0 truncate">{fieldLabel}</span>
+                              <ChevronDownIcon className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className={menuContentClass}>
+                            {valueColumns.map((c) => (
+                              <DropdownMenuItem key={c.field} onClick={() => updateSeriesField(s.id, c.field)}>
+                                {colLabel(c)}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button type="button" variant="outline" className={seriesAggMenuTriggerClass}>
+                              <span className="min-w-0 truncate">{PIVOT_AGG_FUNC_LABELS_PT[s.agg]}</span>
+                              <ChevronDownIcon className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className={menuContentClass}>
+                            {aggOpts.map((a) => (
+                              <DropdownMenuItem key={a} onClick={() => updateSeriesAgg(s.id, a)}>
+                                {PIVOT_AGG_FUNC_LABELS_PT[a]}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                         <button
                           type="button"
                           title="Remover série"
@@ -594,44 +673,51 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                 <div className="grid gap-2 sm:grid-cols-2">
                   <div className="sm:col-span-2">
                     <label className="block text-[11px] text-gray-600 dark:text-gray-400">Coluna de data</label>
-                    <select
-                      className={selectCls}
-                      value={dateFilter.field}
-                      onChange={(e) => setDateFilter((f) => ({ ...f, field: e.target.value }))}
-                    >
-                      <option value="">—</option>
-                      {dateColumns.map((c) => (
-                        <option key={c.field} value={c.field}>
-                          {colLabel(c)}
-                        </option>
-                      ))}
-                    </select>
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <Button type="button" variant="outline" className={chartMenuTriggerClass}>
+                          <span className="min-w-0 truncate">
+                            {dateFilter.field
+                              ? colLabel(dateColumns.find((c) => c.field === dateFilter.field) ?? ({ field: dateFilter.field } as GridColDef<R>))
+                              : "—"}
+                          </span>
+                          <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className={menuContentClass}>
+                        <DropdownMenuItem onClick={() => setDateFilter((f) => ({ ...f, field: "" }))}>—</DropdownMenuItem>
+                        {dateColumns.map((c) => (
+                          <DropdownMenuItem key={c.field} onClick={() => setDateFilter((f) => ({ ...f, field: c.field }))}>
+                            {colLabel(c)}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block text-[11px] text-gray-600 dark:text-gray-400">Modo</label>
-                    <select
-                      className={selectCls}
-                      value={dateFilter.mode}
-                      onChange={(e) =>
-                        setDateFilter((f) => ({
-                          ...f,
-                          mode: e.target.value as GridChartsDateFilterMode
-                        }))
-                      }
-                    >
-                      {(Object.keys(DATE_FILTER_MODE_LABELS) as GridChartsDateFilterMode[]).map((m) => (
-                        <option key={m} value={m}>
-                          {DATE_FILTER_MODE_LABELS[m]}
-                        </option>
-                      ))}
-                    </select>
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <Button type="button" variant="outline" className={chartMenuTriggerClass}>
+                          <span className="min-w-0 truncate">{DATE_FILTER_MODE_LABELS[dateFilter.mode]}</span>
+                          <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className={menuContentClass}>
+                        {(Object.keys(DATE_FILTER_MODE_LABELS) as GridChartsDateFilterMode[]).map((m) => (
+                          <DropdownMenuItem key={m} onClick={() => setDateFilter((f) => ({ ...f, mode: m }))}>
+                            {DATE_FILTER_MODE_LABELS[m]}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   {dateFilter.mode === "exact" ? (
                     <div className="sm:col-span-2">
                       <label className="block text-[11px] text-gray-600 dark:text-gray-400">Dia</label>
                       <input
                         type="date"
-                        className={selectCls}
+                        className={dateInputCls}
                         value={dateFilter.exactDate}
                         onChange={(e) => setDateFilter((f) => ({ ...f, exactDate: e.target.value }))}
                       />
@@ -643,7 +729,7 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         <label className="block text-[11px] text-gray-600 dark:text-gray-400">De</label>
                         <input
                           type="date"
-                          className={selectCls}
+                          className={dateInputCls}
                           value={dateFilter.rangeStart}
                           onChange={(e) => setDateFilter((f) => ({ ...f, rangeStart: e.target.value }))}
                         />
@@ -652,7 +738,7 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         <label className="block text-[11px] text-gray-600 dark:text-gray-400">Até</label>
                         <input
                           type="date"
-                          className={selectCls}
+                          className={dateInputCls}
                           value={dateFilter.rangeEnd}
                           onChange={(e) => setDateFilter((f) => ({ ...f, rangeEnd: e.target.value }))}
                         />
@@ -692,7 +778,12 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         textAnchor="end"
                         height={series.length > 1 ? 64 : 72}
                       />
-                      <Recharts.YAxis tick={{ fontSize: 10, fill: "#374151" }} width={48} />
+                      <Recharts.YAxis
+                        tick={{ fontSize: 10, fill: "#374151" }}
+                        width={48}
+                        domain={["auto", "auto"]}
+                        allowDataOverflow
+                      />
                       <Recharts.Tooltip />
                       <Recharts.Legend wrapperStyle={{ fontSize: 11 }} />
                       {series.map((s, idx) => (
@@ -701,7 +792,7 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                           dataKey={`s${idx}`}
                           name={serieLegendLabel(s, columns)}
                           fill={SERIE_COLORS[idx % SERIE_COLORS.length]!}
-                          radius={[3, 3, 0, 0]}
+                          radius={[2, 2, 0, 0]}
                         />
                       ))}
                     </Recharts.BarChart>
@@ -716,7 +807,12 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         textAnchor="end"
                         height={68}
                       />
-                      <Recharts.YAxis tick={{ fontSize: 10, fill: "#374151" }} width={48} />
+                      <Recharts.YAxis
+                        tick={{ fontSize: 10, fill: "#374151" }}
+                        width={48}
+                        domain={["auto", "auto"]}
+                        allowDataOverflow
+                      />
                       <Recharts.Tooltip />
                       <Recharts.Legend wrapperStyle={{ fontSize: 11 }} />
                       {series.map((s, idx) => (
@@ -742,7 +838,12 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
                         textAnchor="end"
                         height={68}
                       />
-                      <Recharts.YAxis tick={{ fontSize: 10, fill: "#374151" }} width={48} />
+                      <Recharts.YAxis
+                        tick={{ fontSize: 10, fill: "#374151" }}
+                        width={48}
+                        domain={["auto", "auto"]}
+                        allowDataOverflow
+                      />
                       <Recharts.Tooltip />
                       <Recharts.Legend wrapperStyle={{ fontSize: 11 }} />
                       {series.map((s, idx) => (

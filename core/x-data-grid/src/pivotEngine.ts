@@ -1,6 +1,10 @@
 import { pivotDimensionDisplayLabel, pivotDimensionKey, slugPivotKeyPart } from "./pivotDateGranularity";
 import { normalizePivotModel } from "./pivotModelNormalize";
-import { applyPivotAggToRawValues, sanitizePivotValueAggs } from "./pivotValueAggUtils";
+import {
+  applyPivotAggToRawValues,
+  PIVOT_AGG_FUNC_LABELS_PT,
+  sanitizePivotValueAggs
+} from "./pivotValueAggUtils";
 import { resolveSingleSelectDisplayLabel } from "./selectOptionLabel";
 import type {
   GridColDef,
@@ -42,22 +46,7 @@ function formatAxisSegment<R extends GridValidRowModel>(
 }
 
 function aggLabelPt(agg: GridPivotAggFunc): string {
-  switch (agg) {
-    case "sum":
-      return "soma";
-    case "avg":
-      return "média";
-    case "min":
-      return "mín";
-    case "max":
-      return "máx";
-    case "count":
-      return "contagem";
-    case "countDistinct":
-      return "contagem distinta";
-    default:
-      return agg;
-  }
+  return PIVOT_AGG_FUNC_LABELS_PT[agg] ?? String(agg);
 }
 
 type ValSlot = { def: GridPivotValueDef; key: string };
@@ -72,7 +61,7 @@ export function computePivotView<R extends GridValidRowModel>(
   sourceColumns: GridColDef<R>[],
   model: GridPivotModel | undefined
 ): { rows: Record<string, unknown>[]; columns: GridColDef<R>[] } {
-  const m = sanitizePivotValueAggs(normalizePivotModel(model ?? undefined), sourceColumns);
+  const m = sanitizePivotValueAggs(normalizePivotModel(model ?? undefined), sourceColumns, rows);
   const rowDefs = m.rows.filter((r) => !r.hidden);
   const colDefs = m.columns.filter((c) => !c.hidden);
   const valDefs = m.values.filter((v) => !v.hidden);

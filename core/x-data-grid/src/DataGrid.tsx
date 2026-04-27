@@ -103,7 +103,11 @@ import type {
   GridPaginationSlotProps
 } from "./dataGridProps";
 import type { HiveGlobalFilterBag } from "./filterFns";
-import { countActiveGridFilters, rowPassesHiveGlobalFilter } from "./filterFns";
+import {
+  countActiveGridFilters,
+  dataPassesHiveGlobalFilter,
+  rowPassesHiveGlobalFilter
+} from "./filterFns";
 import { GridHeaderFilterCells } from "./HeaderFilterRow";
 import { computePivotView } from "./pivotEngine";
 import { normalizePivotModel } from "./pivotModelNormalize";
@@ -2256,15 +2260,6 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const pivotModelRef = React.useRef(pivotModel);
   pivotModelRef.current = pivotModel;
 
-  const pivotDerived = React.useMemo(() => {
-    if (!pivoting || !pivotActive || !pivotModelReady) return null;
-    if (treeActive || groupingActive) return null;
-    return computePivotView(rows, columnsProp, pivotModel);
-  }, [pivoting, pivotActive, pivotModelReady, treeActive, groupingActive, rows, columnsProp, pivotModel]);
-
-  const effectiveColumnsForTable =
-    (pivotDerived?.columns as GridColDef<R>[] | undefined) ?? columnsProp;
-
   const onStateChangeRef = React.useRef(onStateChange);
   onStateChangeRef.current = onStateChange;
 
@@ -3241,6 +3236,72 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     [detailActive, localeText, density]
   );
 
+  const columnsByFieldForFilter = React.useMemo(() => {
+    const m = new Map<string, GridColDef<R>>();
+    for (const c of columnsProp) m.set(c.field, c);
+    return m;
+  }, [columnsProp]);
+
+  const globalFilterBag = React.useMemo((): HiveGlobalFilterBag<R> | "" => {
+    if (filterMode === "server") return "";
+    return {
+      __hive: true,
+      quickTyped: quickFilterProp ?? quickInternal,
+      filterModel,
+      disableQuick: !!disableColumnFilter,
+      serverDrivenColumnFilters: !!serverDrivenColumnFilters,
+      getApi: () => apiHolder.current,
+      columnsByField: columnsByFieldForFilter
+    };
+  }, [
+    filterMode,
+    quickFilterProp,
+    quickInternal,
+    JSON.stringify(filterModel),
+    disableColumnFilter,
+    serverDrivenColumnFilters,
+    columnsByFieldForFilter
+  ]);
+
+  const rowsWithRowEditDrafts = React.useMemo(() => {
+    if (treeActive) return rows;
+    if (Object.keys(rowFieldDrafts).length === 0) return rows;
+    return rows.map((r) => {
+      const id = String(getRowId(r));
+      const patch = rowFieldDrafts[id];
+      if (!patch || Object.keys(patch).length === 0) return r;
+      return { ...(r as object), ...patch } as R;
+    });
+  }, [rows, rowFieldDrafts, getRowId, treeActive]);
+
+  /** Linhas que passam o filtro (modo cliente), sem paginação — base para pivot e gráficos. */
+  const clientFilteredSourceRows = React.useMemo((): R[] => {
+    if (filterMode === "server") return rowsWithRowEditDrafts;
+    if (treeActive || groupingActive) return rowsWithRowEditDrafts;
+    if (globalFilterBag === "") return rowsWithRowEditDrafts;
+    return rowsWithRowEditDrafts.filter((r) =>
+      dataPassesHiveGlobalFilter(r, globalFilterBag as HiveGlobalFilterBag<R>, getRowId(r))
+    );
+  }, [filterMode, treeActive, groupingActive, rowsWithRowEditDrafts, globalFilterBag, getRowId]);
+
+  const pivotDerived = React.useMemo(() => {
+    if (!pivoting || !pivotActive || !pivotModelReady) return null;
+    if (treeActive || groupingActive) return null;
+    return computePivotView(clientFilteredSourceRows, columnsProp, pivotModel);
+  }, [
+    pivoting,
+    pivotActive,
+    pivotModelReady,
+    treeActive,
+    groupingActive,
+    clientFilteredSourceRows,
+    columnsProp,
+    pivotModel
+  ]);
+
+  const effectiveColumnsForTable =
+    (pivotDerived?.columns as GridColDef<R>[] | undefined) ?? columnsProp;
+
   const columnDefs = React.useMemo(() => {
     const ctx = {
       apiRef: apiRef ?? apiHolder,
@@ -3275,33 +3336,6 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     () => sortModelToSortingState(sortModel),
     [JSON.stringify(sortModel)]
   );
-
-  const columnsByFieldForFilter = React.useMemo(() => {
-    const m = new Map<string, GridColDef<R>>();
-    for (const c of columnsProp) m.set(c.field, c);
-    return m;
-  }, [columnsProp]);
-
-  const globalFilterBag = React.useMemo((): HiveGlobalFilterBag<R> | "" => {
-    if (filterMode === "server") return "";
-    return {
-      __hive: true,
-      quickTyped: quickFilterProp ?? quickInternal,
-      filterModel,
-      disableQuick: !!disableColumnFilter,
-      serverDrivenColumnFilters: !!serverDrivenColumnFilters,
-      getApi: () => apiHolder.current,
-      columnsByField: columnsByFieldForFilter
-    };
-  }, [
-    filterMode,
-    quickFilterProp,
-    quickInternal,
-    JSON.stringify(filterModel),
-    disableColumnFilter,
-    serverDrivenColumnFilters,
-    columnsByFieldForFilter
-  ]);
 
   const visibilityState: VisibilityState = React.useMemo(() => {
     const v: VisibilityState = {};
@@ -3347,17 +3381,6 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const rest = tableColumns.map((c) => c.id as string).filter((id) => !ordered.includes(id));
     return [...ordered, ...rest];
   }, [columnOrder, tableColumns]);
-
-  const rowsWithRowEditDrafts = React.useMemo(() => {
-    if (treeActive) return rows;
-    if (Object.keys(rowFieldDrafts).length === 0) return rows;
-    return rows.map((r) => {
-      const id = String(getRowId(r));
-      const patch = rowFieldDrafts[id];
-      if (!patch || Object.keys(patch).length === 0) return r;
-      return { ...(r as object), ...patch } as R;
-    });
-  }, [rows, rowFieldDrafts, getRowId, treeActive]);
 
   const tableSourceRows = React.useMemo(() => {
     if (pivotDerived != null) return pivotDerived.rows as unknown as R[];
@@ -3632,11 +3655,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
   tableInstanceRef.current = table;
 
-  /** Com vista pivot activa, o gráfico usa o dataset fonte (`chartsIntegration.*Field` referem-se às colunas originais). */
-  const rowsForCharts = React.useMemo(() => {
-    if (pivotDerived != null) return rowsWithRowEditDrafts as R[];
-    return table.getFilteredRowModel().flatRows.map((r) => r.original);
-  }, [pivotDerived, rowsWithRowEditDrafts, table]);
+  /** Gráficos: todas as linhas que passam o filtro (cliente), sem limite de paginação. */
+  const rowsForCharts = React.useMemo(() => clientFilteredSourceRows, [clientFilteredSourceRows]);
 
   const tableRefForApi = React.useRef(table);
   tableRefForApi.current = table;
@@ -7233,6 +7253,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           onOpenChange={setPivotPanelOpenResolved}
           pivotModel={pivotModel}
           onCommitPivotModel={commitPivotModelFromPanel}
+          sourceRows={clientFilteredSourceRows}
           {...(slotProps?.pivotPanel as Record<string, unknown>)}
         />
       ) : null}

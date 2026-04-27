@@ -1,4 +1,19 @@
-import type { GridPivotAggFunc, GridPivotColumnDef, GridPivotModel, GridPivotRowDef, GridPivotValueDef } from "./types";
+import type {
+  GridPivotAggFunc,
+  GridPivotColumnDef,
+  GridPivotDateGranularity,
+  GridPivotModel,
+  GridPivotRowDef,
+  GridPivotValueDef
+} from "./types";
+
+const DATE_GRAN_SET = new Set<GridPivotDateGranularity>(["year", "quarter", "semester", "month", "week", "day"]);
+
+function coerceDateGranularity(g: unknown): GridPivotDateGranularity | undefined {
+  if (g === undefined || g === null) return undefined;
+  const s = String(g) as GridPivotDateGranularity;
+  return DATE_GRAN_SET.has(s) ? s : undefined;
+}
 
 function isLegacyRows(rows: unknown): rows is string[] {
   return Array.isArray(rows) && rows.length > 0 && typeof (rows as string[])[0] === "string";
@@ -6,7 +21,17 @@ function isLegacyRows(rows: unknown): rows is string[] {
 
 function coerceAgg(s: unknown): GridPivotAggFunc {
   const a = String(s ?? "sum");
-  if (a === "sum" || a === "avg" || a === "min" || a === "max" || a === "count" || a === "countDistinct") return a;
+  if (
+    a === "sum" ||
+    a === "avg" ||
+    a === "min" ||
+    a === "max" ||
+    a === "median" ||
+    a === "stdDev" ||
+    a === "count" ||
+    a === "countDistinct"
+  )
+    return a;
   return "sum";
 }
 
@@ -29,7 +54,7 @@ export function normalizePivotModel(input: GridPivotModel | undefined | null): G
     rows = (rowsIn as GridPivotRowDef[]).map((r) => ({
       field: r.field,
       hidden: r.hidden,
-      dateGranularity: r.dateGranularity
+      dateGranularity: coerceDateGranularity(r.dateGranularity)
     }));
   }
 
@@ -40,7 +65,7 @@ export function normalizePivotModel(input: GridPivotModel | undefined | null): G
       field: c.field,
       hidden: c.hidden,
       sort: c.sort,
-      dateGranularity: c.dateGranularity
+      dateGranularity: coerceDateGranularity(c.dateGranularity)
     }));
   }
 

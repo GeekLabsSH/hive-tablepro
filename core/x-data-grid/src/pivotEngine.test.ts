@@ -197,4 +197,15 @@ describe("computePivotView", () => {
     expect(n.columns).toEqual([{ field: "b" }]);
     expect(n.values[0]?.aggFunc).toBe("max");
   });
+
+  it("normalizePivotModel remove dateGranularity inválida", () => {
+    const raw = {
+      rows: [{ field: "d", dateGranularity: "bogus" }],
+      columns: [{ field: "e", dateGranularity: "week" }],
+      values: []
+    } as unknown as GridPivotModel;
+    const n = normalizePivotModel(raw);
+    expect(n.rows[0]).toEqual({ field: "d" });
+    expect(n.columns[0]).toEqual({ field: "e", dateGranularity: "week" });
+  });
 });

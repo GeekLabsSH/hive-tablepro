@@ -151,11 +151,25 @@ export interface GridFilterModel {
   quickFilterLogicOperator?: GridLogicOperator;
 }
 
-/** Agregação mínima alinhada a pivot MUI X. */
-export type GridPivotAggFunc = "sum" | "avg" | "min" | "max" | "count" | "countDistinct";
+/**
+ * Agregações de valores no pivot e nos gráficos.
+ * `stdDev` = desvio padrão amostral (divisor n−1; 0 quando n≤1).
+ */
+export type GridPivotAggFunc =
+  | "sum"
+  | "avg"
+  | "min"
+  | "max"
+  | "median"
+  | "stdDev"
+  | "count"
+  | "countDistinct";
 
-/** Granularidade derivada para colunas `date` / `dateTime` no pivot (paridade MUI). */
-export type GridPivotDateGranularity = "year" | "quarter" | "month" | "day";
+/**
+ * Granularidade derivada para colunas `date` / `dateTime` no pivot e no eixo X dos gráficos.
+ * `week` = semana a começar na segunda-feira (local). `semester` = S1 (jan–jun) / S2 (jul–dez).
+ */
+export type GridPivotDateGranularity = "year" | "quarter" | "semester" | "month" | "week" | "day";
 
 export interface GridPivotRowDef {
   field: string;
