@@ -234,10 +234,12 @@ function hiveDismissableOutsideTarget(ev: unknown): HTMLElement | null {
  */
 function documentHasOpenRadixSelectDropdown(): boolean {
   if (typeof document === "undefined") return false;
+  const hivePop = document.querySelector("[data-hive-searchable-select-popover]");
+  const hiveSearchPopoverOpen = hivePop != null && hivePop.getAttribute("data-state") === "open";
   return (
     document.querySelector('[role="listbox"][data-state="open"]') != null ||
     document.querySelector("[data-radix-select-viewport]") != null ||
-    document.querySelector('[data-hive-searchable-select-popover][data-state="open"]') != null
+    hiveSearchPopoverOpen
   );
 }
 
@@ -1099,6 +1101,8 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
           sideOffset={isCompact ? 1 : 2}
           collisionPadding={4}
           className={popoverPanelClass}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           onKeyDown={onMenuKeyDown}
           onOpenAutoFocus={(e) => {
             e.preventDefault();
@@ -1132,6 +1136,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
               aria-label="Pesquisar opções"
               autoComplete="off"
               onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 if (e.key === "Escape") {
                   e.preventDefault();
@@ -2519,6 +2524,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       if (e.defaultPrevented) return;
       const t = eventTargetElement(e.target);
       if (!t) return;
+      /** Modal Radix: `body` com `pointer-events: none` — o `target` pode ser a grelha por baixo; não terminar edição. */
+      if (t.closest("[data-hive-searchable-select-popover]")) return;
+      const hivePopWrap = t.closest("[data-radix-popper-content-wrapper]");
+      if (hivePopWrap?.querySelector("[data-hive-searchable-select-popover]")) return;
       if (asyncCellCommitDepthRef.current > 0) return;
       if (documentHasOpenRadixSelectDropdown()) {
         return;
