@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GRID_PREFERENCES_STORAGE_VERSION,
+  filterModelForRowDatasetAfterFetch,
   mergePersistedColumnOrder,
   mergePersistedColumnSizing,
   parsePersistedGridPreferences,
@@ -25,6 +26,33 @@ describe("persistGridPreferences", () => {
     const parsed = parsePersistedGridPreferences(json);
     expect(parsed?.v).toBe(GRID_PREFERENCES_STORAGE_VERSION);
     expect(parsed?.sortModel).toEqual([{ field: "nome", sort: "asc" }]);
+  });
+
+  it("filterModelForRowDatasetAfterFetch usa appliedColumnFilterItems quando presente", () => {
+    const stored = parsePersistedGridPreferences(
+      stringifyPersistedGridPreferences({
+        filterModel: {
+          items: [{ id: "1", field: "a", operator: "equals", value: "draft" }],
+          logicOperator: "And"
+        },
+        appliedColumnFilterItems: [{ id: "1", field: "a", operator: "equals", value: "applied" }]
+      })
+    );
+    const fm = filterModelForRowDatasetAfterFetch(stored);
+    expect(fm?.items?.[0]?.value).toBe("applied");
+  });
+
+  it("filterModelForRowDatasetAfterFetch retrocompat sem appliedColumnFilterItems", () => {
+    const stored = parsePersistedGridPreferences(
+      stringifyPersistedGridPreferences({
+        filterModel: {
+          items: [{ id: "1", field: "x", operator: "equals", value: "v" }],
+          logicOperator: "And"
+        }
+      })
+    );
+    const fm = filterModelForRowDatasetAfterFetch(stored);
+    expect(fm?.items?.[0]?.value).toBe("v");
   });
 
   it("readGridPreferencesFromStorage usa storage injectado", () => {

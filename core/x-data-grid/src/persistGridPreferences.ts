@@ -1,6 +1,7 @@
 import type {
   GridColumnVisibilityModel,
   GridDensity,
+  GridFilterItem,
   GridFilterModel,
   GridPaginationModel,
   GridPinnedColumns,
@@ -16,6 +17,11 @@ export type PersistedGridPreferences = {
   v: typeof GRID_PREFERENCES_STORAGE_VERSION;
   sortModel?: GridSortModel;
   filterModel?: GridFilterModel;
+  /**
+   * Com filtros de coluna «servidor» / botão Buscar: último conjunto **aplicado** à pesquisa.
+   * `filterModel.items` pode estar só em rascunho; ao refiltrar um dataset após GET, usar isto.
+   */
+  appliedColumnFilterItems?: GridFilterItem[];
   paginationModel?: GridPaginationModel;
   columnVisibilityModel?: GridColumnVisibilityModel;
   pinnedColumns?: GridPinnedColumns;
@@ -106,6 +112,22 @@ export function stringifyPersistedGridPreferences(
   partial: Omit<PersistedGridPreferences, "v">
 ): string {
   return JSON.stringify({ v: GRID_PREFERENCES_STORAGE_VERSION, ...partial });
+}
+
+/**
+ * Modelo a usar para filtrar em memória as linhas após um GET, alinhado a `DataGrid` com `serverDrivenColumnFilters`:
+ * mantém quick filter / operadores em `filterModel`, mas substitui `items` pelo último conjunto aplicado
+ * guardado em `appliedColumnFilterItems` (retrocompat: campo ausente → `filterModel.items`).
+ */
+export function filterModelForRowDatasetAfterFetch(
+  stored: PersistedGridPreferences | null | undefined
+): GridFilterModel | undefined | null {
+  if (stored?.filterModel == null) return stored?.filterModel ?? null;
+  const items =
+    stored.appliedColumnFilterItems != null
+      ? stored.appliedColumnFilterItems
+      : (stored.filterModel.items ?? []);
+  return { ...stored.filterModel, items };
 }
 
 /**

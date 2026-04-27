@@ -24,6 +24,7 @@ export {
   mergePersistedColumnSizing,
   parsePersistedGridPreferences,
   pickPersistableColumnSizing,
+  filterModelForRowDatasetAfterFetch,
   readGridPreferencesFromStorage,
   readPersistedFilterModel,
   stringifyPersistedGridPreferences,

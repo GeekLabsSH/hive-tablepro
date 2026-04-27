@@ -41,6 +41,9 @@ import type {
 import { gridFilterGroupKey, isHiveFilterHeaderGroupKey, sortFilterItemsByOrder } from "./filterFns";
 import { ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS } from "./constants";
 
+/** Referência estável para `normOpts` vazio — evita re-sincronizar `valueText` a cada render. */
+const EMPTY_NORM_OPTS: NormOpt[] = [];
+
 function resolveModelItemIndex(items: GridFilterItem[], it: GridFilterItem): number {
   if (it.id != null) {
     const byId = items.findIndex((x) => x.id === it.id);
@@ -644,18 +647,18 @@ function FilterLineEditor<R extends GridValidRowModel>({
   }, [equalsRemoteActive, item.field, item.value]);
 
   const normOpts: NormOpt[] = React.useMemo(() => {
-    if (!isSingleSelect || !col) return [];
+    if (!isSingleSelect || !col) return EMPTY_NORM_OPTS;
     if (colHasValueOptions(col)) {
       const list = resolveColValueOptions(col, FILTER_ROW_DUMMY_ROW_ID, {} as R);
-      return list?.length ? normalizeValueOptions(list) : [];
+      return list?.length ? normalizeValueOptions(list) : EMPTY_NORM_OPTS;
     }
-    if (!isRemoteSingleSelect) return [];
+    if (!isRemoteSingleSelect) return EMPTY_NORM_OPTS;
     const remote =
       operator === "equals" || operator === "!="
         ? remoteNormOptsEquals
         : operator === "selectAny" || operator === "selectAll"
           ? remoteNormOptsMulti
-          : [];
+          : EMPTY_NORM_OPTS;
     const seen = new Set<string>();
     const out: NormOpt[] = [];
     if (bootstrapOpt) {
@@ -683,10 +686,12 @@ function FilterLineEditor<R extends GridValidRowModel>({
         out.push(o);
       }
     }
-    return out;
+    return out.length > 0 ? out : EMPTY_NORM_OPTS;
   }, [
     isSingleSelect,
-    col,
+    col?.field,
+    col?.type,
+    col?.filterable,
     isRemoteSingleSelect,
     operator,
     remoteNormOptsEquals,
@@ -697,7 +702,10 @@ function FilterLineEditor<R extends GridValidRowModel>({
     panelLabelExtras
   ]);
 
-  const choices: FilterOpChoice[] = React.useMemo(() => getFilterOperatorChoices(col, lt), [col, lt]);
+  const choices: FilterOpChoice[] = React.useMemo(
+    () => getFilterOperatorChoices(col, lt),
+    [col?.field, col?.type, col?.filterable, lt]
+  );
 
   /** Opções remotas de =/!= com o valor gravado no topo (rótulo no input sem pesquisar de novo). */
   const remoteNormOptsEqualsForEditor = React.useMemo(() => {
@@ -724,7 +732,9 @@ function FilterLineEditor<R extends GridValidRowModel>({
     item.operator,
     item.value,
     item.id,
-    col,
+    col?.field,
+    col?.type,
+    col?.filterable,
     normOpts,
     isSingleSelect,
     isBoolean,

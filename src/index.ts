@@ -55,6 +55,7 @@ export {
   mergePersistedColumnSizing,
   parsePersistedGridPreferences,
   pickPersistableColumnSizing,
+  filterModelForRowDatasetAfterFetch,
   readGridPreferencesFromStorage,
   resolveRowModeFromEntry,
   rowModeEntryIsEdit,

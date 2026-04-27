@@ -411,4 +411,62 @@ describe("DataGrid — interações não devem explodir commits de render", () =
       expect(btn.textContent).not.toMatch(/^42$/);
     });
   });
+
+  it("singleSelect assíncrono: após escolher, mantém label se `loadEditValueOptions(\"\")` já não devolve o id", async () => {
+    const user = userEvent.setup({ delay: null });
+    const loadEditValueOptions = vi.fn(async (q: string) => {
+      const t = q.trim().toLowerCase();
+      if (t === "") {
+        return [{ value: 1, label: "Outro (lista inicial)" }];
+      }
+      if (t.includes("pre")) {
+        return [{ value: 455, label: "Preston" }];
+      }
+      return [];
+    });
+    const cols: GridColDef<RowPick>[] = [
+      { field: "id", headerName: "ID", width: 60 },
+      {
+        field: "pick",
+        headerName: "Pick",
+        type: "singleSelect",
+        editable: true,
+        async: true,
+        valueOptions: [],
+        loadEditValueOptions
+      }
+    ];
+    renderGrid({
+      rows: rowsPick as unknown as Row[],
+      columns: cols as unknown as GridColDef<Row>[],
+      getRowId: (r: Row) => (r as unknown as RowPick).id,
+      editMode: "row",
+      processRowUpdate: async (r) => r,
+      showRowEditActions: true,
+      pagination: false,
+      checkboxSelection: false,
+      initialState: {
+        rowModesModel: { 1: GridRowModes.Edit }
+      }
+    });
+
+    await waitFor(() => expect(loadEditValueOptions).toHaveBeenCalled(), { timeout: 5000 });
+    const pickCell = await waitFor(() =>
+      document.querySelector('[data-hive-cell][data-field="pick"]')
+    );
+    expect(pickCell).toBeTruthy();
+    const openBtn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
+    await user.click(openBtn);
+    const pop = await waitFor(() => document.querySelector("[data-hive-searchable-select-popover]") as HTMLElement);
+    const search = within(pop).getByRole("textbox", { name: /pesquisar opções/i });
+    await user.type(search, "pre");
+    const opt = await screen.findByRole("option", { name: "Preston" }, { timeout: 5000 });
+    await user.click(opt);
+
+    await waitFor(() => {
+      const btn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
+      expect(btn.textContent).toMatch(/Preston/);
+      expect(btn.textContent).not.toMatch(/^455$/);
+    });
+  });
 });

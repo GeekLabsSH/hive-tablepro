@@ -122,6 +122,7 @@ import type {
   GridDensity,
   GridDetailPanelParams,
   GridEditCellProps,
+  GridFilterItem,
   GridFilterModel,
   GridLocaleText,
   GridPivotModel,
@@ -644,7 +645,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   ) => Promise<GridValueOptionsList>;
 }) {
   const gridRoot = useGridRootContext();
-  const density = gridRoot?.density ?? "standard";
+  const density = gridRoot?.density ?? "compact";
   const isCompact = density === "compact";
   const isComfortable = density === "comfortable";
   const allOpts = React.useMemo(() => hiveNormalizeSelectOptions(valueOptions), [valueOptions]);
@@ -680,11 +681,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
     return undefined;
   }, [allOpts, value, loadEditValueOptions, remoteOpts]);
 
-  React.useEffect(() => {
-    if (match?.label != null && String(match.label).trim().length > 0) {
-      setPickedDisplay(null);
-    }
-  }, [match?.label]);
+  /** Não limpar `pickedDisplay` só porque `match` resolveu: novo `loadEditValueOptions("")` pode omitir o id e o rótulo sumia até gravar. */
 
   React.useEffect(() => {
     setPickedDisplay((pd) => {
@@ -1234,7 +1231,7 @@ function GridCellBooleanEditor({
   ariaLabel: string;
 }) {
   const gridRoot = useGridRootContext();
-  const density = gridRoot?.density ?? "standard";
+  const density = gridRoot?.density ?? "compact";
   const isCompact = density === "compact";
   const isComfortable = density === "comfortable";
   const checked =
@@ -1324,7 +1321,7 @@ function GridCellTextEditor({
   ariaLabel?: string;
 }) {
   const gridRoot = useGridRootContext();
-  const density = gridRoot?.density ?? "standard";
+  const density = gridRoot?.density ?? "compact";
   const isCompact = density === "compact";
   const isComfortable = density === "comfortable";
   const ref = React.useRef<HTMLInputElement>(null);
@@ -1879,7 +1876,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     paginationMode = "client",
     rowCount,
     paginationMeta,
-    pageSizeOptions = [10, 20, 50, 100],
+    pageSizeOptions = [10, 30, 50, 100],
     pagination = true,
     hideFooter,
     hideFooterPagination,
@@ -2063,7 +2060,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   excelOptionsRef.current = excelOptions;
 
   const [densityInternal, setDensityInternal] = React.useState<GridDensity>(
-    () => initialState?.density ?? "standard"
+    () => initialState?.density ?? "compact"
   );
   const density = densityProp ?? densityInternal;
   const densityRef = React.useRef(density);
@@ -2653,7 +2650,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
   const [paginationInternal, setPaginationInternal] = React.useState<GridPaginationModel>(() =>
     paginationModelProp ??
-      initialState?.pagination?.paginationModel ?? { page: 0, pageSize: pageSizeOptions[1] ?? 20 }
+      initialState?.pagination?.paginationModel ?? { page: 0, pageSize: pageSizeOptions[1] ?? 30 }
   );
   const paginationInternalRef = React.useRef(paginationInternal);
   paginationInternalRef.current = paginationInternal;
@@ -2813,8 +2810,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     if (filterModelProp === undefined && filterToApply)
       setFilterInternal({ ...filterToApply, items: filterToApply.items ?? [] });
     if (serverDrivenColumnFilters && filterModelProp === undefined) {
-      const items = filterToApply?.items ?? [];
-      setAppliedColumnFilterItemsJson(JSON.stringify(items));
+      const appliedItems =
+        stored?.appliedColumnFilterItems != null
+          ? stored.appliedColumnFilterItems
+          : (filterToApply?.items ?? []);
+      setAppliedColumnFilterItemsJson(JSON.stringify(appliedItems));
     }
     if (paginationModelProp === undefined && paginationToApply) setPaginationInternal(paginationToApply);
     if (columnVisibilityProp === undefined && visibilityToApply)
@@ -2915,10 +2915,20 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     serverDrivenColumnFilters
   ]);
 
-  const activeFilterCount = React.useMemo(
-    () => countActiveGridFilters(filterModel, quickFilterValue),
-    [filterModel, quickFilterValue]
-  );
+  const activeFilterCount = React.useMemo(() => {
+    if (!serverDrivenColumnFilters) {
+      return countActiveGridFilters(filterModel, quickFilterValue);
+    }
+    let appliedItems: GridFilterItem[] = [];
+    try {
+      const parsed = JSON.parse(appliedColumnFilterItemsJson) as unknown;
+      if (Array.isArray(parsed)) appliedItems = parsed as GridFilterItem[];
+    } catch {
+      appliedItems = [];
+    }
+    const modelForBadge: GridFilterModel = { ...filterModel, items: appliedItems };
+    return countActiveGridFilters(modelForBadge, quickFilterValue);
+  }, [serverDrivenColumnFilters, filterModel, quickFilterValue, appliedColumnFilterItemsJson]);
 
   const columnFiltersSearchPending = React.useMemo(() => {
     if (!serverDrivenColumnFilters) return false;
@@ -5033,6 +5043,16 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     payload.columnOrder = [...columnOrderResolved];
     payload.columnSizing = pickPersistableColumnSizing(columnSizing);
     if (rowGroupingModelProp === undefined && !treeActive) payload.rowGroupingModel = [...groupingState];
+    if (serverDrivenColumnFilters && filterModelProp === undefined) {
+      try {
+        const parsed = JSON.parse(appliedColumnFilterItemsJson) as unknown;
+        payload.appliedColumnFilterItems = Array.isArray(parsed)
+          ? (parsed as GridFilterItem[])
+          : [];
+      } catch {
+        payload.appliedColumnFilterItems = [];
+      }
+    }
     const t = window.setTimeout(() => {
       writeGridPreferencesToStorage(preferencesKey, payload, storage);
       const readBack = readGridPreferencesFromStorage(preferencesKey, storage);
@@ -5060,7 +5080,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     groupingState.join("|"),
     rowGroupingModelProp,
     treeActive,
-    JSON.stringify(columnSizing)
+    JSON.stringify(columnSizing),
+    serverDrivenColumnFilters,
+    appliedColumnFilterItemsJson
   ]);
 
   React.useEffect(() => {
