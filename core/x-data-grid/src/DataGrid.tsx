@@ -1868,6 +1868,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     disableColumnFilter,
     toolbarQuickFilterAlign = "start",
     toolbarShowButtonLabels = false,
+    filterTemplatesToolbarSlot,
     headerFiltersEnabled: headerFiltersEnabledProp,
     onHeaderFiltersEnabledChange,
     quickFilterValue: quickFilterProp,
@@ -2277,6 +2278,28 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const [columnsMenuOpen, setColumnsMenuOpen] = React.useState(false);
   const filterPanelAnchorRef = React.useRef<HTMLElement | null>(null);
   const columnsPanelAnchorRef = React.useRef<HTMLElement | null>(null);
+  const gridDomRootRef = React.useRef<HTMLDivElement | null>(null);
+
+  const focusHeaderFilterCellControl = React.useCallback((field: string) => {
+    const run = () => {
+      const root = gridDomRootRef.current;
+      if (!root) return;
+      const esc =
+        typeof globalThis !== "undefined" &&
+        (globalThis as unknown as { CSS?: { escape?: (s: string) => string } }).CSS?.escape
+          ? (globalThis as unknown as { CSS: { escape: (s: string) => string } }).CSS.escape(field)
+          : String(field).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+      const cell = root.querySelector(`[data-hive-header-filter-field="${esc}"]`);
+      if (!cell) return;
+      const focusable = cell.querySelector<HTMLElement>(
+        "input:not([type=hidden]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled])"
+      );
+      focusable?.focus();
+    };
+    requestAnimationFrame(() => {
+      requestAnimationFrame(run);
+    });
+  }, []);
   const closeAllFilterUi = React.useCallback(() => {
     setColumnFilterField(null);
     setFilterPanelOpen(false);
@@ -4398,7 +4421,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         localeText?.toolbarApplyColumnFilters ?? "Buscar",
       applyColumnFiltersSearchPendingTooltip:
         localeText?.toolbarApplyColumnFiltersPendingTooltip ??
-        "Os filtros de coluna ainda não foram aplicados à pesquisa."
+        "Os filtros de coluna ainda não foram aplicados à pesquisa.",
+      toolbarEndSlot: filterTemplatesToolbarSlot
     }),
     [
       gridApi,
@@ -4408,6 +4432,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       setQuickFilterValueContext,
       activeFilterCount,
       headerFiltersEnabled,
+      filterTemplatesToolbarSlot,
       setHeaderFiltersEnabledCb,
       clearAllFilters,
       chartsEnabled,
@@ -5465,7 +5490,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
             ) : null}
             {canColumnFilterUi ? (
               <>
-                <DropdownMenuItem onSelect={() => setColumnFilterField(fieldStr)}>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setHeaderFiltersEnabledCb(true);
+                    focusHeaderFilterCellControl(fieldStr);
+                  }}
+                >
                   {lt("filterByColumn", "Filtrar…")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -5611,6 +5641,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     <TooltipProvider delayDuration={400}>
     <GridRootProvider value={gridRootContextValue}>
     <div
+      ref={gridDomRootRef}
       data-density={density}
       className={cn(
         "hive-data-grid w-full space-y-2",

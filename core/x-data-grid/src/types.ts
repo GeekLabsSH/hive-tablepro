@@ -403,6 +403,11 @@ export interface GridColDef<R extends GridValidRowModel = GridValidRowModel, V =
   headerAlign?: GridAlignment;
   sortable?: boolean;
   filterable?: boolean;
+  /**
+   * Se `true`, o `field` desta coluna é omitido de `filterModel.items` ao exportar o filtro para partilha
+   * (`stripFilterModelForExport`). Use para dados sensíveis (ex.: custos confidenciais).
+   */
+  excludeFromFilterExport?: boolean;
   hide?: boolean;
   /**
    * Se `false`, a coluna não pode ser ocultada pelo painel «Colunas» (nem por «Ocultar todos»).
@@ -693,7 +698,7 @@ export interface GridLocaleText {
   collapseTree?: string;
   expandGroup?: string;
   collapseGroup?: string;
-  /** Menu da coluna — abrir filtro por coluna (modo cliente). */
+  /** Menu da coluna — activa a linha «Filtros no cabeçalho» e foca o filtro desta coluna. */
   filterByColumn?: string;
   columnFilterDialogTitle?: string;
   columnFilterOperatorLabel?: string;
@@ -731,6 +736,8 @@ export interface GridLocaleText {
   filterPanelRemove?: string;
   filterPanelOpenButton?: string;
   filterPanelClose?: string;
+  /** Tooltip do botão «guardar modelo de filtro» no rodapé do painel (ícone disquete). */
+  filterTemplateSaveTooltip?: string;
   filterPanelAddFilter?: string;
   filterPanelAddFilterButton?: string;
   /** Campo de pesquisa para `singleSelect` assíncrono no painel de filtros. */

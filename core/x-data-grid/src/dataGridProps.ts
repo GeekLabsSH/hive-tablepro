@@ -87,6 +87,8 @@ export type GridFilterPanelSlotProps<R extends GridValidRowModel = GridValidRowM
   lt: (key: keyof GridLocaleText, fallback: string) => string;
   /** Âncora visual do popover (último botão «Filtros» / ícone da toolbar). */
   anchorRef?: React.RefObject<HTMLElement | null>;
+  /** Pedido para guardar o modelo de filtro actual (ex.: abrir diálogo no ascendente). */
+  onSaveFilterTemplate?: () => void;
 };
 
 /**
@@ -204,6 +206,10 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   toolbarQuickFilterAlign?: "start" | "end";
   /** Na linha integrada, mostrar rótulo de texto curto junto aos ícones (Colunas, Filtros, …). */
   toolbarShowButtonLabels?: boolean;
+  /**
+   * Conteúdo opcional na extremidade direita da linha integrada de toolbar (`GridToolbarFilterColumnsDensityRow` / `EditToolbar`).
+   */
+  filterTemplatesToolbarSlot?: React.ReactNode;
   /** Segunda linha de filtros no cabeçalho (MVP: um filtro activo por campo). */
   headerFiltersEnabled?: boolean;
   onHeaderFiltersEnabledChange?: (enabled: boolean) => void;

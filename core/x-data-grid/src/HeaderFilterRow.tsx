@@ -928,6 +928,7 @@ function HeaderFilterCell<R extends GridValidRowModel>({
         aria-colindex={hci + 1}
         className={cellClass}
         style={cellStyle as any}
+        data-hive-header-filter-field={field}
       >
         {inner}
       </div>
@@ -941,6 +942,7 @@ function HeaderFilterCell<R extends GridValidRowModel>({
       aria-colindex={hci + 1}
       className={cellClass}
       style={cellStyle as any}
+      data-hive-header-filter-field={field}
     >
       {inner}
     </TableHead>

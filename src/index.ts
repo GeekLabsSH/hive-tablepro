@@ -60,6 +60,7 @@ export {
   resolveRowModeFromEntry,
   rowModeEntryIsEdit,
   stringifyPersistedGridPreferences,
+  stripFilterModelForExport,
   useGridApiContext,
   useGridApiRef,
   useGridRootContext,

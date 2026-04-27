@@ -32,6 +32,7 @@ export {
   writePersistedFilterModel
 } from "./persistGridPreferences";
 export type { PersistedGridPreferences } from "./persistGridPreferences";
+export { stripFilterModelForExport } from "./filterModelExportStrip";
 
 export {
   ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS,

@@ -53,6 +53,8 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   applyColumnFiltersSearchLabel?: string;
   /** Tooltip quando há alterações por aplicar. */
   applyColumnFiltersSearchPendingTooltip?: string;
+  /** Zona à direita da toolbar (ex.: select de modelos de filtro). */
+  toolbarEndSlot?: React.ReactNode;
 };
 
 const Ctx = React.createContext<GridRootContextValue | null>(null);

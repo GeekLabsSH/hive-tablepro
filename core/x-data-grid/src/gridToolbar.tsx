@@ -29,6 +29,13 @@ import { cn } from "../../../src/lib/utils";
 import type { GridDensity } from "./GridRootContext";
 import { useGridApiContext, useGridRootContext } from "./GridRootContext";
 
+function ToolbarEndSlotFromContext() {
+  const root = useGridRootContext();
+  const slot = root?.toolbarEndSlot;
+  if (!slot) return null;
+  return <div className="ml-auto flex shrink-0 items-center gap-1">{slot}</div>;
+}
+
 export type GridToolbarProps = React.HTMLAttributes<HTMLDivElement> & {
   /** Título à esquerda (legado MUI / ProtonWeb). */
   title?: React.ReactNode;
@@ -189,12 +196,12 @@ export function GridToolbarFilterButton({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="relative inline-flex shrink-0">
+        <span className="relative inline-flex shrink-0 overflow-visible">
           <Button
             type="button"
             variant="outline"
             size={showLabel ? "sm" : "icon"}
-            className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0", className)}
+            className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0 overflow-visible", className)}
             aria-label={title}
             ref={(el) => {
               if (root?.filterPanelAnchorRef) root.filterPanelAnchorRef.current = el;
@@ -696,20 +703,23 @@ export function GridToolbarFilterColumnsDensityRow({
         className
       )}
     >
-      <div className="flex min-w-0 flex-wrap items-center gap-1">
-        {showColumnsButton ? <GridToolbarColumnsButton showLabel={showButtonLabels} /> : null}
-        {showFilterButton ? <GridToolbarFilterButton showLabel={showButtonLabels} /> : null}
-        {showApplyColumnFiltersButton ? (
-          <GridToolbarApplyColumnFiltersButton showLabel={showButtonLabels} />
-        ) : null}
-        {showHeaderFiltersToggle ? <GridToolbarHeaderFiltersButton showLabel={showButtonLabels} /> : null}
-        {showClearFiltersButton ? <GridToolbarClearFiltersButton showLabel={showButtonLabels} /> : null}
-        {showChartsButton ? <GridToolbarChartsButton showLabel={showButtonLabels} /> : null}
-        {showPivotPanelButton ? <GridToolbarPivotPanelButton showLabel={showButtonLabels} /> : null}
-        <GridToolbarPivotToggleButton showLabel={showButtonLabels} />
-        {showDensitySelector ? <GridToolbarDensitySelector showLabel={showButtonLabels} /> : null}
+      <div className="flex min-w-0 min-h-8 flex-1 flex-wrap items-center gap-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-1">
+          {showColumnsButton ? <GridToolbarColumnsButton showLabel={showButtonLabels} /> : null}
+          {showFilterButton ? <GridToolbarFilterButton showLabel={showButtonLabels} /> : null}
+          {showApplyColumnFiltersButton ? (
+            <GridToolbarApplyColumnFiltersButton showLabel={showButtonLabels} />
+          ) : null}
+          {showHeaderFiltersToggle ? <GridToolbarHeaderFiltersButton showLabel={showButtonLabels} /> : null}
+          {showClearFiltersButton ? <GridToolbarClearFiltersButton showLabel={showButtonLabels} /> : null}
+          {showChartsButton ? <GridToolbarChartsButton showLabel={showButtonLabels} /> : null}
+          {showPivotPanelButton ? <GridToolbarPivotPanelButton showLabel={showButtonLabels} /> : null}
+          <GridToolbarPivotToggleButton showLabel={showButtonLabels} />
+          {showDensitySelector ? <GridToolbarDensitySelector showLabel={showButtonLabels} /> : null}
+        </div>
+        {quick}
       </div>
-      {quick}
+      <ToolbarEndSlotFromContext />
     </div>
   );
 }

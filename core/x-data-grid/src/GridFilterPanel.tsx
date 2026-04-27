@@ -160,6 +160,26 @@ function useFilterPanelPosition(
 const panelSelectClass =
   "h-8 w-full min-w-0 max-w-full cursor-pointer truncate rounded-none border-0 border-b-2 border-primary/80 bg-transparent px-0 py-0.5 text-xs leading-tight text-foreground shadow-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
+function FilterTemplateSaveDiskIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M6 4h9l3 3v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" />
+      <path d="M14 4v4h4" />
+      <rect x="8" y="13" width="8" height="5" rx="0.5" />
+      <path d="M8 10h8" />
+    </svg>
+  );
+}
+
 /** Valor sentinela para `Select` Radix quando ainda não há opção escolhida (evita `value=""`). */
 const FILTER_VALUE_PLACEHOLDER = "__hive_filter_ph__";
 
@@ -1526,7 +1546,7 @@ function FilterLineEditor<R extends GridValidRowModel>({
  * Painel predefinido: filtros por coluna em popover ancorado (sem overlay a desfocar a grelha).
  */
 export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPanelSlotProps<R>) {
-  const { open, onOpenChange, filterModel, columns, onCommit, lt, anchorRef } = props;
+  const { open, onOpenChange, filterModel, columns, onCommit, lt, anchorRef, onSaveFilterTemplate } = props;
   const items = filterModel.items ?? [];
   const logic = filterModel.logicOperator ?? "And";
   const pos = useFilterPanelPosition(open, anchorRef);
@@ -1936,22 +1956,43 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
 
       <TooltipProvider delayDuration={400}>
         <div className="flex shrink-0 items-center justify-between gap-2 border-t border-border/60 px-1 pt-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 shrink-0"
-                disabled={items.length === 0}
-                onClick={clearAll}
-                aria-label={lt("filterPanelClearAll", "Limpar todos os filtros")}
-              >
-                <TrashIcon className="h-4 w-4" aria-hidden />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">{lt("filterPanelClearAll", "Limpar todos os filtros")}</TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
+                  disabled={items.length === 0}
+                  onClick={clearAll}
+                  aria-label={lt("filterPanelClearAll", "Limpar todos os filtros")}
+                >
+                  <TrashIcon className="h-4 w-4" aria-hidden />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">{lt("filterPanelClearAll", "Limpar todos os filtros")}</TooltipContent>
+            </Tooltip>
+            {onSaveFilterTemplate ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    onClick={() => onSaveFilterTemplate()}
+                    aria-label={lt("filterTemplateSaveTooltip", "Save filter template")}
+                  >
+                    <FilterTemplateSaveDiskIcon className="h-4 w-4 shrink-0" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {lt("filterTemplateSaveTooltip", "Save filter template")}
+                </TooltipContent>
+              </Tooltip>
+            ) : null}
+          </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
