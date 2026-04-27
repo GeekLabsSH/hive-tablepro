@@ -1,6 +1,6 @@
 {
   "name": "@geeklabssh/hive-tablepro",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "Tabelas e UI para ProtonWeb (Tailwind + shadcn/Radix + TanStack Table)",
   "license": "MIT",
   "sideEffects": [
