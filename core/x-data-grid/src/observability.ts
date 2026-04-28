@@ -101,36 +101,6 @@ export function hiveTableproObserve(
   }
 
   try {
-    const env =
-      typeof import.meta !== "undefined"
-        ? (import.meta as ImportMeta & { env?: Record<string, unknown> }).env
-        : undefined;
-    const nodeNotProd =
-      typeof process !== "undefined" && process.env.NODE_ENV !== "production";
-    const allowLocalIngest =
-      nodeNotProd ||
-      env?.DEV === true ||
-      env?.MODE === "development" ||
-      (window.location?.hostname &&
-        /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname));
-    if (allowLocalIngest && window.location?.origin) {
-      for (const p of [
-        "/__hive_tablepro_debug_ingest",
-        "/api/hive-tablepro-debug-ingest"
-      ]) {
-        fetch(`${window.location.origin}${p}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-          keepalive: true
-        }).catch(() => {});
-      }
-    }
-  } catch {
-    /* bundlers sem import.meta */
-  }
-
-  try {
     const k = "hive-tablepro-observe-ndjson";
     const prev = sessionStorage.getItem(k);
     const lines = prev ? prev.split("\n").filter(Boolean) : [];
