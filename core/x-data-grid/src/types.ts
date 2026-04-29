@@ -2,6 +2,8 @@ import type * as React from "react";
 
 /** Densidade visual da grelha (MUI X). */
 export type GridDensity = "compact" | "standard" | "comfortable";
+/** Escala de visualização horizontal da grelha (fonte + espaçamento em X). */
+export type GridVisualization = "comfortable" | "standard" | "compact";
 
 /** IDs de linha compatíveis com MUI X */
 export type GridRowId = string | number;
@@ -562,6 +564,7 @@ export interface GridStateSnapshot {
   selectedRowIds: GridRowId[];
   rowGroupingModel: GridRowGroupingModel;
   density: GridDensity;
+  visualization: GridVisualization;
   /** Modo de edição: célula ou linha inteira (espelha `editMode` resolvido na grelha). */
   editMode: "cell" | "row";
   /** Modo de edição por linha (`editMode="row"`). */
@@ -937,4 +940,6 @@ export interface GridApiCommunity<R extends GridValidRowModel = GridValidRowMode
   commitRowEditSave: (rowId: GridRowId) => Promise<void>;
   setDensity: (density: GridDensity) => void;
   getDensity: () => GridDensity;
+  setVisualization: (visualization: GridVisualization) => void;
+  getVisualization: () => GridVisualization;
 }

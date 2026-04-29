@@ -12,6 +12,7 @@ import type {
   GridApiCommunity,
   GridAlignment,
   GridColDef,
+  GridDensity,
   GridRenderCellParams,
   GridRenderHeaderParams,
   GridRowId,
@@ -95,6 +96,8 @@ export function buildColumnDefs<R extends GridValidRowModel>(
   ctx: {
     apiRef: React.MutableRefObject<GridApiCommunity<R> | null>;
     getRowId: (row: R) => GridRowId;
+    density?: GridDensity;
+    rowsForActionWidth?: R[];
     disableColumnSort?: boolean;
     aggregationModel?: GridAggregationModel;
     showAggregationFooter?: boolean;
@@ -102,6 +105,47 @@ export function buildColumnDefs<R extends GridValidRowModel>(
     excludeDataColumnFields?: readonly string[];
   }
 ): ColumnDef<R, unknown>[] {
+  const estimateActionButtons = (col: GridColDef<R>): number => {
+    if (!col.getActions) return 0;
+    const rows = (ctx.rowsForActionWidth ?? []).slice(0, 200);
+    const api = ctx.apiRef.current;
+    let maxButtons = 0;
+    for (const row of rows) {
+      try {
+        const id = ctx.getRowId(row);
+        const nodes = col.getActions({ id, field: col.field, row, api: (api ?? ({} as GridApiCommunity<R>)), colDef: col });
+        const flat = React.Children.toArray(nodes).flat();
+        let inlineCount = 0;
+        let menuCount = 0;
+        for (const child of flat) {
+          if (child == null) continue;
+          if (React.isValidElement(child)) {
+            const p = child.props as { showInMenu?: boolean };
+            if (p.showInMenu) menuCount += 1;
+            else inlineCount += 1;
+          } else {
+            inlineCount += 1;
+          }
+        }
+        const totalButtons = inlineCount + (menuCount > 0 ? 1 : 0);
+        if (totalButtons > maxButtons) maxButtons = totalButtons;
+      } catch {
+        /* ignora linhas cujo getActions depende de contexto indisponível no cálculo inicial */
+      }
+    }
+    return maxButtons;
+  };
+
+  const resolveActionsMinWidth = (col: GridColDef<R>, baseMinWidth: number): number => {
+    const isActionsCol = col.type === "actions" || col.getActions != null;
+    if (!isActionsCol) return baseMinWidth;
+    const buttonCount = estimateActionButtons(col);
+    if (buttonCount <= 0) return baseMinWidth;
+    const buttonWidthPx = (ctx.density ?? "compact") === "compact" ? 15 : 32;
+    const minByButtons = buttonCount * (buttonWidthPx + 2);
+    return Math.max(baseMinWidth, minByButtons);
+  };
+
   const sortOff = ctx.disableColumnSort === true;
   const aggModel = ctx.aggregationModel ?? {};
   const exclude = ctx.excludeDataColumnFields ?? [];
@@ -111,11 +155,11 @@ export function buildColumnDefs<R extends GridValidRowModel>(
     const field = col.field;
     if (col.children && col.children.length > 0) {
       const childDefs = buildColumnDefs(col.children, ctx);
-      const minW = col.minWidth ?? 50;
+      const minW = col.minWidth ?? 5;
       const maxW = col.maxWidth ?? 2000;
       const clampSize = (n: number) => Math.min(maxW, Math.max(minW, Math.round(n)));
       const sumSize = childDefs.reduce((acc, d) => acc + (d.size ?? 120), 0);
-      const sumMin = childDefs.reduce((acc, d) => acc + (d.minSize ?? 50), 0);
+      const sumMin = childDefs.reduce((acc, d) => acc + (d.minSize ?? 5), 0);
       const label = col.headerName ?? field;
       return {
         id: field,
@@ -145,7 +189,7 @@ export function buildColumnDefs<R extends GridValidRowModel>(
     const aggId = mapAggregationFnId(
       typeof aggRaw === "string" ? aggRaw : undefined
     ) as ColumnDef<R, unknown>["aggregationFn"];
-    const minW = col.minWidth ?? 50;
+    const minW = resolveActionsMinWidth(col, col.minWidth ?? 5);
     const maxW = col.maxWidth ?? 2000;
     const clampSize = (n: number) => Math.min(maxW, Math.max(minW, Math.round(n)));
     const isActionsCol = col.type === "actions" || col.getActions != null;

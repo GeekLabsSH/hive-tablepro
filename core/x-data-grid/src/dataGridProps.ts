@@ -29,12 +29,13 @@ import type {
   GridServerColumnFiltersSearchPayload,
   GridSortModel,
   GridStateSnapshot,
-  GridValidRowModel
+  GridValidRowModel,
+  GridVisualization
 } from "./types";
 import type { PersistedGridPreferences } from "./persistGridPreferences";
 import type { GridDensityDimensionsProp } from "./gridDensityDefaults";
 
-export type { GridDensity };
+export type { GridDensity, GridVisualization };
 
 /** Slot com props vindas de `slotProps` (ex.: `loadingOverlay`). */
 export type GridOverlaySlotComponent = React.ComponentType<Record<string, unknown>>;
@@ -60,6 +61,10 @@ export type GridPaginationSlotProps<R extends GridValidRowModel = GridValidRowMo
   pageReportText: string;
   /** `null` quando não deve mostrar o prefixo de linhas selecionadas. */
   selectedRowsReportText: string | null;
+  /** Total global de linhas (não paginado). */
+  totalRowCount: number;
+  /** Texto já localizado para o total global de linhas. */
+  totalRowsReportText: string;
   rowsPerPageLabel: string;
   goFirst: () => void;
   goPrev: () => void;
@@ -333,6 +338,17 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   density?: GridDensity;
   /** Chamado quando a densidade muda (toolbar, API `setDensity`, ou estado interno). */
   onDensityChange?: (density: GridDensity) => void;
+  /** Escala de visualização horizontal (`Visualização` na toolbar). */
+  visualization?: GridVisualization;
+  /** Chamado quando a visualização muda (toolbar, API `setVisualization` ou estado interno). */
+  onVisualizationChange?: (visualization: GridVisualization) => void;
+  /**
+   * Quando `true` (predefinição), ignora `align` / `headerAlign` vindos das colunas:
+   * - colunas de seleção/checkbox/select ficam centradas
+   * - restantes ficam alinhadas à esquerda
+   * Defina `false` para respeitar o alinhamento enviado pelo consumidor.
+   */
+  enforceColumnAlignmentPolicy?: boolean;
   /**
    * Sobrescreve dimensões por densidade (`rowFactor`, `baseRowPx`, `defaultHeaderPx`).
    * Valores em falta usam os predefinidos exportados em `gridDensityDefaults.ts`.
@@ -385,6 +401,11 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
    * Predefinição `false`: o `GridToolbarDensitySelector` pode ser usado na toolbar.
    */
   disableDensitySelector?: boolean;
+  /**
+   * Esconde o seletor de visualização na UI predefinida.
+   * Predefinição `false`: o `GridToolbarVisualizationSelector` pode ser usado na toolbar.
+   */
+  disableVisualizationSelector?: boolean;
   /**
    * Quando `true`, não renderiza a faixa interna com filtro rápido + botão «Filtros» + «Colunas»
    * (usar `slots.toolbar` com `GridToolbar` + `GridToolbarQuickFilter`).
@@ -526,6 +547,8 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
     };
     /** Quando `density` não é passado como prop controlada. */
     density?: GridDensity;
+    /** Quando `visualization` não é passado como prop controlada. */
+    visualization?: GridVisualization;
     /** Quando `editMode` não é passado como prop. */
     editMode?: "cell" | "row";
     /** Quando `rowModesModel` não é controlado pelo pai. */

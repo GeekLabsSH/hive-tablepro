@@ -3,6 +3,9 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { CheckIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { cn } from "../../lib/utils";
 
+const DROPDOWN_MENU_FOREGROUND_Z_INDEX = "z-[10050]";
+const DROPDOWN_MENU_FOREGROUND_Z_INDEX_INLINE = 2147483000;
+
 type DropdownMenuRootPublicProps = {
   children?: React.ReactNode;
   dir?: "ltr" | "rtl";
@@ -12,8 +15,8 @@ type DropdownMenuRootPublicProps = {
   modal?: boolean;
 };
 
-const DropdownMenu: React.FC<DropdownMenuRootPublicProps> = (props) => (
-  <DropdownMenuPrimitive.Root {...(props as any)} />
+const DropdownMenu: React.FC<DropdownMenuRootPublicProps> = ({ modal = false, ...props }) => (
+  <DropdownMenuPrimitive.Root modal={modal} {...(props as any)} />
 );
 
 type DropdownMenuTriggerPublicProps = React.PropsWithChildren<
@@ -102,15 +105,17 @@ type DropdownMenuSubContentPublicProps = React.PropsWithChildren<
 >;
 
 const DropdownMenuSubContent = React.forwardRef<HTMLDivElement, DropdownMenuSubContentPublicProps>(
-  ({ className, onWheel, ...props }, ref) => (
+  ({ className, onWheel, style, ...props }, ref) => (
     <DropdownMenuPrimitive.SubContent
       ref={ref}
+      style={{ zIndex: DROPDOWN_MENU_FOREGROUND_Z_INDEX_INLINE, ...(style ?? {}) }}
       onWheel={(e) => {
         e.stopPropagation();
         (onWheel as React.WheelEventHandler<HTMLDivElement> | undefined)?.(e);
       }}
       className={cn(
-        "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "pointer-events-auto min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        DROPDOWN_MENU_FOREGROUND_Z_INDEX,
         className
       )}
       {...(props as any)}
@@ -141,24 +146,36 @@ type DropdownMenuContentPublicProps = React.PropsWithChildren<
 >;
 
 const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContentPublicProps>(
-  ({ className, sideOffset = 4, onWheel, ...props }, ref) => (
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Content
-        ref={ref}
-        sideOffset={sideOffset}
-        onWheel={(e) => {
-          // Evita que a roda do rato faça scroll do contentor por trás (ex.: Dialog) em vez da lista do menu.
-          e.stopPropagation();
-          (onWheel as React.WheelEventHandler<HTMLDivElement> | undefined)?.(e);
-        }}
-        className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          className
-        )}
-        {...(props as any)}
-      />
-    </DropdownMenuPrimitive.Portal>
-  )
+  ({ className, sideOffset = 4, onWheel, style, ...props }, ref) => {
+    const setRefs = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      },
+      [ref]
+    );
+
+    return (
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          ref={setRefs}
+          sideOffset={sideOffset}
+          style={{ zIndex: DROPDOWN_MENU_FOREGROUND_Z_INDEX_INLINE, ...(style ?? {}) }}
+          onWheel={(e) => {
+            // Evita que a roda do rato faça scroll do contentor por trás (ex.: Dialog) em vez da lista do menu.
+            e.stopPropagation();
+            (onWheel as React.WheelEventHandler<HTMLDivElement> | undefined)?.(e);
+          }}
+          className={cn(
+            "pointer-events-auto min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+            DROPDOWN_MENU_FOREGROUND_Z_INDEX,
+            className
+          )}
+          {...(props as any)}
+        />
+      </DropdownMenuPrimitive.Portal>
+    );
+  }
 );
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 

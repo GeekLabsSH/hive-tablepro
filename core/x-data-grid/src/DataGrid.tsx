@@ -41,8 +41,7 @@ import {
   ArrowUpIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  EllipsisVerticalIcon,
-  XMarkIcon
+  EllipsisVerticalIcon
 } from "@heroicons/react/24/outline";
 import { cn } from "../../../src/lib/utils";
 import { Button } from "../../../src/components/ui/button";
@@ -144,7 +143,8 @@ import type {
   GridSortModel,
   GridSubscriptionEvent,
   GridValidRowModel,
-  GridValueOptionsList
+  GridValueOptionsList,
+  GridVisualization
 } from "./types";
 import { GridRowEditStopReasons, GridRowModes, rowModeEntryIsEdit } from "./types";
 
@@ -422,11 +422,38 @@ function alignTextClass(a?: GridAlignment): string {
   return "text-center";
 }
 
+function forceCenterHorizontalAlign(
+  fieldId: string,
+  gridColDef: { type?: string } | undefined
+): boolean {
+  if (fieldId === "__select__") return true;
+  const t = gridColDef?.type;
+  return t === "boolean" || t === "singleSelect" || t === "select" || t === "checkbox";
+}
+
+function resolvedColumnAlignment(
+  fieldId: string,
+  gridColDef: { type?: string; align?: GridAlignment; headerAlign?: GridAlignment } | undefined,
+  enforcePolicy: boolean,
+  isHeader: boolean
+): GridAlignment {
+  if (enforcePolicy) {
+    if (forceCenterHorizontalAlign(fieldId, gridColDef)) return "center";
+    return "left";
+  }
+  if (isHeader) return gridColDef?.headerAlign ?? gridColDef?.align ?? "center";
+  return gridColDef?.align ?? "center";
+}
+
 /** Centrar checkbox / coluna de seleção no eixo transversal ao `flex-col` da célula. */
 function bodyCellIconCrossAxisClass(
   fieldId: string,
-  gridColDef: { type?: string; align?: GridAlignment } | undefined
+  gridColDef: { type?: string; align?: GridAlignment } | undefined,
+  enforcePolicy: boolean
 ): string | undefined {
+  if (enforcePolicy && forceCenterHorizontalAlign(fieldId, gridColDef)) {
+    return "items-center justify-center";
+  }
   if (fieldId === "__select__") return "items-center";
   if (gridColDef?.type === "boolean") {
     if (gridColDef.align === "right") return "items-center justify-end";
@@ -569,17 +596,34 @@ function isIconLikeTableColumn<R extends GridValidRowModel>(
   return false;
 }
 
-function bodyCellDensityPaddingClass(density: GridDensity, opts?: { tight?: boolean }): string {
+function bodyCellDensityPaddingClass(
+  density: GridDensity,
+  visualization: GridVisualization,
+  opts?: { tight?: boolean }
+): string {
   const tight = opts?.tight === true;
   /** `!p-0` anula o `p-4` default do shadcn `TableCell` (`p-4` + `!px` não remove o padding vertical). */
-  /** Células de texto: ~15px à esquerda (`0.9375rem`); colunas ícone/checkbox mantêm padding simétrico compacto. */
+  /** Padding horizontal simétrico por densidade/visualização (esquerda = direita). */
+  if (visualization === "compact") {
+    if (density === "compact") return tight ? "!p-0 !px-1 !py-0.5" : "!p-0 !px-1 !py-0.5";
+    if (density === "comfortable")
+      return tight ? "!p-0 !px-[0.5rem] !py-2" : "!p-0 !px-[0.5rem] !py-2";
+    return tight ? "!p-0 !px-[0.4375rem] !py-1" : "!p-0 !px-[0.4375rem] !py-1";
+  }
+  if (visualization === "standard") {
+    if (density === "compact")
+      return tight ? "!p-0 !px-[0.28125rem] !py-0.5" : "!p-0 !px-[0.28125rem] !py-0.5";
+    if (density === "comfortable")
+      return tight ? "!p-0 !px-[0.5625rem] !py-2" : "!p-0 !px-[0.5625rem] !py-2";
+    return tight ? "!p-0 !px-[0.375rem] !py-1" : "!p-0 !px-[0.375rem] !py-1";
+  }
   if (density === "compact") {
-    return tight ? "!p-0 !px-1.5 !py-0.5" : "!p-0 !py-0.5 !ps-[0.9375rem] !pe-1.5";
+    return tight ? "!p-0 !px-1.5 !py-0.5" : "!p-0 !px-1.5 !py-0.5";
   }
   if (density === "comfortable") {
-    return tight ? "!p-0 !px-3 !py-2" : "!p-0 !py-2 !ps-[0.9375rem] !pe-3";
+    return tight ? "!p-0 !px-3 !py-2" : "!p-0 !px-3 !py-2";
   }
-  return tight ? "!p-0 !px-2 !py-1" : "!p-0 !py-1 !ps-[0.9375rem] !pe-2";
+  return tight ? "!p-0 !px-2 !py-1" : "!p-0 !px-2 !py-1";
 }
 
 /**
@@ -590,9 +634,9 @@ function bodyCellDensityPaddingClass(density: GridDensity, opts?: { tight?: bool
 function bodyCellContentBoxStyle(rowPx: number, cellInEdit: boolean): any {
   if (cellInEdit) {
     return {
-      minHeight: rowPx,
-      height: rowPx,
-      maxHeight: rowPx,
+      minHeight: "100%",
+      height: "100%",
+      maxHeight: "100%",
       boxSizing: "border-box",
       /** Contém editores na altura da linha (compact 15px); `visible` fazia sobrepor a linha seguinte. */
       overflow: "hidden"
@@ -602,15 +646,52 @@ function bodyCellContentBoxStyle(rowPx: number, cellInEdit: boolean): any {
 }
 
 /** Padding horizontal/vertical do `<th>` alinhado à densidade; `!p-0` cobre o `px-4` / `h-12` implícitos do `TableHead`. */
-function headerCellDensityPaddingClass(density: GridDensity, opts?: { tight?: boolean }): string {
+function headerCellDensityPaddingClass(
+  density: GridDensity,
+  visualization: GridVisualization,
+  opts?: { tight?: boolean }
+): string {
   const tight = opts?.tight === true;
+  if (visualization === "compact") {
+    if (density === "compact") return tight ? "!p-0 !px-[0.125rem] !py-0.5" : "!p-0 !ps-[0.1875rem] !pe-[0.125rem] !py-0.5";
+    if (density === "comfortable")
+      return tight ? "!p-0 !px-[0.1875rem] !py-1.5" : "!p-0 !ps-[0.1875rem] !pe-[0.125rem] !py-1.5";
+    return tight ? "!p-0 !px-[0.125rem] !py-1" : "!p-0 !ps-[0.1875rem] !pe-[0.125rem] !py-1";
+  }
+  if (visualization === "standard") {
+    if (density === "compact")
+      return tight ? "!p-0 !px-[0.1875rem] !py-0.5" : "!p-0 !ps-[0.25rem] !pe-[0.125rem] !py-0.5";
+    if (density === "comfortable")
+      return tight ? "!p-0 !px-[0.25rem] !py-1.5" : "!p-0 !ps-[0.25rem] !pe-[0.1875rem] !py-1.5";
+    return tight ? "!p-0 !px-[0.1875rem] !py-1" : "!p-0 !ps-[0.25rem] !pe-[0.1875rem] !py-1";
+  }
   if (density === "compact") {
-    return tight ? "!p-0 !px-1.5 !py-1" : "!p-0 !ps-[0.9375rem] !pe-1.5 !py-1";
+    return tight ? "!p-0 !px-[0.3125rem] !py-0.5" : "!p-0 !ps-[0.4375rem] !pe-[0.25rem] !py-0.5";
   }
   if (density === "comfortable") {
-    return tight ? "!p-0 !px-3 !py-2" : "!p-0 !ps-[0.9375rem] !pe-3 !py-2";
+    return tight ? "!p-0 !px-[0.375rem] !py-1.5" : "!p-0 !ps-[0.4375rem] !pe-[0.3125rem] !py-1.5";
   }
-  return tight ? "!p-0 !px-2 !py-1.5" : "!p-0 !ps-[0.9375rem] !pe-2 !py-1.5";
+  return tight ? "!p-0 !px-[0.3125rem] !py-1" : "!p-0 !ps-[0.4375rem] !pe-[0.3125rem] !py-1";
+}
+
+function headerTypographyClass(visualization: GridVisualization): string {
+  return "text-inherit";
+}
+
+function headerMinHeightClass(visualization: GridVisualization): string {
+  if (visualization === "compact") return "min-h-[24px]";
+  if (visualization === "standard") return "min-h-[26px]";
+  return "min-h-[28px]";
+}
+
+function headerIconClass(visualization: GridVisualization): string {
+  return visualization === "compact" ? "h-2 w-2" : "h-2.5 w-2.5";
+}
+
+function headerMenuButtonSizeClass(density: GridDensity, visualization: GridVisualization): string {
+  if (visualization === "compact") return "h-[12px] w-[12px] min-h-0 min-w-0";
+  if (visualization === "standard") return "h-[13px] w-[13px] min-h-0 min-w-0";
+  return density === "compact" ? "h-[14px] w-[14px] min-h-0 min-w-0" : "h-[16px] w-[16px] min-h-0 min-w-0";
 }
 
 /** Cópia rasa da linha ao entrar em edição por linha — `onRowEditStop.previousRow` (G5.5). */
@@ -652,6 +733,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
 }) {
   const gridRoot = useGridRootContext();
   const density = gridRoot?.density ?? "compact";
+  const visualization = gridRoot?.visualization ?? "compact";
   const isCompact = density === "compact";
   const isComfortable = density === "comfortable";
   const allOpts = React.useMemo(() => hiveNormalizeSelectOptions(valueOptions), [valueOptions]);
@@ -669,8 +751,8 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   const openReasonRef = React.useRef<"click" | "type" | "arrow" | null>(null);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLElement | null>(null);
-  const triggerBtnRef = React.useRef<HTMLButtonElement>(null);
-  const filterInputRef = React.useRef<HTMLInputElement>(null);
+  const triggerInputRef = React.useRef<HTMLInputElement>(null);
+  const [inputQ, setInputQ] = React.useState("");
 
   const shouldPreventOutsideClose = React.useCallback((ev: unknown) => {
     const el = hiveDismissableOutsideTarget(ev);
@@ -718,6 +800,13 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   }, [match?.label, value, pickedDisplay]);
 
   const tooltipFullText = (match?.label ?? triggerLabel).trim();
+
+  React.useEffect(() => {
+    if (!open) {
+      setInputQ(triggerLabel);
+      setFilterQ("");
+    }
+  }, [open, triggerLabel]);
 
   React.useEffect(() => {
     if (!open) {
@@ -792,6 +881,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   const clearSelection = () => {
     setPickedDisplay(null);
     setOpen(false);
+    setInputQ("");
     setFilterQ("");
     setHighlightIdx(-1);
     onCommit(null);
@@ -806,7 +896,11 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   }, []);
 
   const commitOption = React.useCallback(
-    (raw: string | number, mode: "enter" | "space" | "click", displayLabel?: string) => {
+    (raw: string | number | null, mode: "enter" | "space" | "click", displayLabel?: string) => {
+      if (raw == null) {
+        clearSelection();
+        return;
+      }
       const label =
         displayLabel?.trim() ??
         shownRef.current.find(
@@ -820,18 +914,14 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
       }
       onCommit(raw);
       handleOpenChange(false);
-      if (mode === "enter" && editMode === "row" && onEnterSaveRow) {
-        window.queueMicrotask(() => {
-          onEnterSaveRow();
-        });
-      }
+      /** `Enter` na lista confirma seleção como `Space`, sem sair do modo de edição. */
     },
-    [onCommit, handleOpenChange, editMode, onEnterSaveRow]
+    [clearSelection, onCommit, handleOpenChange, editMode, onEnterSaveRow]
   );
 
   React.useEffect(() => {
     const id = window.requestAnimationFrame(() => {
-      triggerBtnRef.current?.focus();
+      triggerInputRef.current?.focus();
     });
     return () => window.cancelAnimationFrame(id);
   }, []);
@@ -875,8 +965,8 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
           return;
         }
       } else {
-        filterInputRef.current?.focus();
-        if (document.activeElement === filterInputRef.current) {
+        triggerInputRef.current?.focus();
+        if (document.activeElement === triggerInputRef.current) {
           finish();
           return;
         }
@@ -920,36 +1010,41 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
   };
 
   const chromeRow = cn(
-    "relative flex min-h-0 min-w-0 max-w-full flex-1 flex-row overflow-hidden rounded-none border border-input bg-background text-foreground",
-    /** Destaque forte: trigger/filtro com foco ou popover aberto. */
-    "focus-within:bg-muted/70 focus-within:ring-2 focus-within:ring-ring/80",
-    open && "bg-muted/60 ring-2 ring-ring/70 shadow-sm",
-    isCompact && "items-center gap-0 py-0 ps-0.5 pe-0",
-    isComfortable && "items-stretch gap-1 py-1 ps-2 pe-1",
-    !isCompact && !isComfortable && "items-stretch gap-0.5 py-0.5 ps-1 pe-0.5"
+    "relative flex min-h-0 min-w-0 max-w-full flex-1 flex-row overflow-hidden rounded-none border-0 bg-background text-foreground",
+    /** Sem ring no editor da célula para ocupar 100% visual sem respiro. */
+    "focus-within:bg-muted/70",
+    open && "bg-muted/60 shadow-none",
+    isCompact && "h-full max-h-full items-stretch gap-0 py-0 ps-0 pe-0",
+    isComfortable && "h-full max-h-full items-stretch gap-0 py-0 ps-0 pe-0",
+    !isCompact && !isComfortable && "h-full max-h-full items-stretch gap-0 py-0 ps-0 pe-0"
   );
 
-  const triggerBtnClass = cn(
-    "flex min-h-0 min-w-0 flex-1 flex-row items-center justify-between overflow-hidden rounded-none border-0 bg-transparent text-left !text-foreground shadow-none outline-none ring-0",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
-    isCompact && "h-full max-h-full gap-0 px-0.5 py-0 text-[11px] leading-normal",
-    !isCompact && "gap-1",
-    isComfortable && "min-h-[2rem] px-2 py-0.5 text-base leading-snug",
-    !isCompact && !isComfortable && "min-h-[1.75rem] px-2 py-0 text-sm leading-tight"
-  );
-
-  const filterInputClass = cn(
-    "w-full min-w-0 rounded-none border-0 border-b border-border bg-transparent !text-foreground shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-    isCompact &&
-      "!h-6 !min-h-0 !max-h-6 px-1.5 py-0 text-[11px] leading-tight placeholder:text-muted-foreground/90",
-    isComfortable && "h-10 px-2.5 py-2 text-base placeholder:text-muted-foreground",
-    !isCompact && !isComfortable && "h-9 px-2 py-1.5 text-sm placeholder:text-muted-foreground"
+  const triggerInputClass = cn(
+    "h-full min-h-0 max-h-full w-full min-w-0 rounded-none border-0 bg-transparent !text-foreground shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+    visualization === "compact" && isCompact && "px-1 py-0 text-[10px] leading-none placeholder:text-muted-foreground/90",
+    visualization === "compact" && !isCompact && "px-1.5 py-0 text-[10px] leading-tight placeholder:text-muted-foreground/90",
+    visualization !== "compact" && isCompact && "px-1 py-0 text-[11px] leading-tight placeholder:text-muted-foreground/90",
+    visualization !== "compact" &&
+      isComfortable &&
+      "px-2 py-0 text-sm leading-snug placeholder:text-muted-foreground",
+    visualization !== "compact" &&
+      !isCompact &&
+      !isComfortable &&
+      "px-1.5 py-0 text-xs leading-tight placeholder:text-muted-foreground"
   );
 
   const listBtnBaseClass = cn(
     "flex w-full min-w-0 max-w-full cursor-default items-center overflow-hidden text-left hover:bg-accent",
     "whitespace-nowrap",
-    isCompact ? "px-1.5 py-0.5 text-[11px] leading-tight" : isComfortable ? "px-2 py-2 text-base" : "px-2 py-1.5 text-sm"
+    visualization === "compact"
+      ? isCompact
+        ? "px-1 py-0.5 text-[10px] leading-tight"
+        : "px-1.5 py-0.5 text-[10px] leading-tight"
+      : isCompact
+        ? "px-1.5 py-0.5 text-[11px] leading-tight"
+        : isComfortable
+          ? "px-2 py-1.5 text-sm"
+          : "px-2 py-1 text-xs"
   );
 
   /**
@@ -957,19 +1052,24 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
    * de filtro na grelha (chevron, X, texto). Altura: conteúdo até max; scroll na lista quando há muitas opções.
    */
   const popoverPanelClass = cn(
-    "z-[9999] flex w-[200px] min-w-[200px] max-w-[200px] flex-col overflow-hidden border border-border p-0 shadow-md",
-    "max-h-[min(500px,calc(100dvh-16px))] min-h-0"
+    "z-[10050] flex w-[200px] min-w-[200px] max-w-[200px] flex-col overflow-hidden border border-border p-0 shadow-md",
+    visualization === "compact"
+      ? "max-h-[min(320px,calc(100dvh-16px))] min-h-0"
+      : "max-h-[min(500px,calc(100dvh-16px))] min-h-0"
   );
 
   const listScrollClass = cn(
     "min-h-0 overflow-y-auto overflow-x-hidden rounded-none bg-popover",
-    /** Sem `flex-1`: evita esticar a lista até ~500px com poucas opções; `max-h` = painel máx. menos faixa de pesquisa. */
-    isCompact
-      ? "max-h-[calc(min(500px,100dvh-16px)-2.25rem)]"
-      : isComfortable
-        ? "max-h-[calc(min(500px,100dvh-16px)-3.75rem)]"
-        : "max-h-[calc(min(500px,100dvh-16px)-3.25rem)]",
-    isCompact ? "text-[11px] leading-tight" : isComfortable ? "text-base" : "text-sm"
+    visualization === "compact"
+      ? "max-h-[min(320px,calc(100dvh-16px))]"
+      : "max-h-[min(500px,calc(100dvh-16px))]",
+    visualization === "compact"
+      ? "text-[10px] leading-tight"
+      : isCompact
+        ? "text-[11px] leading-tight"
+        : isComfortable
+          ? "text-sm"
+          : "text-xs"
   );
 
   return (
@@ -978,122 +1078,99 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
       data-hive-edit-root
       data-hive-searchable-select
       dir="ltr"
-      className="relative flex h-full min-h-0 w-full min-w-0 max-w-full flex-col overflow-hidden px-[3px]"
+      className="relative flex h-full max-h-full min-h-0 w-full min-w-0 max-w-full flex-col overflow-hidden border-[0.5px] border-black box-border px-0 py-0"
       onPointerDown={(e) => e.stopPropagation()}
     >
       <Popover modal={false} open={open} onOpenChange={handleOpenChange}>
         <div dir="ltr" className={chromeRow}>
           <PopoverAnchor asChild>
-            <button
-              ref={triggerBtnRef}
-              type="button"
-              className={triggerBtnClass}
-              aria-label={ariaLabel}
-              aria-expanded={open}
-              aria-haspopup="listbox"
-              title={isCompact && tooltipFullText.length > 0 ? tooltipFullText : undefined}
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                openReasonRef.current = "click";
-                handleOpenChange(!open);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  e.preventDefault();
-                  if (open) handleOpenChange(false);
-                  else onCancel();
-                  return;
-                }
-                const printable =
-                  e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && e.key !== " ";
-                if (!open && printable) {
-                  e.preventDefault();
-                  openReasonRef.current = "type";
-                  setFilterQ(e.key);
-                  setOpen(true);
-                  return;
-                }
-                if (!open && e.key === "ArrowDown") {
-                  e.preventDefault();
-                  openReasonRef.current = "arrow";
-                  setOpen(true);
-                  return;
-                }
-                if (!open && (e.key === "Enter" || e.key === " ")) {
-                  e.preventDefault();
+            <div className="relative flex h-full min-h-0 w-full min-w-0 flex-1 items-stretch">
+              <input
+                ref={triggerInputRef}
+                type="text"
+                value={open ? inputQ : triggerLabel}
+                className={cn(triggerInputClass, "truncate", hasCommittedSelection ? "pe-5" : "pe-1")}
+                title={isCompact && tooltipFullText.length > 0 ? tooltipFullText : undefined}
+                aria-label={ariaLabel}
+                aria-expanded={open}
+                aria-haspopup="listbox"
+                autoComplete="off"
+                placeholder="-"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
                   openReasonRef.current = "click";
                   setOpen(true);
-                }
-              }}
-            >
-              <span className="min-w-0 flex-1 truncate leading-none">
-                {triggerLabel.length > 0 ? triggerLabel : "\u00a0"}
-              </span>
-              {isCompact ? (
-                <span
-                  className="pointer-events-none shrink-0 select-none text-[9px] leading-none text-muted-foreground"
-                  aria-hidden
-                >
-                  ▾
-                </span>
-              ) : (
-                <ChevronDownIcon
-                  className={cn(
-                    "shrink-0 opacity-60",
-                    isComfortable ? "h-4 w-4" : "h-3.5 w-3.5"
-                  )}
-                  aria-hidden
-                />
-              )}
-            </button>
-          </PopoverAnchor>
-          {hasCommittedSelection || triggerLabel.trim().length > 0 ? (
-            isCompact ? (
-              <button
-                type="button"
-                className="ms-0.5 flex h-2.5 w-2.5 shrink-0 items-center justify-center self-center rounded-sm border-0 bg-transparent p-0 text-muted-foreground hover:bg-accent/90 hover:text-foreground"
-                aria-label="Limpar"
-                tabIndex={-1}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  if (hasCommittedSelection) {
+                }}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setInputQ(next);
+                  setFilterQ(next);
+                  if (!open) setOpen(true);
+                  setHighlightIdx(-1);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    e.preventDefault();
+                    if (open) handleOpenChange(false);
+                    else onCancel();
+                    return;
+                  }
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    if (!open) setOpen(true);
+                    if (shownRef.current.length > 0) {
+                      setHighlightIdx((i) => (i < 0 ? 0 : Math.min(i + 1, shownRef.current.length - 1)));
+                    }
+                    return;
+                  }
+                  if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    if (!open) setOpen(true);
+                    setHighlightIdx((i) => (i > 0 ? i - 1 : i === 0 ? -1 : i));
+                    return;
+                  }
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (open && highlightIdx >= 0 && highlightIdx < shownRef.current.length) {
+                      const picked = shownRef.current[highlightIdx]!;
+                      commitOption(picked.raw, "enter", picked.label);
+                      return;
+                    }
+                    if (open && shownRef.current.length === 1) {
+                      const only = shownRef.current[0]!;
+                      commitOption(only.raw, "enter", only.label);
+                      return;
+                    }
+                    /**
+                     * Fora da lista (popover fechado): segundo Enter confirma a linha
+                     * e sai da edição no modo `row`.
+                     */
+                    if (!open && editMode === "row" && onEnterSaveRow) {
+                      onEnterSaveRow();
+                    }
+                    return;
+                  }
+                  if (
+                    (e.key === "Backspace" || e.key === "Delete") &&
+                    hasCommittedSelection &&
+                    (!open || inputQ.trim().length === 0)
+                  ) {
+                    e.preventDefault();
                     clearSelection();
-                  } else {
-                    openReasonRef.current = "click";
-                    setFilterQ("");
-                    setOpen(true);
                   }
                 }}
-              >
-                <XMarkIcon className="h-2 w-2 shrink-0" aria-hidden />
-              </button>
-            ) : (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
+              />
+              <ChevronDownIcon
                 className={cn(
-                  "ms-0.5 shrink-0 self-center rounded-none p-0 hover:bg-accent/90",
-                  isComfortable ? "h-9 w-9" : "h-7 w-7"
+                  "pointer-events-none absolute end-1 top-1/2 -translate-y-1/2 opacity-60",
+                  visualization === "compact" ? "h-3 w-3" : isComfortable ? "h-4 w-4" : "h-3.5 w-3.5"
                 )}
-                aria-label="Limpar"
-                tabIndex={-1}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  if (hasCommittedSelection) {
-                    clearSelection();
-                  } else {
-                    openReasonRef.current = "click";
-                    setFilterQ("");
-                    setOpen(true);
-                  }
-                }}
-              >
-                <XMarkIcon className={cn("shrink-0", isComfortable ? "h-4 w-4" : "h-3 w-3")} aria-hidden />
-              </Button>
-            )
-          ) : null}
+                aria-hidden
+              />
+            </div>
+          </PopoverAnchor>
         </div>
         <PopoverContent
           ref={(node) => {
@@ -1113,7 +1190,6 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
           }}
           onCloseAutoFocus={(e) => {
             e.preventDefault();
-            triggerBtnRef.current?.focus();
           }}
           onEscapeKeyDown={(e) => {
             e.stopPropagation();
@@ -1129,46 +1205,28 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
             if (shouldPreventOutsideClose(e)) e.preventDefault();
           }}
         >
-          <div className={cn("shrink-0 border-b border-border", isCompact ? "p-0.5" : "p-1")}>
-            <Input
-              ref={filterInputRef}
-              value={filterQ}
-              onChange={(e) => setFilterQ(e.target.value)}
-              className={cn(filterInputClass, "truncate")}
-              title={filterQ.trim().length > 0 ? filterQ : undefined}
-              placeholder="Pesquisar…"
-              aria-label="Pesquisar opções"
-              autoComplete="off"
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  e.preventDefault();
-                  handleOpenChange(false);
-                  return;
-                }
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (shown.length > 0) setHighlightIdx(0);
-                  return;
-                }
-                if (e.key === "ArrowUp") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setHighlightIdx((i) => (i > 0 ? i - 1 : i === 0 ? -1 : i));
-                  return;
-                }
-                if (e.key === "Enter" && shown.length === 1) {
-                  e.preventDefault();
-                  commitOption(shown[0]!.raw, "enter", shown[0]!.label);
-                }
-              }}
-            />
-          </div>
           <ul role="listbox" className={listScrollClass}>
             {remoteLoading && loadEditValueOptions ? (
               <li className="px-2 py-1.5 text-muted-foreground">…</li>
+            ) : null}
+            {!remoteLoading && filterQ.trim().length === 0 ? (
+              <li className="min-w-0">
+                <button
+                  type="button"
+                  role="option"
+                  data-hive-opt-idx={-1}
+                  aria-selected={!hasCommittedSelection}
+                  aria-label="Sem seleção"
+                  className={cn(
+                    listBtnBaseClass,
+                    !hasCommittedSelection && "bg-accent/90 text-accent-foreground ring-1 ring-ring/80"
+                  )}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => commitOption(null, "click", "-")}
+                >
+                  <span className="block min-w-0 truncate">-</span>
+                </button>
+              </li>
             ) : null}
             {!remoteLoading &&
               shown.map((o, idx) => (
@@ -1197,6 +1255,7 @@ function GridCellSearchableSelectEditor<R extends GridValidRowModel>({
                           }
                           if (e.key === "Enter") {
                             e.preventDefault();
+                            e.stopPropagation();
                             commitOption(o.raw, "enter", o.label);
                             return;
                           }
@@ -1249,7 +1308,7 @@ function GridCellBooleanEditor({
     <div
       data-hive-edit-root
       className={cn(
-        "flex h-full min-h-0 w-full min-w-0 items-center justify-center py-0",
+        "flex h-full min-h-0 w-full min-w-0 items-center justify-center border-[0.5px] border-black box-border py-0",
         isComfortable ? "gap-2" : "gap-1"
       )}
       onPointerDown={(e) => e.stopPropagation()}
@@ -1257,7 +1316,7 @@ function GridCellBooleanEditor({
       <input
         type="checkbox"
         className={cn(
-          "shrink-0 cursor-pointer rounded border border-primary accent-primary ring-2 ring-transparent ring-offset-2 ring-offset-background transition-[box-shadow,ring-color] focus-visible:outline-none focus-visible:ring-foreground/80",
+          "shrink-0 cursor-pointer rounded border border-primary accent-primary shadow-none outline-none ring-0 ring-transparent ring-offset-0 transition-[box-shadow,ring-color] focus-visible:outline-none focus-visible:ring-0",
           isCompact && "h-2.5 w-2.5",
           isComfortable && "h-4 w-4",
           !isCompact && !isComfortable && "h-3 w-3"
@@ -1352,10 +1411,10 @@ function GridCellTextEditor({
   return (
     <div
       data-hive-edit-root
-      className="flex h-full min-h-0 w-full min-w-0 max-w-full flex-col justify-center overflow-hidden px-[3px]"
+      className="flex h-full max-h-full min-h-0 w-full min-w-0 max-w-full flex-col justify-stretch overflow-hidden border-[0.5px] border-black box-border px-0 py-0"
       onPointerDown={(e) => e.stopPropagation()}
     >
-      <div className="flex min-h-0 w-full flex-1 items-center">
+      <div className="flex h-full min-h-0 w-full flex-1 items-stretch">
         <Input
           ref={ref}
           type={colType === "number" ? "number" : "text"}
@@ -1363,10 +1422,10 @@ function GridCellTextEditor({
           aria-invalid={error || undefined}
           aria-label={ariaLabel}
           className={cn(
-            "!block !h-auto !min-h-0 !max-h-full !min-w-0 !max-w-full !w-full !py-1 !text-foreground",
+            "!block !h-full !min-h-0 !max-h-full !min-w-0 !max-w-full !w-full !rounded-none !border-0 !shadow-none !py-0 !text-foreground",
             isCompact && "!px-1 text-[11px] leading-normal",
-            isComfortable && "px-2.5 text-base leading-snug",
-            !isCompact && !isComfortable && "px-2 text-sm leading-normal",
+            isComfortable && "px-2 text-base leading-snug",
+            !isCompact && !isComfortable && "px-1.5 text-sm leading-normal",
             error && "border-destructive focus-visible:ring-destructive"
           )}
           onBlur={submit}
@@ -1723,6 +1782,7 @@ function DraggableHeaderCell({
   id,
   disabled,
   dragDisabled,
+  visualization,
   justifyHeadClassName,
   centerColumnHeader,
   resizeSlot,
@@ -1741,6 +1801,7 @@ function DraggableHeaderCell({
   disabled?: boolean;
   /** Quando true, não participa no DnD (ex.: coluna fixa). */
   dragDisabled?: boolean;
+  visualization: GridVisualization;
   /** Título + menu (área arrastável; clique no botão de ordenação mantém sort). */
   centerColumnHeader: React.ReactNode;
   /** Grip de resize — fora dos `listeners` do sortable. */
@@ -1780,7 +1841,7 @@ function DraggableHeaderCell({
   const titleRow = (
     <div
       className={cn(
-        "flex min-w-0 flex-1 cursor-grab touch-none items-center gap-0.5 active:cursor-grabbing",
+        "relative flex min-w-0 flex-1 cursor-grab touch-none items-center gap-0 active:cursor-grabbing",
         justifyHeadClassName
       )}
       {...(!disabled && !dragDisabled ? { ...attributes, ...listeners } : {})}
@@ -1791,7 +1852,7 @@ function DraggableHeaderCell({
   );
   /** `w-full min-w-0`: o bloco `flex-1` do título + resize alinha ao `th`. */
   const inner = (
-    <div className="flex w-full min-w-0 flex-1 items-stretch overflow-visible">
+    <div className="relative flex w-full min-w-0 flex-1 items-stretch overflow-visible">
       {titleRow}
       {resizeSlot}
     </div>
@@ -1803,8 +1864,9 @@ function DraggableHeaderCell({
         role="columnheader"
         aria-colindex={ariaColIndex}
         className={cn(
-          "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell text-sm font-normal text-hiveGrid-headerMuted",
-          fixedHeaderHeight == null && "min-h-[40px]",
+          "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
+          headerTypographyClass(visualization),
+          fixedHeaderHeight == null && headerMinHeightClass(visualization),
           className
         )}
         style={{ ...dragStyle, ...fixedHStyle } as any}
@@ -1912,8 +1974,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     rowHeight: rowHeightProp,
     columnHeaderHeight: columnHeaderFromProp,
     density: densityProp,
+    visualization: visualizationProp,
+    enforceColumnAlignmentPolicy = true,
     densityDimensions,
     onDensityChange,
+    onVisualizationChange,
     editMode: editModeProp,
     rowModesModel: rowModesModelProp,
     onRowModesModelChange,
@@ -1922,6 +1987,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     showRowEditActions,
     disableColumnSelector,
     disableDensitySelector = false,
+    disableVisualizationSelector = false,
     hideBuiltInFilterAndColumnsRow = false,
     stickyToolbar = false,
     commitRowEditOnBlur = false,
@@ -2075,6 +2141,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const density = densityProp ?? densityInternal;
   const densityRef = React.useRef(density);
   densityRef.current = density;
+  const [visualizationInternal, setVisualizationInternal] = React.useState<GridVisualization>(
+    () => initialState?.visualization ?? "compact"
+  );
+  const visualization = visualizationProp ?? visualizationInternal;
+  const visualizationRef = React.useRef(visualization);
+  visualizationRef.current = visualization;
   const resolvedDensity = React.useMemo(
     () => resolveDensityDimensions(density, densityDimensions),
     [density, densityDimensions]
@@ -2085,6 +2157,15 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       onDensityChangeRef.current?.(d);
     },
     [densityProp]
+  );
+  const onVisualizationChangeRef = React.useRef(onVisualizationChange);
+  onVisualizationChangeRef.current = onVisualizationChange;
+  const applyVisualization = React.useCallback(
+    (v: GridVisualization) => {
+      if (visualizationProp === undefined) setVisualizationInternal(v);
+      onVisualizationChangeRef.current?.(v);
+    },
+    [visualizationProp]
   );
 
   const [rowModesInternal, setRowModesInternal] = React.useState<GridRowModesModel>(
@@ -2133,8 +2214,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const showRowEditActionsUi = editModeResolved === "row" && showRowEditActions !== false;
 
   const rowHeightResolved = rowHeightProp ?? initialState?.rowHeight;
-  const columnHeaderHeightPx =
+  const baseColumnHeaderHeightPx =
     columnHeaderFromProp ?? initialState?.columnHeaderHeight ?? resolvedDensity.defaultHeaderPx;
+  const columnHeaderHeightPx =
+    visualization === "compact"
+      ? Math.max(22, Math.round(baseColumnHeaderHeightPx * 0.6))
+      : visualization === "standard"
+        ? Math.max(24, Math.round(baseColumnHeaderHeightPx * 0.68))
+        : Math.max(28, Math.round(baseColumnHeaderHeightPx * 0.8));
   const columnHeaderHeightPxRef = React.useRef(columnHeaderHeightPx);
   columnHeaderHeightPxRef.current = columnHeaderHeightPx;
 
@@ -2276,6 +2363,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const [columnFilterField, setColumnFilterField] = React.useState<string | null>(null);
   const [filterPanelOpen, setFilterPanelOpen] = React.useState(false);
   const [columnsMenuOpen, setColumnsMenuOpen] = React.useState(false);
+  const filterPanelOpenRef = React.useRef(false);
+  const columnsMenuOpenRef = React.useRef(false);
   const filterPanelAnchorRef = React.useRef<HTMLElement | null>(null);
   const columnsPanelAnchorRef = React.useRef<HTMLElement | null>(null);
   const gridDomRootRef = React.useRef<HTMLDivElement | null>(null);
@@ -2305,17 +2394,45 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     setFilterPanelOpen(false);
   }, []);
   const openGlobalFilterPanel = React.useCallback((anchor?: HTMLElement | null) => {
+    const sameAnchor =
+      !!anchor &&
+      !!filterPanelAnchorRef.current &&
+      (filterPanelAnchorRef.current === anchor ||
+        filterPanelAnchorRef.current.contains(anchor) ||
+        anchor.contains(filterPanelAnchorRef.current));
+    if (filterPanelOpenRef.current) {
+      setFilterPanelOpen(false);
+      return;
+    }
     setColumnsMenuOpen(false);
     setColumnFilterField(null);
     if (anchor) filterPanelAnchorRef.current = anchor;
     setFilterPanelOpen(true);
   }, []);
   const openGlobalColumnsPanel = React.useCallback((anchor?: HTMLElement | null) => {
+    const sameAnchor =
+      !!anchor &&
+      !!columnsPanelAnchorRef.current &&
+      (columnsPanelAnchorRef.current === anchor ||
+        columnsPanelAnchorRef.current.contains(anchor) ||
+        anchor.contains(columnsPanelAnchorRef.current));
+    if (columnsMenuOpenRef.current) {
+      setColumnsMenuOpen(false);
+      return;
+    }
     setFilterPanelOpen(false);
     setColumnFilterField(null);
     if (anchor) columnsPanelAnchorRef.current = anchor;
     setColumnsMenuOpen(true);
   }, []);
+
+  React.useEffect(() => {
+    filterPanelOpenRef.current = filterPanelOpen;
+  }, [filterPanelOpen]);
+
+  React.useEffect(() => {
+    columnsMenuOpenRef.current = columnsMenuOpen;
+  }, [columnsMenuOpen]);
 
   const [editingCell, setEditingCell] = React.useState<{
     rowId: GridRowId;
@@ -2654,6 +2771,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       if (editingIds.length !== 1) return;
       const t = e.target as Node | null;
       if (t instanceof HTMLElement && t.closest("[data-hive-grid-chrome]")) return;
+      if (
+        t instanceof HTMLElement &&
+        (t.closest("[data-hive-searchable-select]") ||
+          t.closest("[data-hive-searchable-select-popover]"))
+      ) {
+        return;
+      }
       if (t instanceof HTMLTextAreaElement) return;
       if (
         t instanceof HTMLInputElement &&
@@ -2675,9 +2799,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     return () => window.removeEventListener("keydown", onKey);
   }, [editingCell, rowModesEditKey, exitAllEditing]);
 
+  const enforcedPageSizeOptions = React.useMemo(() => {
+    void pageSizeOptions;
+    return [10, 30, 50, 100];
+  }, [pageSizeOptions]);
   const [paginationInternal, setPaginationInternal] = React.useState<GridPaginationModel>(() =>
     paginationModelProp ??
-      initialState?.pagination?.paginationModel ?? { page: 0, pageSize: pageSizeOptions[1] ?? 30 }
+      initialState?.pagination?.paginationModel ?? { page: 0, pageSize: 50 }
   );
   const paginationInternalRef = React.useRef(paginationInternal);
   paginationInternalRef.current = paginationInternal;
@@ -2829,6 +2957,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const visibilityToApply = stored?.columnVisibilityModel ?? def?.columnVisibilityModel;
     const pinToApply = stored?.pinnedColumns ?? def?.pinnedColumns;
     const densityToApply = stored?.density ?? def?.density;
+    const visualizationToApply = stored?.visualization ?? def?.visualization;
     const columnOrderToApply = stored?.columnOrder ?? def?.columnOrder;
     const rowGroupingToApply = stored?.rowGroupingModel ?? def?.rowGroupingModel;
     const columnSizingToApply = stored?.columnSizing ?? def?.columnSizing;
@@ -2853,6 +2982,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       });
     }
     if (densityProp === undefined && densityToApply) setDensityInternal(densityToApply);
+    if (visualizationProp === undefined && visualizationToApply) setVisualizationInternal(visualizationToApply);
     if (columnOrderToApply?.length) {
       setColumnOrder(mergePersistedColumnOrder(baseOrder, columnOrderToApply));
     }
@@ -2873,6 +3003,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     columnVisibilityProp,
     pinnedColumnsProp,
     densityProp,
+    visualizationProp,
     rowGroupingModelProp,
     baseOrder,
     treeActive,
@@ -3329,6 +3460,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const ctx = {
       apiRef: apiRef ?? apiHolder,
       getRowId,
+      density,
+      rowsForActionWidth: rowsWithRowEditDrafts,
       disableColumnSort,
       aggregationModel,
       showAggregationFooter,
@@ -3341,6 +3474,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     effectiveColumnsForTable,
     getRowId,
     apiRef,
+    density,
+    rowsWithRowEditDrafts,
     disableColumnSort,
     aggregationModel,
     showAggregationFooter,
@@ -3942,7 +4077,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     .map((c) => {
       const w = c.getSize();
       const meta = c.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined;
-      const colMin = meta?.gridColDef?.minWidth ?? 50;
+      const colMin = meta?.gridColDef?.minWidth ?? 5;
       if (w && w > 0) return `${w}px`;
       return `minmax(${colMin}px,1fr)`;
     })
@@ -4104,6 +4239,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       selectedRowIds,
       rowGroupingModel: [...groupingState],
       density,
+      visualization,
       editMode: editModeResolved,
       rowModesModel
     };
@@ -4122,6 +4258,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     groupingState.join("|"),
     rowSelectionKey,
     density,
+    visualization,
     editModeResolved,
     JSON.stringify(rowModesModel),
     JSON.stringify(columnSizing)
@@ -4296,6 +4433,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         },
         getDensity: () => densityRef.current,
         setDensity: (d) => applyDensity(d),
+        getVisualization: () => visualizationRef.current,
+        setVisualization: (v) => applyVisualization(v),
         commitRowEditSave: (rowId: GridRowId) => completeRowEditSaveRef.current(rowId),
         getColumnFiltersSearchPending: () => columnFiltersSearchPendingRef.current,
         applyColumnFiltersSearch: () => {
@@ -4314,6 +4453,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       openGlobalColumnsPanel,
       exitAllEditing,
       applyDensity,
+      applyVisualization,
       commitRowModesModel
     ]
   );
@@ -4395,6 +4535,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       scrollContainerRef: scrollParentRef,
       density,
       setDensity: applyDensity,
+      visualization,
+      setVisualization: applyVisualization,
       quickFilterValue,
       setQuickFilterValue: setQuickFilterValueContext,
       activeFilterCount,
@@ -4402,7 +4544,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       setHeaderFiltersEnabled: setHeaderFiltersEnabledCb,
       clearAllFilters,
       chartsIntegrationEnabled: chartsEnabled,
-      openChartsPanel: chartsEnabled ? () => setChartsPanelOpen(true) : undefined,
+      openChartsPanel: chartsEnabled
+        ? () => setChartsPanelOpen(true)
+        : undefined,
       pivotFeatureEnabled: !!pivoting,
       pivotActive,
       setPivotActive: pivoting ? setPivotActiveFromToolbar : undefined,
@@ -4412,7 +4556,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       editToolbarCompat: {
         disableColumnFilter: !!disableColumnFilter,
         disableColumnSelector: !!disableColumnSelector,
-        disableDensitySelector: !!disableDensitySelector
+        disableDensitySelector: !!disableDensitySelector,
+        disableVisualizationSelector: !!disableVisualizationSelector
       },
       serverDrivenColumnFilters: !!serverDrivenColumnFilters,
       columnFiltersSearchPending,
@@ -4428,6 +4573,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       gridApi,
       density,
       applyDensity,
+      visualization,
+      applyVisualization,
       quickFilterValue,
       setQuickFilterValueContext,
       activeFilterCount,
@@ -4443,6 +4590,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       disableColumnFilter,
       disableColumnSelector,
       disableDensitySelector,
+      disableVisualizationSelector,
       serverDrivenColumnFilters,
       columnFiltersSearchPending,
       runServerColumnFiltersSearch,
@@ -5094,6 +5242,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     if (columnVisibilityProp === undefined) payload.columnVisibilityModel = columnVisibilityModel;
     if (pinnedColumnsProp === undefined) payload.pinnedColumns = pinningResolved;
     if (densityProp === undefined) payload.density = density;
+    if (visualizationProp === undefined) payload.visualization = visualization;
     payload.columnOrder = [...columnOrderResolved];
     payload.columnSizing = pickPersistableColumnSizing(columnSizing);
     if (rowGroupingModelProp === undefined && !treeActive) payload.rowGroupingModel = [...groupingState];
@@ -5130,6 +5279,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     pinnedColumnsProp,
     density,
     densityProp,
+    visualization,
+    visualizationProp,
     columnOrderResolved.join(","),
     groupingState.join("|"),
     rowGroupingModelProp,
@@ -5250,12 +5401,21 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const { className: noRowsOverlayWrapperClass, ...noRowsOverlayForwarded } = noRowsOverlayDivProps;
 
   const pageSizeSelectOptions = React.useMemo(() => {
-    const set = new Set(pageSizeOptions);
+    const set = new Set(enforcedPageSizeOptions);
     set.add(paginationModel.pageSize);
     return [...set].sort((a, b) => a - b);
-  }, [pageSizeOptions, paginationModel.pageSize]);
+  }, [enforcedPageSizeOptions, paginationModel.pageSize]);
 
   const lt = (key: keyof GridLocaleText, fallback: string) => localeText?.[key] ?? fallback;
+  const totalRowCountForFooter = rowCount != null && rowCount >= 0 ? rowCount : rows.length;
+  const footerTypographyClass =
+    visualization === "compact"
+      ? "text-[10px] leading-tight"
+      : density === "compact"
+        ? "text-[11px] leading-tight"
+        : "text-xs leading-tight";
+  const footerControlHeightClass = visualization === "compact" ? "h-7" : "h-8";
+  const footerControlIconClass = visualization === "compact" ? "h-3 w-3" : "h-4 w-4";
 
   const [accessibilityAnnouncement, setAccessibilityAnnouncement] = React.useState("");
   const a11yAnnounceInitialSkipRef = React.useRef(true);
@@ -5305,6 +5465,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       !hideFooterSelectedRowCount && sel > 0
         ? lt("selectedRowsReport", "{count} selecionada(s) · ").replace("{count}", String(sel))
         : null;
+    const totalRowsReportText = `Total de linhas: ${String(totalRowCountForFooter)}`;
     return {
       api: gridApi,
       paginationModel,
@@ -5316,6 +5477,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       hideSelectionCount: !!hideFooterSelectedRowCount,
       pageReportText,
       selectedRowsReportText,
+      totalRowCount: totalRowCountForFooter,
+      totalRowsReportText,
       rowsPerPageLabel: lt("rowsPerPage", "Linhas por página"),
       goFirst: () => table.setPageIndex(0),
       goPrev: () => table.previousPage(),
@@ -5339,6 +5502,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     rowSelectionModelProp,
     pageSizeSelectOptions,
     hideFooterSelectedRowCount,
+    totalRowCountForFooter,
     paginationModelProp,
     JSON.stringify(localeText ?? null),
     table,
@@ -5356,6 +5520,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
 
   const buildColumnHeaderParts = (header: Header<R, unknown>) => {
     const id = header.column.id;
+    const fieldStr = String(id);
     const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)?.gridColDef;
     const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
     const showMenu =
@@ -5365,7 +5530,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       id !== "__tree__" &&
       colDef?.disableColumnMenu !== true;
     const canPinUi = header.column.getCanPin() && !disableColumnPinning;
-    const ha = colDef?.headerAlign ?? colDef?.align;
+    const ha = resolvedColumnAlignment(fieldStr, colDef, enforceColumnAlignmentPolicy, true);
     const alignHead = alignTextClass(ha);
     const justifyHead = headerJustifyClass(ha);
     const canSortInteractive = !disableColumnSort && header.column.getCanSort();
@@ -5377,20 +5542,19 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       id !== "__select__" &&
       id !== "__detail__" &&
       id !== "__tree__";
-    const fieldStr = String(id);
     const hasColumnFilter = (filterModel.items ?? []).some((i) => i.field === fieldStr);
     const description = colDef?.description?.trim();
 
     const sortLabel = (
-      <span className="flex min-w-0 flex-1 items-center gap-1">
+      <span className="flex min-w-0 flex-1 items-center gap-0">
         <span className={cn("min-w-0 flex-1 truncate whitespace-nowrap", alignHead)}>
           {flexRender(header.column.columnDef.header, header.getContext())}
         </span>
         {header.column.getIsSorted() === "asc" && (
-          <ArrowUpIcon className="h-3 w-3 shrink-0 text-hiveGrid-headerMuted" />
+          <ArrowUpIcon className={cn("shrink-0 text-hiveGrid-headerMuted", headerIconClass(visualization))} />
         )}
         {header.column.getIsSorted() === "desc" && (
-          <ArrowDownIcon className="h-3 w-3 shrink-0 text-hiveGrid-headerMuted" />
+          <ArrowDownIcon className={cn("shrink-0 text-hiveGrid-headerMuted", headerIconClass(visualization))} />
         )}
       </span>
     );
@@ -5412,7 +5576,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           <button
             type="button"
             className={cn(
-              "flex min-w-0 w-full max-w-full flex-1 items-center gap-1 overflow-hidden font-normal text-hiveGrid-headerMuted",
+              "flex min-w-0 w-full max-w-full flex-1 items-center gap-0 overflow-hidden font-normal text-hiveGrid-headerMuted pr-0 transition-[padding] group-hover/header:pr-3",
               alignHead,
               justifyHead
             )}
@@ -5429,7 +5593,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       : wrapHeaderDescription(
           <div
             className={cn(
-              "flex min-w-0 w-full max-w-full flex-1 items-center gap-1 overflow-hidden font-normal text-hiveGrid-headerMuted",
+              "flex min-w-0 w-full max-w-full flex-1 items-center gap-0 overflow-hidden font-normal text-hiveGrid-headerMuted pr-0 transition-[padding] group-hover/header:pr-3",
               alignHead,
               justifyHead
             )}
@@ -5444,25 +5608,30 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const menu =
       showMenu &&
       (canColumnFilterUi || canPinUi || canSortInteractive || header.column.getCanHide()) ? (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "shrink-0 rounded-sm border-0 bg-transparent p-0 text-inherit shadow-none ring-0",
-                "opacity-0 transition-[opacity,background-color,color] group-hover/header:opacity-100 data-[state=open]:opacity-100",
+                "absolute right-0 top-1/2 z-[85] -translate-y-1/2 rounded-sm border-0 bg-transparent p-0 text-inherit shadow-none ring-0",
+                "pointer-events-none opacity-0 transition-[opacity,background-color,color] group-hover/header:pointer-events-auto group-hover/header:opacity-100 data-[state=open]:pointer-events-auto data-[state=open]:opacity-100",
                 "hover:bg-foreground/10 hover:text-inherit focus-visible:ring-0 focus-visible:ring-offset-0",
                 "data-[state=open]:bg-foreground/10 data-[state=open]:text-inherit",
                 "[&_svg]:text-current",
-                density === "compact" ? "h-[15px] w-[15px] min-h-0 min-w-0" : "h-7 w-7"
+                headerMenuButtonSizeClass(density, visualization)
               )}
               type="button"
               aria-label={lt("columnMenu", "Menu da coluna")}
               onClick={(e) => e.stopPropagation()}
               onPointerDown={(e) => e.stopPropagation()}
             >
-              <EllipsisVerticalIcon className="h-3 w-3 shrink-0 text-current opacity-90 group-hover/header:opacity-100" />
+              <EllipsisVerticalIcon
+                className={cn(
+                  "shrink-0 text-current opacity-90 group-hover/header:opacity-100",
+                  headerIconClass(visualization)
+                )}
+              />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" onCloseAutoFocus={(e) => e.preventDefault()}>
@@ -5589,7 +5758,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
             header.getResizeHandler()(e);
           }}
           className={cn(
-            "pointer-events-auto relative z-[80] box-border flex w-[10px] min-w-[10px] max-w-[10px] shrink-0 touch-none select-none items-center justify-center self-stretch",
+            "pointer-events-auto absolute right-[-5px] top-0 z-[90] box-border flex h-full w-[10px] min-w-[10px] max-w-[10px] touch-none select-none items-center justify-center",
             header.column.getIsResizing() && "z-[90]"
           )}
           style={{ touchAction: "none", cursor: "col-resize" }}
@@ -5629,7 +5798,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     const p = buildColumnHeaderParts(header);
     return (
       <div className="relative flex w-full min-w-0 flex-1 items-stretch overflow-visible">
-        <div className={cn("relative z-0 flex min-w-0 min-h-0 flex-1 items-center gap-0.5", p.justifyHead)}>
+        <div className={cn("relative z-0 flex min-w-0 min-h-0 flex-1 items-center gap-0", p.justifyHead)}>
           {p.centerChild}
         </div>
         {p.resize}
@@ -5643,10 +5812,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     <div
       ref={gridDomRootRef}
       data-density={density}
+      data-visualization={visualization}
       className={cn(
         "hive-data-grid w-full space-y-2",
         density === "compact" && "hive-density-compact",
         density === "comfortable" && "hive-density-comfortable",
+        visualization === "standard" && "hive-visualization-standard",
+        visualization === "compact" && "hive-visualization-compact",
         className
       )}
       style={{ ...mergeRowPresentationStyle(rowPresentation), ...style } as any}
@@ -5696,6 +5868,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           showColumnsButton={!disableColumnSelector}
           showFilterButton={!disableColumnFilter}
           showDensitySelector={!disableDensitySelector}
+          showVisualizationSelector={!disableDensitySelector && !disableVisualizationSelector}
           showQuickFilter={!disableColumnFilter}
           showChartsButton={chartsEnabled}
           showPivotPanelButton={pivoting}
@@ -5749,6 +5922,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 )}
                 style={{
                   tableLayout: "fixed",
+                  borderCollapse: "collapse",
+                  borderSpacing: 0,
+                  /** Tipografia centralizada no tema (`hive-data-grid-theme.css`). */
+                  fontSize: "var(--hive-grid-font-size, 11px)",
+                  lineHeight: "var(--hive-grid-line-height, 1.05)",
                   width:
                     showRowEditActionsEffective
                       ? table.getTotalSize() + 160
@@ -5798,7 +5976,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
                             ?.gridColDef;
                           const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
-                          const ha = colDef?.headerAlign ?? colDef?.align;
+                          const ha = resolvedColumnAlignment(
+                            String(id),
+                            colDef,
+                            enforceColumnAlignmentPolicy,
+                            true
+                          );
                           const headerExtraClass =
                             colDef != null
                               ? resolveHeaderExtraClassName(colDef, {
@@ -5814,6 +5997,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                 key={header.id}
                                 id={String(id)}
                                 disabled={false}
+                                visualization={visualization}
                                 pinStyle={pinStyle}
                                 columnWidth={header.getSize()}
                                 colSpan={tableHeaderSpanAttr(header.colSpan)}
@@ -5829,7 +6013,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                   "font-normal text-hiveGrid-headerMuted",
                                   alignTextClass(ha),
                                   headerExtraClass,
-                                  headerCellDensityPaddingClass(density, {
+                                  headerCellDensityPaddingClass(density, visualization, {
                                     tight: isIconLikeTableColumn(String(id), colDef)
                                   })
                                 )}
@@ -5847,11 +6031,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               aria-colindex={hci + 1}
                               className={cn(
                                 "group/header relative overflow-visible min-h-0 border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
+                                headerTypographyClass(visualization),
                                 hci > 0 && HEADER_COL_DIVIDER_CLASS,
                                 columnHeaderHeightPx != null && "h-full align-middle",
                                 alignTextClass(ha),
                                 headerExtraClass,
-                                headerCellDensityPaddingClass(density, {
+                                headerCellDensityPaddingClass(density, visualization, {
                                   tight: isIconLikeTableColumn(String(id), colDef)
                                 })
                               )}
@@ -5869,7 +6054,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           className={cn(
                             "group/header relative w-[min(160px,14vw)] text-right font-normal text-hiveGrid-headerMuted",
                             columnHeaderHeightPx != null && "h-full align-middle",
-                            headerCellDensityPaddingClass(density, { tight: true })
+                            headerCellDensityPaddingClass(density, visualization, { tight: true })
                           )}
                           style={
                             columnHeaderHeightPx != null
@@ -5882,7 +6067,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               : undefined
                           }
                         >
-                          <span className="text-sm font-normal">
+                          <span className={cn("font-normal", headerTypographyClass(visualization))}>
                             {lt("rowEditActionsColumnHeader", "Ações")}
                           </span>
                         </TableHead>
@@ -5908,7 +6093,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           filterModel={filterModel}
                           onCommit={commitFilterModel}
                           lt={lt}
-                          densityPaddingClass={headerCellDensityPaddingClass(density, {})}
+                          densityPaddingClass={headerCellDensityPaddingClass(density, visualization, {})}
                         />
                       </HeaderSortableWrap>
                       {showRowEditActionsEffective ? (
@@ -6073,20 +6258,37 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                   aria-colindex={cci + 1}
                                   style={{
                                     width: cell.column.getSize(),
+                                    ...(showsBodyCellEditor
+                                      ? {
+                                          minHeight: rowPx,
+                                          height: rowPx,
+                                          maxHeight: rowPx
+                                        }
+                                      : {}),
                                     ...pinStyle
                                   }}
                                   className={cn(
-                                    fieldStr === "__select__"
-                                      ? "text-center"
-                                      : alignTextClass(gridColDef?.align),
+                                    alignTextClass(
+                                      resolvedColumnAlignment(
+                                        fieldStr,
+                                        gridColDef,
+                                        enforceColumnAlignmentPolicy,
+                                        false
+                                      )
+                                    ),
                                     !row.getIsGrouped() &&
                                       "outline-none focus-visible:ring-2 focus-visible:ring-hiveGrid-cellFocusRing focus-visible:ring-offset-1 focus-visible:ring-offset-hiveGrid-cellFocusRingOffset",
                                     !row.getIsGrouped() &&
-                                      bodyCellDensityPaddingClass(density, {
-                                        tight: isIconLikeTableColumn(fieldStr, gridColDef)
-                                      }),
+                                      (showsBodyCellEditor
+                                        ? "!p-0"
+                                        : bodyCellDensityPaddingClass(density, visualization, {
+                                            tight: isIconLikeTableColumn(fieldStr, gridColDef)
+                                          })),
                                     truncateView && "min-w-0 overflow-hidden text-ellipsis whitespace-nowrap",
                                     showsBodyCellEditor && "min-h-0 overflow-hidden",
+                                    showsBodyCellEditor && "!align-top",
+                                    showsBodyCellEditor && "!leading-none",
+                                    showsBodyCellEditor && "focus-visible:ring-0 focus-visible:ring-offset-0",
                                     cellClassExtra
                                   )}
                                   {...(!row.getIsGrouped()
@@ -6156,12 +6358,18 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                   ) : (
                                     <div
                                       className={cn(
-                                        "flex min-h-0 w-full min-w-0 px-[3px]",
-                                        truncateView
-                                          ? "flex-row items-center"
-                                          : "flex-col justify-center",
+                                        "flex min-h-0 w-full min-w-0",
+                                        showsBodyCellEditor
+                                          ? "h-full max-h-full flex-row items-stretch justify-start !px-0 !py-0"
+                                          : truncateView
+                                            ? "flex-row items-center px-[3px]"
+                                            : "flex-col justify-center px-[3px]",
                                         truncateView && "min-w-0 max-w-full overflow-hidden",
-                                        bodyCellIconCrossAxisClass(fieldStr, gridColDef)
+                                        bodyCellIconCrossAxisClass(
+                                          fieldStr,
+                                          gridColDef,
+                                          enforceColumnAlignmentPolicy
+                                        )
                                       )}
                                       style={bodyCellContentBoxStyle(rowPx, showsBodyCellEditor)}
                                       {...(!row.getIsGrouped() &&
@@ -6185,7 +6393,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               <TableCell
                                 role="gridcell"
                                 aria-colindex={orderedLeafColumns.length + 1}
-                                className={cn("align-middle", bodyCellDensityPaddingClass(density, { tight: true }))}
+                                className={cn("align-middle", bodyCellDensityPaddingClass(density, visualization, { tight: true }))}
                                 data-hive-row-edit-actions=""
                                 onPointerDown={(e) => e.stopPropagation()}
                               >
@@ -6243,7 +6451,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 {aggregationFooterVisible ? (
                   <TableFooter
                     aria-label={lt("aggregationFooterAria", "Linha de agregação")}
-                    className="border-t border-hiveGrid-chromeBorder bg-hiveGrid-aggregationRow"
+                    className={cn(
+                      "border-t border-hiveGrid-chromeBorder bg-hiveGrid-aggregationRow",
+                      footerTypographyClass
+                    )}
                   >
                     {table.getFooterGroups().map((footerGroup) => (
                       <TableRow
@@ -6254,14 +6465,24 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                         {footerGroup.headers.map((header, hci) => {
                           const pinStyle = getPinnedStickyStyle(header.column, table, "header");
                           const colDef = columnsProp.find((c) => c.field === header.column.id);
-                          const ha = colDef?.headerAlign ?? colDef?.align;
+                          const ha = resolvedColumnAlignment(
+                            String(header.column.id),
+                            colDef,
+                            enforceColumnAlignmentPolicy,
+                            true
+                          );
                           return (
                             <TableCell
                               key={header.id}
                               role="gridcell"
                               aria-colindex={hci + 1}
                               style={{ width: header.column.getSize(), ...pinStyle }}
-                              className={cn("text-hiveGrid-aggregationFg", alignTextClass(ha))}
+                              className={cn(
+                                "text-hiveGrid-aggregationFg",
+                                alignTextClass(ha),
+                                headerCellDensityPaddingClass(density, visualization, { tight: true }),
+                                columnHeaderHeightPx == null && headerMinHeightClass(visualization)
+                              )}
                             >
                               {header.isPlaceholder
                                 ? null
@@ -6276,7 +6497,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                           <TableCell
                             role="gridcell"
                             aria-colindex={orderedLeafColumns.length + 1}
-                            className="text-hiveGrid-aggregationFg"
+                            className={cn(
+                              "text-hiveGrid-aggregationFg",
+                              headerCellDensityPaddingClass(density, visualization, { tight: true }),
+                              columnHeaderHeightPx == null && headerMinHeightClass(visualization)
+                            )}
                           />
                         ) : null}
                       </TableRow>
@@ -6353,7 +6578,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                         const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
                           ?.gridColDef;
                         const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
-                        const ha = colDef?.headerAlign ?? colDef?.align;
+                        const ha = resolvedColumnAlignment(
+                          String(id),
+                          colDef,
+                          enforceColumnAlignmentPolicy,
+                          true
+                        );
                         const headerExtraClassVirt =
                           colDef != null
                             ? resolveHeaderExtraClassName(colDef, {
@@ -6376,12 +6606,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               ...pinStyle
                             }}
                             className={cn(
-                              "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell text-sm font-normal text-hiveGrid-headerMuted",
+                              "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
+                              headerTypographyClass(visualization),
                               hci > 0 && HEADER_COL_DIVIDER_CLASS,
-                              columnHeaderHeightPx == null && "min-h-[40px]",
+                              columnHeaderHeightPx == null && headerMinHeightClass(visualization),
                               alignTextClass(ha),
                               headerExtraClassVirt,
-                              headerCellDensityPaddingClass(density, {
+                              headerCellDensityPaddingClass(density, visualization, {
                                 tight: isIconLikeTableColumn(String(id), colDef)
                               })
                             )}
@@ -6418,7 +6649,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       const metaCol = (header.column.columnDef.meta as { gridColDef?: GridColDef<R> } | undefined)
                         ?.gridColDef;
                       const colDef = metaCol ?? columnsProp.find((c) => c.field === id);
-                      const ha = colDef?.headerAlign ?? colDef?.align;
+                      const ha = resolvedColumnAlignment(
+                        String(id),
+                        colDef,
+                        enforceColumnAlignmentPolicy,
+                        true
+                      );
                       const headerExtraClassVirt =
                         colDef != null
                           ? resolveHeaderExtraClassName(colDef, {
@@ -6434,6 +6670,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                             key={header.id}
                             id={String(id)}
                             disabled={false}
+                            visualization={visualization}
                             layout="grid"
                             pinStyle={pinStyle}
                             columnWidth={flexPivotHeaders ? header.getSize() : undefined}
@@ -6450,7 +6687,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               "font-normal",
                               alignTextClass(ha),
                               headerExtraClassVirt,
-                              headerCellDensityPaddingClass(density, {
+                              headerCellDensityPaddingClass(density, visualization, {
                                 tight: isIconLikeTableColumn(String(id), colDef)
                               })
                             )}
@@ -6480,12 +6717,13 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               : {})
                           }}
                           className={cn(
-                            "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell text-sm font-normal text-hiveGrid-headerMuted",
+                            "group/header relative flex items-center border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
+                            headerTypographyClass(visualization),
                             hci > 0 && HEADER_COL_DIVIDER_CLASS,
-                            columnHeaderHeightPx == null && "min-h-[40px]",
+                            columnHeaderHeightPx == null && headerMinHeightClass(visualization),
                             alignTextClass(ha),
                             headerExtraClassVirt,
-                            headerCellDensityPaddingClass(density, {
+                            headerCellDensityPaddingClass(density, visualization, {
                               tight: isIconLikeTableColumn(String(id), colDef)
                             })
                           )}
@@ -6501,8 +6739,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       role="columnheader"
                       aria-colindex={orderedLeafColumns.length + 1}
                       className={cn(
-                        "relative flex shrink-0 items-center justify-end border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell px-2 text-sm font-normal text-hiveGrid-headerMuted",
-                        columnHeaderHeightPx == null && "min-h-[40px]"
+                        "relative flex shrink-0 items-center justify-end border-b border-hiveGrid-chromeBorder bg-hiveGrid-headerCell font-normal text-hiveGrid-headerMuted",
+                        headerTypographyClass(visualization),
+                        columnHeaderHeightPx == null && headerMinHeightClass(visualization),
+                        headerCellDensityPaddingClass(density, visualization, { tight: true })
                       )}
                       style={
                         flexPivotHeaders
@@ -6548,7 +6788,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                       filterModel={filterModel}
                       onCommit={commitFilterModel}
                       lt={lt}
-                      densityPaddingClass={headerCellDensityPaddingClass(density, {})}
+                      densityPaddingClass={headerCellDensityPaddingClass(density, visualization, {})}
                     />
                   </HeaderSortableWrap>
                   {showRowEditActionsEffective ? (
@@ -6677,6 +6917,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                   isCellEditableGridRef.current ?? undefined,
                                   !!(processRowUpdate || onRowsChange)
                                 );
+                              const editorActiveVirt =
+                                !row.getIsGrouped() &&
+                                !skipTruncV &&
+                                !truncateVirt;
                               return (
                                 <div
                                   key={cell.id}
@@ -6690,20 +6934,24 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                     height: "100%"
                                   }}
                                   className={cn(
-                                    "flex min-h-0 min-w-0 items-center px-[3px]",
+                                    "flex min-h-0 min-w-0",
+                                    editorActiveVirt
+                                      ? "h-full max-h-full items-stretch !px-0 !py-0"
+                                      : "items-center px-[3px]",
                                     !row.getIsGrouped() &&
-                                      bodyCellDensityPaddingClass(density, {
-                                        tight: isIconLikeTableColumn(fieldStrV, gridColDef)
-                                      }),
-                                    fieldStrV === "__select__" || gridColDef?.type === "boolean"
-                                      ? fieldStrV === "__select__"
-                                        ? "justify-center text-center"
-                                        : gridColDef?.align === "right"
-                                          ? "justify-end text-right"
-                                          : gridColDef?.align === "left"
-                                            ? "justify-start text-left"
-                                            : "justify-center text-center"
-                                      : alignTextClass(gridColDef?.align),
+                                      (editorActiveVirt
+                                        ? "!p-0"
+                                        : bodyCellDensityPaddingClass(density, visualization, {
+                                            tight: isIconLikeTableColumn(fieldStrV, gridColDef)
+                                          })),
+                                    alignTextClass(
+                                      resolvedColumnAlignment(
+                                        fieldStrV,
+                                        gridColDef,
+                                        enforceColumnAlignmentPolicy,
+                                        false
+                                      )
+                                    ),
                                     !row.getIsGrouped() &&
                                       "outline-none focus-visible:ring-2 focus-visible:ring-hiveGrid-cellFocusRing focus-visible:ring-offset-1 focus-visible:ring-offset-hiveGrid-cellFocusRingOffset",
                                     truncateVirt && "overflow-hidden text-ellipsis whitespace-nowrap",
@@ -6867,6 +7115,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                     isCellEditableGridRef.current ?? undefined,
                                     !!(processRowUpdate || onRowsChange)
                                   );
+                                const editorActiveVirtG =
+                                  !row.getIsGrouped() &&
+                                  !skipTruncG &&
+                                  !truncateVirtG;
                                 return (
                                   <div
                                     key={cell.id}
@@ -6874,20 +7126,24 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                     aria-colindex={cci + 1}
                                     style={pinStyle}
                                     className={cn(
-                                      "flex min-h-0 min-w-0 items-center px-[3px]",
+                                      "flex min-h-0 min-w-0",
+                                      editorActiveVirtG
+                                        ? "h-full max-h-full items-stretch !px-0 !py-0"
+                                        : "items-center px-[3px]",
                                       !row.getIsGrouped() &&
-                                        bodyCellDensityPaddingClass(density, {
-                                          tight: isIconLikeTableColumn(fieldStrG, gridColDef)
-                                        }),
-                                      fieldStrG === "__select__" || gridColDef?.type === "boolean"
-                                        ? fieldStrG === "__select__"
-                                          ? "justify-center text-center"
-                                          : gridColDef?.align === "right"
-                                            ? "justify-end text-right"
-                                            : gridColDef?.align === "left"
-                                              ? "justify-start text-left"
-                                              : "justify-center text-center"
-                                        : alignTextClass(gridColDef?.align),
+                                        (editorActiveVirtG
+                                          ? "!p-0"
+                                          : bodyCellDensityPaddingClass(density, visualization, {
+                                              tight: isIconLikeTableColumn(fieldStrG, gridColDef)
+                                            })),
+                                      alignTextClass(
+                                        resolvedColumnAlignment(
+                                          fieldStrG,
+                                          gridColDef,
+                                          enforceColumnAlignmentPolicy,
+                                          false
+                                        )
+                                      ),
                                       !row.getIsGrouped() &&
                                         "outline-none focus-visible:ring-2 focus-visible:ring-hiveGrid-cellFocusRing focus-visible:ring-offset-1 focus-visible:ring-offset-hiveGrid-cellFocusRingOffset",
                                       truncateVirtG && "overflow-hidden text-ellipsis whitespace-nowrap",
@@ -7015,7 +7271,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                     aria-colindex={orderedLeafColumns.length + 1}
                                     className={cn(
                                       "flex min-w-0 items-center justify-end",
-                                      bodyCellDensityPaddingClass(density, { tight: true })
+                                      bodyCellDensityPaddingClass(density, visualization, { tight: true })
                                     )}
                                     data-hive-row-edit-actions=""
                                     onPointerDown={(e) => e.stopPropagation()}
@@ -7071,7 +7327,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                             if (!header) return null;
                             const hci = vc.index;
                             const colDef = columnsProp.find((c) => c.field === header.column.id);
-                            const ha = colDef?.headerAlign ?? colDef?.align;
+                            const ha = resolvedColumnAlignment(
+                              String(header.column.id),
+                              colDef,
+                              enforceColumnAlignmentPolicy,
+                              true
+                            );
                             return (
                               <div
                                 key={header.id}
@@ -7085,7 +7346,10 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                   height: "100%"
                                 }}
                                 className={cn(
-                                  "flex min-h-10 min-w-0 items-center px-2 py-2",
+                                      "flex min-w-0 items-center text-hiveGrid-aggregationFg",
+                                      headerCellDensityPaddingClass(density, visualization, { tight: true }),
+                                      columnHeaderHeightPx == null && headerMinHeightClass(visualization),
+                                      footerTypographyClass,
                                   alignTextClass(ha)
                                 )}
                               >
@@ -7100,7 +7364,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                               {footerGroup.headers.map((header, hci) => {
                                 const pinStyle = getPinnedStickyStyle(header.column, table, "header");
                                 const colDef = columnsProp.find((c) => c.field === header.column.id);
-                                const ha = colDef?.headerAlign ?? colDef?.align;
+                                const ha = resolvedColumnAlignment(
+                                  String(header.column.id),
+                                  colDef,
+                                  enforceColumnAlignmentPolicy,
+                                  true
+                                );
                                 return (
                                   <div
                                     key={header.id}
@@ -7125,7 +7394,12 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                                 <div
                                   role="gridcell"
                                   aria-colindex={orderedLeafColumns.length + 1}
-                                  className="flex min-h-10 min-w-0 items-center px-2 py-2"
+                                  className={cn(
+                                    "flex min-w-0 items-center text-hiveGrid-aggregationFg",
+                                    headerCellDensityPaddingClass(density, visualization, { tight: true }),
+                                    columnHeaderHeightPx == null && headerMinHeightClass(visualization),
+                                    footerTypographyClass
+                                  )}
                                 />
                               ) : null}
                             </>
@@ -7138,7 +7412,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
           )}
         </ColumnReorderOptional>
         {FooterSlot ? (
-          <div className="border-t border-hiveGrid-chromeBorder bg-hiveGrid-footerSlot px-2 py-2">
+          <div
+            className={cn(
+              "border-t border-hiveGrid-chromeBorder bg-hiveGrid-footerSlot px-2",
+              footerControlHeightClass,
+              "flex items-center",
+              footerTypographyClass
+            )}
+          >
             {React.createElement(FooterSlot, {
               api: gridApi,
               ...(slotProps?.footer ?? {})
@@ -7152,15 +7433,20 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         !hideFooterPagination &&
         (paginationMode === "client" || paginationMode === "server") &&
         (PaginationSlot ? (
-          <div className="px-1 py-1">
+          <div className={cn("px-1 py-1", footerTypographyClass)}>
             {React.createElement(PaginationSlot, {
               ...paginationSlotPayload,
               ...(slotProps?.pagination ?? {})
             } as unknown as GridPaginationSlotProps<R>)}
           </div>
         ) : (
-        <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-sm text-hiveGrid-headerMuted">
-          <div>
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-2 px-1 text-hiveGrid-headerMuted",
+            footerTypographyClass
+          )}
+        >
+          <div className="flex flex-wrap items-center gap-2">
             {!hideFooterSelectedRowCount && defaultFooterSelectedCount > 0 && (
               <span>
                 {lt("selectedRowsReport", "{count} selecionada(s) · ").replace(
@@ -7169,6 +7455,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 )}
               </span>
             )}
+            <span>
+              {`Total de linhas: ${String(totalRowCountForFooter)}`}
+            </span>
             {lt("pageReport", "Página {current} de {total}")
               .replace("{current}", String(table.getState().pagination.pageIndex + 1))
               .replace("{total}", String(table.getPageCount() || 1))}
@@ -7179,7 +7468,11 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 {lt("rowsPerPage", "Linhas por página")}
               </span>
               <select
-                className="h-8 w-[4.5rem] rounded-md border border-input bg-background px-2 text-sm text-foreground shadow-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={cn(
+                  "w-[4.5rem] rounded-md border border-input bg-background px-2 text-foreground shadow-none ring-offset-background focus-visible:outline-none focus-visible:ring-0",
+                  footerControlHeightClass,
+                  footerTypographyClass
+                )}
                 value={String(paginationModel.pageSize)}
                 aria-label={lt("rowsPerPage", "Linhas por página")}
                 onChange={(e) => {
@@ -7198,38 +7491,46 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
                 ))}
               </select>
             </div>
-            <div className="flex gap-1">
+            <div className="flex items-center gap-1">
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
+                className={cn(footerControlHeightClass, "w-8 min-w-8 px-0", footerTypographyClass)}
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
+                aria-label="Primeira página"
               >
-                {"<<"}
+                <span className={cn("inline-flex items-center", footerControlIconClass)}>{"<<"}</span>
               </Button>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
+                className={cn(footerControlHeightClass, "w-8 min-w-8 px-0", footerTypographyClass)}
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
+                aria-label="Página anterior"
               >
-                {"<"}
+                <span className={cn("inline-flex items-center", footerControlIconClass)}>{"<"}</span>
               </Button>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
+                className={cn(footerControlHeightClass, "w-8 min-w-8 px-0", footerTypographyClass)}
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
+                aria-label="Próxima página"
               >
-                {">"}
+                <span className={cn("inline-flex items-center", footerControlIconClass)}>{">"}</span>
               </Button>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
+                className={cn(footerControlHeightClass, "w-8 min-w-8 px-0", footerTypographyClass)}
                 onClick={() => table.setPageIndex(Math.max(0, table.getPageCount() - 1))}
                 disabled={!table.getCanNextPage()}
+                aria-label="Última página"
               >
-                {">>"}
+                <span className={cn("inline-flex items-center", footerControlIconClass)}>{">>"}</span>
               </Button>
             </div>
           </div>

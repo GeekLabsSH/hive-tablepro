@@ -24,7 +24,8 @@ import type {
   GridSortModel,
   GridStateSnapshot,
   GridSubscriptionEvent,
-  GridValidRowModel
+  GridValidRowModel,
+  GridVisualization
 } from "../types";
 
 export type CreateGridApiOptions<R extends GridValidRowModel> = {
@@ -82,6 +83,8 @@ export type CreateGridApiOptions<R extends GridValidRowModel> = {
   commitRowEditSave?: (rowId: GridRowId) => void | Promise<void>;
   getDensity: () => GridDensity;
   setDensity: (d: GridDensity) => void;
+  getVisualization?: () => GridVisualization;
+  setVisualization?: (v: GridVisualization) => void;
   getColumnFiltersSearchPending?: () => boolean;
   applyColumnFiltersSearch?: () => void;
 };
@@ -408,6 +411,12 @@ export function createGridApi<R extends GridValidRowModel>(
     },
     setDensity(d) {
       opts.setDensity(d);
+    },
+    getVisualization() {
+      return opts.getVisualization?.() ?? "compact";
+    },
+    setVisualization(v) {
+      opts.setVisualization?.(v);
     },
     getColumnFiltersSearchPending() {
       return opts.getColumnFiltersSearchPending?.() ?? false;

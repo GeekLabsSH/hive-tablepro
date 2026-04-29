@@ -31,7 +31,7 @@ function GridActionsCellLayout({
   return (
     <div
       className={cn(
-        "flex h-full w-full min-h-0 min-w-0 items-center gap-0.5 pr-1",
+        "flex h-full w-full min-h-0 min-w-0 items-center gap-[2px] pr-0",
         actionsJustifyClass(align)
       )}
       data-hive-actions-cell=""

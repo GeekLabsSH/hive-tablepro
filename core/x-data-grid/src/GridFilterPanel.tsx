@@ -1741,9 +1741,10 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
       role="region"
       aria-label={lt("filterPanelTitle", "Filtros ativos")}
       className={cn(
-        "fixed z-[90] box-border flex max-h-[600px] flex-col overflow-hidden rounded-lg border border-border bg-popover p-[5px] text-popover-foreground shadow-lg outline-none"
+        "pointer-events-auto fixed z-[10050] box-border flex max-h-[600px] flex-col overflow-hidden rounded-lg border border-border bg-popover p-[5px] text-popover-foreground shadow-lg outline-none"
       )}
       style={{
+        zIndex: 2147483000,
         top: pos.top,
         left: pos.left,
         width: pos.width,

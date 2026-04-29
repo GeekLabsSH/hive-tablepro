@@ -19,14 +19,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "../../../src/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "../../../src/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../src/components/ui/tooltip";
 import { cn } from "../../../src/lib/utils";
-import type { GridDensity } from "./GridRootContext";
+import type { GridDensity, GridVisualization } from "./GridRootContext";
 import { useGridApiContext, useGridRootContext } from "./GridRootContext";
 
 function ToolbarEndSlotFromContext() {
@@ -260,7 +255,7 @@ export function GridToolbarExport({
   const hasCustomChildren = children != null && children !== false;
   const size = hasCustomChildren ? "sm" : showLabel ? "sm" : "icon";
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
@@ -290,7 +285,7 @@ export function GridToolbarExport({
         </TooltipTrigger>
         <TooltipContent side="bottom">{title}</TooltipContent>
       </Tooltip>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="z-[10050]">
         <DropdownMenuItem
           onClick={() => {
             void api?.exportDataAsCsv?.(csvOptions);
@@ -526,6 +521,11 @@ const densityLabels: Record<GridDensity, string> = {
   standard: "Padrão",
   comfortable: "Confortável"
 };
+const visualizationLabels: Record<GridVisualization, string> = {
+  comfortable: "Confortável",
+  standard: "Padrão",
+  compact: "Compacto"
+};
 
 /** Ícones de “altura de linha” alinhados ao padrão MUI (fino / médio / largo). */
 function DensityGlyph({ density }: { density: GridDensity }) {
@@ -549,25 +549,80 @@ export function GridToolbarDensitySelector({
   const ctx = useGridRootContext();
   const d = ctx?.density ?? "standard";
   const setD = ctx?.setDensity;
+  const buttonLabel = showLabel ? densityLabels[d] : title;
+  const densityTriggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const densityOpenedAtRef = React.useRef<number>(0);
+  const [densityMenuOpen, setDensityMenuOpen] = React.useState(false);
+  const [densityTooltipOpen, setDensityTooltipOpen] = React.useState(false);
 
   return (
     <div className={cn("flex items-center", className)} {...(props as any)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="outline"
-            size={showLabel ? "sm" : "icon"}
-            className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0")}
-            disabled={!setD}
-            aria-label={title}
-            title={title}
-          >
-            <Bars3BottomLeftIcon className="h-4 w-4 shrink-0" aria-hidden />
-            {showLabel ? <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span> : null}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-52">
+      <DropdownMenu
+        modal={false}
+        onOpenChange={(open) => {
+          setDensityMenuOpen(open);
+          if (open) setDensityTooltipOpen(false);
+          if (open) densityOpenedAtRef.current = Date.now();
+        }}
+      >
+        <Tooltip
+          open={densityMenuOpen ? false : densityTooltipOpen}
+          onOpenChange={(open) => {
+            if (densityMenuOpen) return;
+            setDensityTooltipOpen(open);
+          }}
+        >
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                ref={densityTriggerRef}
+                type="button"
+                variant="outline"
+                size={showLabel ? "sm" : "icon"}
+                className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0")}
+                disabled={!setD}
+                aria-label={title}
+              >
+                <Bars3BottomLeftIcon className="h-4 w-4 shrink-0" aria-hidden />
+                {showLabel ? <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span> : null}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{buttonLabel}</TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent
+          align="start"
+          className="z-[10050] w-52"
+          onInteractOutside={(event) => {
+            const target = event.target as Node | null;
+            const targetEl = target instanceof HTMLElement ? target : null;
+            const targetAria = targetEl?.getAttribute("aria-label") ?? null;
+            const targetClass = targetEl?.className ?? null;
+            const originalEventType =
+              ((event as unknown as { detail?: { originalEvent?: { type?: string } } }).detail?.originalEvent?.type ??
+                null);
+            const targetIsDensityTrigger =
+              !!targetEl?.closest?.("button[aria-label='Densidade'],button[aria-label='Density']");
+            const triggerContainsTarget = !!target && !!densityTriggerRef.current?.contains(target);
+            const targetIsToolbarButton =
+              !!targetEl?.closest?.("button[aria-label='Colunas'],button[aria-label='Filtros'],button[aria-label='Exportar']");
+            const targetIsTooltipContent = !!targetEl?.closest?.("[role='tooltip']");
+            const targetIsDensityMenuContent = !!targetEl?.closest?.("[role='menu']");
+            const targetInsideDialog = !!targetEl?.closest?.("[role='dialog']");
+            const elapsedSinceOpen = densityOpenedAtRef.current > 0 ? Date.now() - densityOpenedAtRef.current : -1;
+            if (
+              triggerContainsTarget ||
+              targetIsDensityTrigger ||
+              (originalEventType === "focusin" && targetInsideDialog) ||
+              targetIsTooltipContent ||
+              targetIsDensityMenuContent ||
+              (targetIsToolbarButton && originalEventType === "focusin") ||
+              (targetIsToolbarButton && elapsedSinceOpen >= 0 && elapsedSinceOpen < 150)
+            ) {
+              event.preventDefault();
+            }
+          }}
+        >
           {(Object.keys(densityLabels) as GridDensity[]).map((k) => (
             <DropdownMenuItem
               key={k}
@@ -576,6 +631,93 @@ export function GridToolbarDensitySelector({
             >
               <DensityGlyph density={k} />
               <span className={d === k ? "font-medium" : undefined}>{densityLabels[k]}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
+export function GridToolbarVisualizationSelector({
+  className,
+  title = "Visualização",
+  showLabel,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { title?: string; showLabel?: boolean }) {
+  const ctx = useGridRootContext();
+  const visualization = ctx?.visualization ?? "comfortable";
+  const setVisualization = ctx?.setVisualization;
+  const buttonLabel = showLabel ? visualizationLabels[visualization] : title;
+  const visualizationTriggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const [visualizationMenuOpen, setVisualizationMenuOpen] = React.useState(false);
+  const [visualizationTooltipOpen, setVisualizationTooltipOpen] = React.useState(false);
+
+  return (
+    <div className={cn("flex items-center", className)} {...(props as any)}>
+      <DropdownMenu
+        modal={false}
+        onOpenChange={(open) => {
+          setVisualizationMenuOpen(open);
+          if (open) setVisualizationTooltipOpen(false);
+        }}
+      >
+        <Tooltip
+          open={visualizationMenuOpen ? false : visualizationTooltipOpen}
+          onOpenChange={(open) => {
+            if (visualizationMenuOpen) return;
+            setVisualizationTooltipOpen(open);
+          }}
+        >
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                ref={visualizationTriggerRef}
+                type="button"
+                variant="outline"
+                size={showLabel ? "sm" : "icon"}
+                className={cn(showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0")}
+                disabled={!setVisualization}
+                aria-label={title}
+              >
+                <QueueListIcon className="h-4 w-4 shrink-0" aria-hidden />
+                {showLabel ? <span className="max-w-[6.5rem] truncate text-xs font-medium">{title}</span> : null}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{buttonLabel}</TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent
+          align="start"
+          className="z-[10050] w-52"
+          onInteractOutside={(event) => {
+            const target = event.target as Node | null;
+            const targetEl = target instanceof HTMLElement ? target : null;
+            const triggerContainsTarget = !!target && !!visualizationTriggerRef.current?.contains(target);
+            const targetIsVisualizationTrigger =
+              !!targetEl?.closest?.("button[aria-label='Visualização'],button[aria-label='Visualization']");
+            const originalEventType =
+              ((event as unknown as { detail?: { originalEvent?: { type?: string } } }).detail?.originalEvent?.type ??
+                null);
+            if (
+              triggerContainsTarget ||
+              targetIsVisualizationTrigger ||
+              (originalEventType === "focusin" && !!targetEl?.closest?.("[role='dialog']"))
+            ) {
+              event.preventDefault();
+            }
+          }}
+        >
+          {(Object.keys(visualizationLabels) as GridVisualization[]).map((level) => (
+            <DropdownMenuItem
+              key={level}
+              className="flex cursor-pointer items-center gap-3"
+              onClick={() => setVisualization?.(level)}
+            >
+              <QueueListIcon className="h-4 w-4 shrink-0" aria-hidden />
+              <span className={visualization === level ? "font-medium" : undefined}>
+                {visualizationLabels[level]}
+              </span>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -650,6 +792,7 @@ export function GridToolbarFilterColumnsDensityRow({
   showColumnsButton = true,
   showFilterButton = true,
   showDensitySelector = true,
+  showVisualizationSelector = true,
   showQuickFilter = true,
   showHeaderFiltersToggle = true,
   showClearFiltersButton = true,
@@ -666,6 +809,7 @@ export function GridToolbarFilterColumnsDensityRow({
   showColumnsButton?: boolean;
   showFilterButton?: boolean;
   showDensitySelector?: boolean;
+  showVisualizationSelector?: boolean;
   showQuickFilter?: boolean;
   showHeaderFiltersToggle?: boolean;
   showClearFiltersButton?: boolean;
@@ -675,10 +819,12 @@ export function GridToolbarFilterColumnsDensityRow({
   toolbarQuickFilterAlign?: "start" | "end";
   showButtonLabels?: boolean;
 }) {
+  const resolvedShowVisualizationSelector = showDensitySelector ? true : showVisualizationSelector;
   const hasChrome =
     showColumnsButton ||
     showFilterButton ||
     showDensitySelector ||
+    resolvedShowVisualizationSelector ||
     showQuickFilter ||
     showHeaderFiltersToggle ||
     showClearFiltersButton ||
@@ -715,7 +861,11 @@ export function GridToolbarFilterColumnsDensityRow({
           {showChartsButton ? <GridToolbarChartsButton showLabel={showButtonLabels} /> : null}
           {showPivotPanelButton ? <GridToolbarPivotPanelButton showLabel={showButtonLabels} /> : null}
           <GridToolbarPivotToggleButton showLabel={showButtonLabels} />
-          {showDensitySelector ? <GridToolbarDensitySelector showLabel={showButtonLabels} /> : null}
+          {
+          showDensitySelector ? <>
+            <GridToolbarDensitySelector showLabel={showButtonLabels} />
+            <GridToolbarVisualizationSelector showLabel={showButtonLabels} /> </> : null
+          }
         </div>
         {quick}
       </div>

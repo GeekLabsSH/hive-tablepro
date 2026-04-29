@@ -6,7 +6,8 @@ import type {
   GridPaginationModel,
   GridPinnedColumns,
   GridRowGroupingModel,
-  GridSortModel
+  GridSortModel,
+  GridVisualization
 } from "./types";
 
 /** Versão do JSON em `localStorage` (incrementar se o formato mudar). */
@@ -27,6 +28,8 @@ export type PersistedGridPreferences = {
   pinnedColumns?: GridPinnedColumns;
   /** Densidade da grelha (opcional; compatível com JSON antigo sem o campo). */
   density?: GridDensity;
+  /** Escala horizontal da grelha (`Visualização` na toolbar). */
+  visualization?: GridVisualization;
   /** Ordem de colunas (ids TanStack: `field` e prefixos `__select__`, `__tree__`, …). */
   columnOrder?: string[];
   /** Modelo de agrupamento (só persistido quando `rowGroupingModel` não é controlado por prop). */

@@ -338,21 +338,20 @@ describe("DataGrid — interações não devem explodir commits de render", () =
       document.querySelector('[data-hive-cell][data-field="pick"]')
     );
     expect(pickCell).toBeTruthy();
-    const openSelect = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
-    await user.click(openSelect);
+    const selectInput = within(pickCell as HTMLElement).getByRole("textbox", { name: /escolher valor/i });
+    await user.click(selectInput);
     const pop = await waitFor(() => {
       const el = document.querySelector("[data-hive-searchable-select-popover]");
       expect(el).toBeTruthy();
       return el as HTMLElement;
     });
-    const search = within(pop).getByRole("textbox", { name: /pesquisar opções/i });
-    await user.type(search, "Udo");
+    await user.type(selectInput, "Udo");
     await waitFor(() => {
       expect(within(pop).getAllByRole("option")).toHaveLength(3);
     });
-    search.focus();
-    expect(document.activeElement).toBe(search);
-    fireEvent.keyDown(search, { key: "ArrowDown", bubbles: true });
+    selectInput.focus();
+    expect(document.activeElement).toBe(selectInput);
+    fireEvent.keyDown(selectInput, { key: "ArrowDown", bubbles: true });
 
     await waitFor(() => {
       const panel = document.querySelector("[data-hive-searchable-select-popover]");
@@ -400,15 +399,14 @@ describe("DataGrid — interações não devem explodir commits de render", () =
       document.querySelector('[data-hive-cell][data-field="pick"]')
     );
     expect(pickCell).toBeTruthy();
-    const openBtn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
-    await user.click(openBtn);
+    const selectInput = within(pickCell as HTMLElement).getByRole("textbox", { name: /escolher valor/i });
+    await user.click(selectInput);
     const opt = await screen.findByRole("option", { name: "Label Quarenta-e-dois" }, { timeout: 5000 });
     await user.click(opt);
 
     await waitFor(() => {
-      const btn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
-      expect(btn.textContent).toMatch(/Label Quarenta-e-dois/);
-      expect(btn.textContent).not.toMatch(/^42$/);
+      const input = within(pickCell as HTMLElement).getByRole("textbox", { name: /escolher valor/i });
+      expect(input).toHaveValue("Label Quarenta-e-dois");
     });
   });
 
@@ -455,18 +453,16 @@ describe("DataGrid — interações não devem explodir commits de render", () =
       document.querySelector('[data-hive-cell][data-field="pick"]')
     );
     expect(pickCell).toBeTruthy();
-    const openBtn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
-    await user.click(openBtn);
+    const selectInput = within(pickCell as HTMLElement).getByRole("textbox", { name: /escolher valor/i });
+    await user.click(selectInput);
     const pop = await waitFor(() => document.querySelector("[data-hive-searchable-select-popover]") as HTMLElement);
-    const search = within(pop).getByRole("textbox", { name: /pesquisar opções/i });
-    await user.type(search, "pre");
+    await user.type(selectInput, "pre");
     const opt = await screen.findByRole("option", { name: "Preston" }, { timeout: 5000 });
     await user.click(opt);
 
     await waitFor(() => {
-      const btn = within(pickCell as HTMLElement).getByRole("button", { name: /escolher valor/i });
-      expect(btn.textContent).toMatch(/Preston/);
-      expect(btn.textContent).not.toMatch(/^455$/);
+      const input = within(pickCell as HTMLElement).getByRole("textbox", { name: /escolher valor/i });
+      expect(input).toHaveValue("Preston");
     });
   });
 });

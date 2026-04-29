@@ -139,9 +139,10 @@ export function GridColumnsPanel<R extends GridValidRowModel>(props: GridColumns
         role="region"
         aria-label={lt("columnsMenu", "Colunas")}
         className={cn(
-          "fixed z-[90] flex max-h-[min(85vh,520px)] flex-col rounded-md border border-border bg-popover text-popover-foreground shadow-lg outline-none"
+          "pointer-events-auto fixed z-[10050] flex max-h-[min(85vh,520px)] flex-col rounded-md border border-border bg-popover text-popover-foreground shadow-lg outline-none"
         )}
         style={{
+          zIndex: 2147483000,
           top: pos.top,
           left: pos.left,
           width: pos.width

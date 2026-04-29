@@ -1,13 +1,14 @@
 import * as React from "react";
-import type { GridApiCommunity, GridDensity, GridValidRowModel } from "./types";
+import type { GridApiCommunity, GridDensity, GridValidRowModel, GridVisualization } from "./types";
 
-export type { GridDensity };
+export type { GridDensity, GridVisualization };
 
 /** Paridade MUI / ProtonWeb `EditToolbar`: suprimir chrome quando os três estão desligados. */
 export type GridEditToolbarCompatProps = {
   disableColumnFilter: boolean;
   disableColumnSelector: boolean;
   disableDensitySelector: boolean;
+  disableVisualizationSelector: boolean;
 };
 
 export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel> = {
@@ -17,6 +18,9 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   density: GridDensity;
   /** Atualiza densidade (estado interno + `onDensityChange`). */
   setDensity?: (d: GridDensity) => void;
+  /** Escala horizontal da grelha (`Visualização` na toolbar). */
+  visualization: GridVisualization;
+  setVisualization?: (v: GridVisualization) => void;
   /** Valor atual do filtro rápido (painel cliente). */
   quickFilterValue: string;
   setQuickFilterValue: (v: string) => void;
@@ -88,6 +92,7 @@ export function useGridRootProps(): React.HTMLAttributes<HTMLDivElement> {
       role: "grid" as const,
       className: "hive-data-grid-root",
       "data-density": v?.density ?? "standard",
+      "data-visualization": v?.visualization ?? "compact",
       ...(v?.editToolbarCompat != null
         ? {
             disableColumnFilter: v.editToolbarCompat.disableColumnFilter,
@@ -96,7 +101,7 @@ export function useGridRootProps(): React.HTMLAttributes<HTMLDivElement> {
           }
         : {})
     }),
-    [v?.density, v?.editToolbarCompat]
+    [v?.density, v?.visualization, v?.editToolbarCompat]
   );
 }
 

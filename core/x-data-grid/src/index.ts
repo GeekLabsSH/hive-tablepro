@@ -49,6 +49,7 @@ export {
   GridToolbarFilterButton,
   GridToolbarExport,
   GridToolbarDensitySelector,
+  GridToolbarVisualizationSelector,
   GridToolbarQuickFilter,
   GridToolbarFilterColumnsDensityRow,
   GridToolbarHeaderFiltersButton,

@@ -27,6 +27,7 @@ const snap: GridStateSnapshot = {
   selectedRowIds: [],
   rowGroupingModel: [],
   density: "standard",
+  visualization: "compact",
   editMode: "cell",
   rowModesModel: {}
 };

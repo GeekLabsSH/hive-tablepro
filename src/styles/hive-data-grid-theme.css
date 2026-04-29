@@ -145,6 +145,93 @@
 }
 
 /**
+ * Visualização horizontal: reduz fonte e espaçamentos em X para caber mais conteúdo sem scroll.
+ * Tipografia centralizada para cabeçalho e valores (mesmo tamanho em cada modo).
+ */
+.hive-data-grid[data-visualization="comfortable"],
+.hive-data-grid.hive-visualization-comfortable {
+  --hive-grid-font-size: 11px;
+  --hive-grid-line-height: 1.05;
+}
+
+.hive-data-grid[data-visualization="standard"],
+.hive-data-grid.hive-visualization-standard {
+  --hive-grid-font-size: 11px;
+  --hive-grid-line-height: 1.05;
+}
+
+.hive-data-grid[data-visualization="compact"],
+.hive-data-grid.hive-visualization-compact,
+.hive-data-grid:not([data-visualization]) {
+  --hive-grid-font-size: 10px;
+  --hive-grid-line-height: 1;
+}
+
+.hive-data-grid [role="gridcell"],
+.hive-data-grid [role="columnheader"] {
+  font-size: var(--hive-grid-font-size) !important;
+  line-height: var(--hive-grid-line-height) !important;
+}
+
+.hive-data-grid [role="gridcell"] *,
+.hive-data-grid [role="columnheader"] * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.hive-data-grid[data-visualization="standard"] [data-hive-grid-chrome],
+.hive-data-grid.hive-visualization-standard [data-hive-grid-chrome] {
+  gap: 0.125rem;
+}
+
+.hive-data-grid[data-visualization="compact"] [data-hive-grid-chrome],
+.hive-data-grid.hive-visualization-compact [data-hive-grid-chrome] {
+  gap: 0.0625rem;
+}
+
+/* Modo edição: compactação horizontal também em editores de célula/linha. */
+.hive-data-grid[data-visualization="standard"] [data-hive-edit-root],
+.hive-data-grid.hive-visualization-standard [data-hive-edit-root] {
+  font-size: 0.8em;
+}
+
+.hive-data-grid[data-visualization="compact"] [data-hive-edit-root],
+.hive-data-grid.hive-visualization-compact [data-hive-edit-root] {
+  font-size: 0.8em;
+}
+
+.hive-data-grid[data-visualization="standard"] [data-hive-edit-root] input,
+.hive-data-grid[data-visualization="standard"] [data-hive-edit-root] button,
+.hive-data-grid[data-visualization="standard"] [data-hive-edit-root] [role="combobox"],
+.hive-data-grid.hive-visualization-standard [data-hive-edit-root] input,
+.hive-data-grid.hive-visualization-standard [data-hive-edit-root] button,
+.hive-data-grid.hive-visualization-standard [data-hive-edit-root] [role="combobox"] {
+  padding-inline: 0.375rem;
+}
+
+.hive-data-grid[data-visualization="compact"] [data-hive-edit-root] input,
+.hive-data-grid[data-visualization="compact"] [data-hive-edit-root] button,
+.hive-data-grid[data-visualization="compact"] [data-hive-edit-root] [role="combobox"],
+.hive-data-grid.hive-visualization-compact [data-hive-edit-root] input,
+.hive-data-grid.hive-visualization-compact [data-hive-edit-root] button,
+.hive-data-grid.hive-visualization-compact [data-hive-edit-root] [role="combobox"] {
+  padding-inline: 0.25rem;
+}
+
+/* Cabeçalho: ações e botões levemente menores para caber mais colunas visíveis. */
+.hive-data-grid[data-visualization="standard"] [role="columnheader"] button.h-8.w-8,
+.hive-data-grid.hive-visualization-standard [role="columnheader"] button.h-8.w-8 {
+  width: 1.25rem;
+  min-width: 1.25rem;
+}
+
+.hive-data-grid[data-visualization="compact"] [role="columnheader"] button.h-8.w-8,
+.hive-data-grid.hive-visualization-compact [role="columnheader"] button.h-8.w-8 {
+  width: 1.125rem;
+  min-width: 1.125rem;
+}
+
+/**
  * Fundos de célula neutras, hover e seleção: `!important` para vencer `background` em estilo inline
  * nas colunas fixas (`getPinnedStickyStyle`). `.purchaseRow` / `.saleRow` ficam nas regras do Proton.
  * Seleção com `:not(:hover)` para o hover não ser tapado pela regra de linha selecionada.

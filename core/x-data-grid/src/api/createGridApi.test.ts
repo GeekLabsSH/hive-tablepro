@@ -33,6 +33,7 @@ describe("createGridApi", () => {
     selectedRowIds: [],
     rowGroupingModel: [],
     density: "standard",
+    visualization: "compact",
     editMode: "cell",
     rowModesModel: {}
   };

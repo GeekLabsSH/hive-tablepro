@@ -485,13 +485,13 @@ export function GridDefaultChartsPanel<R extends GridValidRowModel>(props: {
     "h-8 min-w-0 flex-1 justify-between gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-xs font-normal text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800";
   const seriesAggMenuTriggerClass =
     "h-8 max-w-[10rem] shrink-0 justify-between gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-xs font-normal text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800";
-  const menuContentClass = "z-[1400] max-h-[min(70vh,20rem)] w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto p-1";
+  const menuContentClass = "z-[10050] max-h-[min(70vh,20rem)] w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto p-1";
 
   const hasData = chartData.length > 0 && series.length > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="z-[10050] flex max-h-[90vh] max-w-3xl flex-col gap-0 overflow-hidden p-0">
         <DialogHeader className="shrink-0 border-b border-gray-200 px-6 py-4 dark:border-gray-700">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
