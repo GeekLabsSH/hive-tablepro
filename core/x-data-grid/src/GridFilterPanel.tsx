@@ -23,6 +23,7 @@ import {
   FILTER_ROW_DUMMY_ROW_ID,
   filterRowValueStateFromItem,
   getFilterOperatorChoices,
+  isRelativeDateOperator,
   rawKeysFromFilterMultiValue,
   normalizeValueOptions,
   type FilterOpChoice,
@@ -948,7 +949,10 @@ function FilterLineEditor<R extends GridValidRowModel>({
     patchItems(items);
   };
 
-  const needsValue = operator !== "isEmpty" && operator !== "isNotEmpty";
+  const needsValue =
+    operator !== "isEmpty" &&
+    operator !== "isNotEmpty" &&
+    !isRelativeDateOperator(operator);
 
   const prevItem = index > 0 ? (filterModel.items ?? [])[index - 1] : undefined;
   const showJoinWithPrev =

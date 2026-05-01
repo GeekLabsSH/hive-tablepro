@@ -66,6 +66,94 @@ function toTime(v: unknown): number {
   return Number.isFinite(t) ? t : NaN;
 }
 
+function startOfDayLocal(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+}
+
+function endOfDayLocal(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+}
+
+function addDaysLocal(d: Date, days: number): Date {
+  const x = new Date(d);
+  x.setDate(x.getDate() + days);
+  return x;
+}
+
+function addMonthsLocal(d: Date, months: number): Date {
+  const x = new Date(d);
+  x.setMonth(x.getMonth() + months);
+  return x;
+}
+
+function getRelativeRange(operator: GridFilterOperator): { start: number; end: number } | null {
+  const now = new Date();
+  const todayStart = startOfDayLocal(now);
+  const todayEnd = endOfDayLocal(now);
+
+  switch (operator) {
+    case "last30Days": {
+      const start = startOfDayLocal(addDaysLocal(now, -29)).getTime();
+      return { start, end: todayEnd.getTime() };
+    }
+    case "last3Months": {
+      const start = startOfDayLocal(addMonthsLocal(now, -3)).getTime();
+      return { start, end: todayEnd.getTime() };
+    }
+    case "last6Months": {
+      const start = startOfDayLocal(addMonthsLocal(now, -6)).getTime();
+      return { start, end: todayEnd.getTime() };
+    }
+    case "last12Months": {
+      const start = startOfDayLocal(addMonthsLocal(now, -12)).getTime();
+      return { start, end: todayEnd.getTime() };
+    }
+    case "lastMonth": {
+      const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const firstPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastPrevMonth = new Date(firstThisMonth.getTime() - 1);
+      return {
+        start: startOfDayLocal(firstPrevMonth).getTime(),
+        end: endOfDayLocal(lastPrevMonth).getTime()
+      };
+    }
+    case "lastQuarter": {
+      const currentQuarter = Math.floor(now.getMonth() / 3);
+      const prevQuarterEndMonth = currentQuarter * 3 - 1;
+      const prevQuarterStartMonth = prevQuarterEndMonth - 2;
+      const start = new Date(now.getFullYear(), prevQuarterStartMonth, 1);
+      const end = new Date(now.getFullYear(), prevQuarterEndMonth + 1, 1);
+      return {
+        start: startOfDayLocal(start).getTime(),
+        end: endOfDayLocal(new Date(end.getTime() - 1)).getTime()
+      };
+    }
+    case "lastSemester": {
+      const inFirstSemester = now.getMonth() < 6;
+      const year = inFirstSemester ? now.getFullYear() - 1 : now.getFullYear();
+      const startMonth = inFirstSemester ? 6 : 0;
+      const endMonth = startMonth + 6;
+      const start = new Date(year, startMonth, 1);
+      const end = new Date(year, endMonth, 1);
+      return {
+        start: startOfDayLocal(start).getTime(),
+        end: endOfDayLocal(new Date(end.getTime() - 1)).getTime()
+      };
+    }
+    case "lastYear": {
+      const y = now.getFullYear() - 1;
+      const start = new Date(y, 0, 1);
+      const end = new Date(y + 1, 0, 1);
+      return {
+        start: startOfDayLocal(start).getTime(),
+        end: endOfDayLocal(new Date(end.getTime() - 1)).getTime()
+      };
+    }
+    default:
+      return null;
+  }
+}
+
 /** Avalia um operador MUI contra um valor de célula (reutilizado por filtro global e por coluna). */
 export function applyGridFilterOperator(
   cell: unknown,
@@ -118,6 +206,19 @@ export function applyGridFilterOperator(
       return Number.isFinite(cellT) && Number.isFinite(valT) && cellT < valT;
     case "onOrBefore":
       return Number.isFinite(cellT) && Number.isFinite(valT) && cellT <= valT;
+    case "last30Days":
+    case "last3Months":
+    case "last6Months":
+    case "last12Months":
+    case "lastMonth":
+    case "lastQuarter":
+    case "lastSemester":
+    case "lastYear": {
+      if (!Number.isFinite(cellT)) return false;
+      const range = getRelativeRange(operator);
+      if (range == null) return false;
+      return cellT >= range.start && cellT <= range.end;
+    }
     case "inList": {
       const tokens = parseInListTokens(value);
       if (tokens.length === 0) return true;
@@ -163,7 +264,20 @@ export function rowMatchesFilterItem<R extends GridValidRowModel>(
 }
 
 function itemHasMeaningfulFilter(it: GridFilterItem): boolean {
-  if (it.operator === "isEmpty" || it.operator === "isNotEmpty") return true;
+  if (
+    it.operator === "isEmpty" ||
+    it.operator === "isNotEmpty" ||
+    it.operator === "last30Days" ||
+    it.operator === "last3Months" ||
+    it.operator === "last6Months" ||
+    it.operator === "last12Months" ||
+    it.operator === "lastMonth" ||
+    it.operator === "lastQuarter" ||
+    it.operator === "lastSemester" ||
+    it.operator === "lastYear"
+  ) {
+    return true;
+  }
   if (it.operator === "inList" || it.operator === "selectAny" || it.operator === "selectAll") {
     const v = it.value;
     if (Array.isArray(v)) return v.length > 0;

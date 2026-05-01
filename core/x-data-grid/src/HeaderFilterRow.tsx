@@ -22,6 +22,7 @@ import {
   FILTER_ROW_DUMMY_ROW_ID,
   filterRowValueStateFromItem,
   getFilterOperatorChoices,
+  isRelativeDateOperator,
   normalizeValueOptions,
   rawKeysFromFilterMultiValue,
   type NormOpt
@@ -346,7 +347,10 @@ function HeaderFilterCell<R extends GridValidRowModel>({
   ]);
 
   const choices = React.useMemo(() => getFilterOperatorChoices(col, lt), [col, lt]);
-  const needsValue = effectiveOp !== "isEmpty" && effectiveOp !== "isNotEmpty";
+  const needsValue =
+    effectiveOp !== "isEmpty" &&
+    effectiveOp !== "isNotEmpty" &&
+    !isRelativeDateOperator(effectiveOp);
 
   const [valueText, setValueText] = React.useState("");
 

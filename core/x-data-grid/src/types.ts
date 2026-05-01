@@ -110,6 +110,14 @@ export type GridFilterOperator =
   | "onOrAfter"
   | "before"
   | "onOrBefore"
+  | "last30Days"
+  | "last3Months"
+  | "last6Months"
+  | "last12Months"
+  | "lastMonth"
+  | "lastQuarter"
+  | "lastSemester"
+  | "lastYear"
   /** Lista separada por `;` no valor (string) ou `unknown[]` serializado. */
   | "inList"
   /** `singleSelect` / enum: o valor da célula tem de coincidir com **todos** os valores seleccionados. */

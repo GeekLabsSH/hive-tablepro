@@ -19,6 +19,7 @@ import { colHasValueOptions, colHasFilterableSingleSelect, resolveColValueOption
 import {
   defaultFilterOperatorForCol,
   getFilterOperatorChoices,
+  isRelativeDateOperator,
   normalizeValueOptions
 } from "./columnFilterShared";
 import type {
@@ -165,7 +166,10 @@ export function ColumnFilterDialog<R extends GridValidRowModel>({
     }
   }, [open, field, existing, isSingleSelect, isBoolean, isDateKind, isNumber, normOpts, isDateTime]);
 
-  const needsValue = operator !== "isEmpty" && operator !== "isNotEmpty";
+  const needsValue =
+    operator !== "isEmpty" &&
+    operator !== "isNotEmpty" &&
+    !isRelativeDateOperator(operator);
 
   const apply = () => {
     let item: { field: string; operator: GridFilterOperator; value?: unknown };

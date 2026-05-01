@@ -13,6 +13,21 @@ export type FilterOpChoice = { value: GridFilterOperator; label: string };
 
 export type NormOpt = { value: string; label: string; raw: string | number };
 
+const RELATIVE_DATE_OPERATORS = new Set<GridFilterOperator>([
+  "last30Days",
+  "last3Months",
+  "last6Months",
+  "last12Months",
+  "lastMonth",
+  "lastQuarter",
+  "lastSemester",
+  "lastYear"
+]);
+
+export function isRelativeDateOperator(operator: GridFilterOperator): boolean {
+  return RELATIVE_DATE_OPERATORS.has(operator);
+}
+
 function rawMatchesNormOpt(raw: unknown, opt: NormOpt): boolean {
   return Object.is(raw, opt.raw) || String(raw) === String(opt.raw);
 }
@@ -124,6 +139,14 @@ export function dateOperators(
   lt: (k: keyof GridLocaleText, fb: string) => string
 ): FilterOpChoice[] {
   return [
+    { value: "last30Days", label: "Ultimos 30 dias" },
+    { value: "last3Months", label: "Ultimos 3 meses" },
+    { value: "last6Months", label: "Ultimos 6 meses" },
+    { value: "last12Months", label: "Ultimos 12 meses" },
+    { value: "lastMonth", label: "Ultimo mes" },
+    { value: "lastQuarter", label: "Ultimo trimestre" },
+    { value: "lastSemester", label: "Ultimo semestre" },
+    { value: "lastYear", label: "Ultimo ano" },
     { value: "is", label: lt("filterOpIs", "É") },
     { value: "not", label: lt("filterOpNot", "Não é") },
     { value: "after", label: lt("filterOpAfter", "Depois de") },
@@ -159,7 +182,7 @@ export function defaultFilterOperatorForCol<R extends GridValidRowModel>(
 ): GridFilterOperator {
   if (!colDef) return "contains";
   if (colDef.type === "number") return "=";
-  if (colDef.type === "date" || colDef.type === "dateTime") return "is";
+  if (colDef.type === "date" || colDef.type === "dateTime") return "last30Days";
   if (colDef.type === "singleSelect" && colHasFilterableSingleSelect(colDef)) return "equals";
   if (colDef.type === "boolean") return "equals";
   return "contains";
@@ -222,6 +245,9 @@ export function buildCommittedFilterItem<R extends GridValidRowModel>(args: {
     return { field, operator, value: n };
   }
   if (isDateKind) {
+    if (isRelativeDateOperator(operator)) {
+      return { field, operator };
+    }
     if (valueText.trim() === "") return null;
     return { field, operator, value: valueText.trim() };
   }
@@ -246,6 +272,7 @@ export function filterRowValueStateFromItem<R extends GridValidRowModel>(args: {
     args;
   const existing = item;
   if (existing.operator === "isEmpty" || existing.operator === "isNotEmpty") return "";
+  if (isDateKind && isRelativeDateOperator(existing.operator)) return "";
   if (isSingleSelect && existing.operator === "inList") {
     return String(existing.value ?? "");
   }
