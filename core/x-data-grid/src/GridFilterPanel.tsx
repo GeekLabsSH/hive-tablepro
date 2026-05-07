@@ -42,6 +42,13 @@ import type {
 import { gridFilterGroupKey, isHiveFilterHeaderGroupKey, sortFilterItemsByOrder } from "./filterFns";
 import { ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS } from "./constants";
 
+/**
+ * Empilhamento do painel «Filtros ativos»: superfície `fixed` + listas Radix/`createPortal` em `body`.
+ * Os portais precisam de z-index **maior** que o painel; caso contrário o menu fica por baixo.
+ */
+const FILTER_PANEL_SURFACE_Z = 2147483000;
+const FILTER_PANEL_PORTAL_Z = 2147483001;
+
 /** Referência estável para `normOpts` vazio — evita re-sincronizar `valueText` a cada render. */
 const EMPTY_NORM_OPTS: NormOpt[] = [];
 
@@ -224,7 +231,7 @@ function FilterPanelSelect({
       <SelectContent
         position="popper"
         className="min-w-[var(--radix-select-trigger-width)] border bg-popover text-popover-foreground"
-        style={{ zIndex: 10120 }}
+        style={{ zIndex: FILTER_PANEL_PORTAL_Z }}
       >
         {options.map((o) => (
           <SelectItem
@@ -402,7 +409,7 @@ function AsyncRemoteSingleSelectValueEditor({
                 left: listBox.left,
                 width: listBox.width,
                 maxHeight: listBox.maxHeight,
-                zIndex: 10120
+                zIndex: FILTER_PANEL_PORTAL_Z
               }}
             >
               {listBody}
@@ -1393,7 +1400,7 @@ function FilterLineEditor<R extends GridValidRowModel>({
               <PopoverContent
                 align="start"
                 className="flex w-80 max-h-[28rem] flex-col gap-2 overflow-hidden p-3"
-                style={{ zIndex: 10120 }}
+                style={{ zIndex: FILTER_PANEL_PORTAL_Z }}
               >
                 {isRemoteSingleSelect ? (
                   <>
@@ -1748,7 +1755,7 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
         "pointer-events-auto fixed z-[10050] box-border flex max-h-[600px] flex-col overflow-hidden rounded-lg border border-border bg-popover p-[5px] text-popover-foreground shadow-lg outline-none"
       )}
       style={{
-        zIndex: 2147483000,
+        zIndex: FILTER_PANEL_SURFACE_Z,
         top: pos.top,
         left: pos.left,
         width: pos.width,
