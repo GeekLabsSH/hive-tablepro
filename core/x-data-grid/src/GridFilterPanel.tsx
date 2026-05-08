@@ -39,7 +39,13 @@ import type {
   GridValidRowModel,
   GridValueOptionsList
 } from "./types";
-import { gridFilterGroupKey, isHiveFilterHeaderGroupKey, sortFilterItemsByOrder } from "./filterFns";
+import {
+  countActiveGridFilters,
+  gridFilterGroupKey,
+  isHiveFilterHeaderGroupKey,
+  sortFilterItemsByOrder
+} from "./filterFns";
+import { useGridRootContext } from "./GridRootContext";
 import { ASYNC_REMOTE_FILTER_SEARCH_DEBOUNCE_MS } from "./constants";
 
 /**
@@ -1558,7 +1564,11 @@ function FilterLineEditor<R extends GridValidRowModel>({
  */
 export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPanelSlotProps<R>) {
   const { open, onOpenChange, filterModel, columns, onCommit, lt, anchorRef, onSaveFilterTemplate } = props;
+  const gridRoot = useGridRootContext();
   const items = filterModel.items ?? [];
+  /** Alinhado ao badge da toolbar (`quickFilter` + modo servidor); fallback se o painel renderizar fora do provider. */
+  const activeFilterCountAligned =
+    gridRoot?.activeFilterCount ?? countActiveGridFilters(filterModel, undefined);
   const logic = filterModel.logicOperator ?? "And";
   const pos = useFilterPanelPosition(open, anchorRef);
   const panelRef = React.useRef<HTMLDivElement>(null);
@@ -1699,7 +1709,8 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
   };
 
   const clearAll = () => {
-    onCommit({ ...filterModel, items: [], quickFilterValues: [] });
+    if (gridRoot?.clearAllFilters) gridRoot.clearAllFilters();
+    else onCommit({ ...filterModel, items: [], quickFilterValues: [] });
   };
 
   const addFilterLine = () => {
@@ -1768,12 +1779,22 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-1 py-1">
         {items.length === 0 ? (
-          <p className="py-6 text-sm text-muted-foreground">
-            {lt(
-              "filterPanelEmpty",
-              "Nenhum filtro por coluna. Use o menu da coluna (⋮) ou «+ adicionar filtro»."
-            )}
-          </p>
+          <div className="py-6">
+            <p className="text-sm text-muted-foreground">
+              {lt(
+                "filterPanelEmpty",
+                "Nenhum filtro por coluna. Use o menu da coluna (⋮) ou «+ adicionar filtro»."
+              )}
+            </p>
+            {activeFilterCountAligned > 0 ? (
+              <p className="mt-3 border-t border-border/60 pt-3 text-sm text-muted-foreground">
+                {lt(
+                  "filterPanelActiveNotListedHint",
+                  "Ainda há filtros activos (pesquisa rápida ou filtros já aplicados no servidor). Use «Limpar todos os filtros» no ícone do caixote abaixo."
+                )}
+              </p>
+            ) : null}
+          </div>
         ) : usesGroups ? (
           <div className="flex flex-col gap-3 py-1">
             {(() => {
@@ -1976,7 +1997,7 @@ export function GridFilterPanel<R extends GridValidRowModel>(props: GridFilterPa
                   variant="outline"
                   size="icon"
                   className="h-8 w-8 shrink-0"
-                  disabled={items.length === 0}
+                  disabled={activeFilterCountAligned === 0}
                   onClick={clearAll}
                   aria-label={lt("filterPanelClearAll", "Limpar todos os filtros")}
                 >

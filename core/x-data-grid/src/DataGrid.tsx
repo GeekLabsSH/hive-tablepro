@@ -2053,6 +2053,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     onPreferencesChange,
     defaultPreferences,
     serverDrivenColumnFilters = false,
+    highlightApplyColumnFiltersUntilSearch = false,
     onServerColumnFiltersSearch
   } = props;
 
@@ -2286,6 +2287,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const [appliedColumnFilterItemsJson, setAppliedColumnFilterItemsJson] = React.useState<string>(() =>
     JSON.stringify([])
   );
+  /** Com `highlightApplyColumnFiltersUntilSearch`: primeiro `runServerColumnFiltersSearch` remove o destaque extra. */
+  const [columnFiltersApplySearchCommitted, setColumnFiltersApplySearchCommitted] = React.useState(false);
 
   const [headerFiltersInternal, setHeaderFiltersInternal] = React.useState(
     () => initialState?.filter?.headerFiltersEnabled === true
@@ -2825,6 +2828,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
   const runServerColumnFiltersSearchRef = React.useRef<() => void>(() => {});
   const runServerColumnFiltersSearch = React.useCallback(() => {
     if (!serverDrivenColumnFilters) return;
+    if (highlightApplyColumnFiltersUntilSearch) setColumnFiltersApplySearchCommitted(true);
     const fm = filterModelRef.current;
     setAppliedColumnFilterItemsJson(JSON.stringify(fm.items ?? []));
     const pm = paginationModelPropRef.current ?? paginationInternalRef.current;
@@ -2834,7 +2838,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       paginationModel: { page: 0, pageSize: pm.pageSize }
     });
     resetPaginationToFirstPage();
-  }, [serverDrivenColumnFilters, resetPaginationToFirstPage]);
+  }, [serverDrivenColumnFilters, highlightApplyColumnFiltersUntilSearch, resetPaginationToFirstPage]);
   runServerColumnFiltersSearchRef.current = runServerColumnFiltersSearch;
 
   const [visibilityInternal, setVisibilityInternal] = React.useState<Record<string, boolean>>(
@@ -3092,6 +3096,17 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     if (!serverDrivenColumnFilters) return false;
     return JSON.stringify(filterModel.items ?? []) !== appliedColumnFilterItemsJson;
   }, [serverDrivenColumnFilters, filterModel, appliedColumnFilterItemsJson]);
+
+  const applyColumnFiltersSearchHighlighted = React.useMemo(() => {
+    if (!serverDrivenColumnFilters) return false;
+    if (columnFiltersSearchPending) return true;
+    return Boolean(highlightApplyColumnFiltersUntilSearch && !columnFiltersApplySearchCommitted);
+  }, [
+    serverDrivenColumnFilters,
+    columnFiltersSearchPending,
+    highlightApplyColumnFiltersUntilSearch,
+    columnFiltersApplySearchCommitted
+  ]);
 
   const columnFiltersSearchPendingRef = React.useRef(columnFiltersSearchPending);
   columnFiltersSearchPendingRef.current = columnFiltersSearchPending;
@@ -4526,8 +4541,9 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     onFilterModelChangeRef.current?.(next);
     if (serverDrivenColumnFilters) {
       setAppliedColumnFilterItemsJson(JSON.stringify([]));
+      if (highlightApplyColumnFiltersUntilSearch) setColumnFiltersApplySearchCommitted(false);
     }
-  }, [quickFilterProp, resetPaginationToFirstPage, serverDrivenColumnFilters]);
+  }, [quickFilterProp, resetPaginationToFirstPage, serverDrivenColumnFilters, highlightApplyColumnFiltersUntilSearch]);
 
   const gridRootContextValue = React.useMemo(
     () => ({
@@ -4561,12 +4577,15 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       },
       serverDrivenColumnFilters: !!serverDrivenColumnFilters,
       columnFiltersSearchPending,
+      applyColumnFiltersSearchHighlighted,
       applyColumnFiltersSearch: runServerColumnFiltersSearch,
       applyColumnFiltersSearchLabel:
         localeText?.toolbarApplyColumnFilters ?? "Buscar",
       applyColumnFiltersSearchPendingTooltip:
         localeText?.toolbarApplyColumnFiltersPendingTooltip ??
         "Os filtros de coluna ainda não foram aplicados à pesquisa.",
+      applyColumnFiltersSearchInitialHighlightTooltip:
+        localeText?.toolbarApplyColumnFiltersInitialHighlightTooltip,
       toolbarEndSlot: filterTemplatesToolbarSlot
     }),
     [
@@ -4593,6 +4612,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       disableVisualizationSelector,
       serverDrivenColumnFilters,
       columnFiltersSearchPending,
+      applyColumnFiltersSearchHighlighted,
       runServerColumnFiltersSearch,
       localeText
     ]

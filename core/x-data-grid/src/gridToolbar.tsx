@@ -129,12 +129,18 @@ export function GridToolbarApplyColumnFiltersButton({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { title?: string; showLabel?: boolean }) {
   const root = useGridRootContext();
   if (!root?.serverDrivenColumnFilters) return null;
-  const pending = root.columnFiltersSearchPending === true;
+  const dirty = root.columnFiltersSearchPending === true;
+  /** Pré-DataGrid sem o campo novo: cair para o mesmo critério que só «rascunho ≠ aplicado». */
+  const highlighted =
+    (root.applyColumnFiltersSearchHighlighted ?? root.columnFiltersSearchPending) === true;
   const label = title ?? root.applyColumnFiltersSearchLabel ?? "Buscar";
-  const tip = pending
+  const tip = dirty
     ? (root.applyColumnFiltersSearchPendingTooltip ??
       "Os filtros de coluna ainda não foram aplicados à pesquisa.")
-    : label;
+    : highlighted
+      ? (root.applyColumnFiltersSearchInitialHighlightTooltip ??
+        "Clique em pesquisar para carregar os dados.")
+      : label;
   const icon =
     children ?? (
       <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
@@ -149,7 +155,7 @@ export function GridToolbarApplyColumnFiltersButton({
           className={cn(
             showLabel ? "h-8 min-w-0 shrink-0 gap-1.5 px-2" : "h-8 w-8 shrink-0",
             /** `ring-offset` aumentava a caixa; `ring-inset` mantém o mesmo tamanho que os outros ícones */
-            pending && "ring-inset ring-2 ring-amber-500/90 ring-offset-0",
+            highlighted && "ring-inset ring-2 ring-amber-500/90 ring-offset-0",
             className
           )}
           aria-label={label}

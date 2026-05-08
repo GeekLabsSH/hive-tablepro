@@ -51,12 +51,19 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   serverDrivenColumnFilters?: boolean;
   /** Filtros de coluna editados ainda não aplicados à última pesquisa. */
   columnFiltersSearchPending?: boolean;
+  /**
+   * Destaque visual do botão «Pesquisar» (anelo âmbar): inclui `columnFiltersSearchPending` e, com
+   * `highlightApplyColumnFiltersUntilSearch`, até ao primeiro `applyColumnFiltersSearch`.
+   */
+  applyColumnFiltersSearchHighlighted?: boolean;
   /** Confirma e dispara `onServerColumnFiltersSearch`. */
   applyColumnFiltersSearch?: () => void;
   /** Rótulo do botão «Aplicar filtros» (i18n). */
   applyColumnFiltersSearchLabel?: string;
   /** Tooltip quando há alterações por aplicar. */
   applyColumnFiltersSearchPendingTooltip?: string;
+  /** Tooltip quando só o destaque «carregar dados» está activo (antes do primeiro clique em pesquisar). */
+  applyColumnFiltersSearchInitialHighlightTooltip?: string;
   /** Zona à direita da toolbar (ex.: select de modelos de filtro). */
   toolbarEndSlot?: React.ReactNode;
 };

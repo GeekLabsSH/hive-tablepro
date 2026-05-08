@@ -743,6 +743,11 @@ export interface GridLocaleText {
   filterPanelLogicOr?: string;
   filterPanelClearAll?: string;
   filterPanelEmpty?: string;
+  /**
+   * Quando `activeFilterCount` > 0 mas a lista de linhas do painel está vazia
+   * (ex.: pesquisa rápida ou filtros só na última pesquisa ao servidor).
+   */
+  filterPanelActiveNotListedHint?: string;
   filterPanelEdit?: string;
   filterPanelRemove?: string;
   filterPanelOpenButton?: string;
@@ -820,6 +825,11 @@ export interface GridLocaleText {
   toolbarApplyColumnFilters?: string;
   /** Tooltip quando o modelo de filtro de colunas ainda não foi aplicado à última pesquisa. */
   toolbarApplyColumnFiltersPendingTooltip?: string;
+  /**
+   * Tooltip do botão «Pesquisar» quando só `highlightApplyColumnFiltersUntilSearch` está activo
+   * (sem diferença rascunho/aplicado, mas ainda não houve o primeiro clique).
+   */
+  toolbarApplyColumnFiltersInitialHighlightTooltip?: string;
 }
 
 /** Payload ao confirmar pesquisa com `serverDrivenColumnFilters`. */
@@ -856,7 +866,7 @@ export interface GridApiCommunity<R extends GridValidRowModel = GridValidRowMode
   getFilterModel: () => GridFilterModel;
   /**
    * Com `serverDrivenColumnFilters`: `true` se `filterModel.items` difere do último conjunto aplicado
-   * à pesquisa (botão «Aplicar» em destaque).
+   * à pesquisa. Não reflecte `highlightApplyColumnFiltersUntilSearch` (destaque até ao primeiro clique no botão).
    */
   getColumnFiltersSearchPending: () => boolean;
   /** Confirma filtros de coluna e dispara `onServerColumnFiltersSearch` (e repõe página 0 se interno). */

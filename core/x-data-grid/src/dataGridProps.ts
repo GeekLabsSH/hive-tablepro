@@ -227,6 +227,12 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
    * Combinar com `paginationMode="server"` e `onServerColumnFiltersSearch` / `api.applyColumnFiltersSearch()`.
    */
   serverDrivenColumnFilters?: boolean;
+  /**
+   * Com `serverDrivenColumnFilters`: o botão «Pesquisar» mantém o destaque visual (anelo âmbar) até à primeira
+   * chamada a `applyColumnFiltersSearch`, mesmo quando o rascunho coincide com o último conjunto aplicado
+   * (útil se a app só carregar dados após esse clique).
+   */
+  highlightApplyColumnFiltersUntilSearch?: boolean;
   /** Chamado ao aplicar filtros de coluna à pesquisa (botão da toolbar ou API). */
   onServerColumnFiltersSearch?: (payload: GridServerColumnFiltersSearchPayload<R>) => void;
 
