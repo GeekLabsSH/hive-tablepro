@@ -23,6 +23,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../../../src/components
 import { cn } from "../../../src/lib/utils";
 import type { GridDensity, GridVisualization } from "./GridRootContext";
 import { useGridApiContext, useGridRootContext } from "./GridRootContext";
+import { GridToolbarColumnContainsFilter } from "./GridToolbarColumnContainsFilter";
+
+export { GridToolbarColumnContainsFilter, upsertColumnContainsFilter } from "./GridToolbarColumnContainsFilter";
 
 function ToolbarEndSlotFromContext() {
   const root = useGridRootContext();
@@ -825,13 +828,17 @@ export function GridToolbarFilterColumnsDensityRow({
   toolbarQuickFilterAlign?: "start" | "end";
   showButtonLabels?: boolean;
 }) {
+  const root = useGridRootContext();
+  const quickFilterMode = root?.toolbarQuickFilterMode ?? "global";
   const resolvedShowVisualizationSelector = showDensitySelector ? true : showVisualizationSelector;
+  const hasQuickFilterChrome =
+    showQuickFilter && (quickFilterMode === "global" || quickFilterMode === "columnContains");
   const hasChrome =
     showColumnsButton ||
     showFilterButton ||
     showDensitySelector ||
     resolvedShowVisualizationSelector ||
-    showQuickFilter ||
+    hasQuickFilterChrome ||
     showHeaderFiltersToggle ||
     showClearFiltersButton ||
     showChartsButton ||
@@ -839,14 +846,23 @@ export function GridToolbarFilterColumnsDensityRow({
     showApplyColumnFiltersButton;
   if (!hasChrome) return null;
 
-  const quick = showQuickFilter ? (
-    <GridToolbarQuickFilter
-      ref={quickFilterRef}
-      variant="minimal"
-      className={cn("shrink-0", toolbarQuickFilterAlign === "end" && "ml-auto")}
-      placeholder={quickFilterPlaceholder}
-    />
-  ) : null;
+  const quickFilterClassName = cn("shrink-0", toolbarQuickFilterAlign === "end" && "ml-auto");
+  const quick =
+    showQuickFilter && quickFilterMode === "columnContains" ? (
+      <GridToolbarColumnContainsFilter
+        className={quickFilterClassName}
+        columnSelectPlaceholder={root?.toolbarColumnContainsFilterColumnLabel ?? "Coluna"}
+        valueInputPlaceholder={root?.toolbarColumnContainsFilterValuePlaceholder ?? "Valor…"}
+        addAriaLabel={root?.toolbarColumnContainsFilterAddLabel ?? "Adicionar filtro"}
+      />
+    ) : showQuickFilter ? (
+      <GridToolbarQuickFilter
+        ref={quickFilterRef}
+        variant="minimal"
+        className={quickFilterClassName}
+        placeholder={quickFilterPlaceholder}
+      />
+    ) : null;
 
   return (
     <div

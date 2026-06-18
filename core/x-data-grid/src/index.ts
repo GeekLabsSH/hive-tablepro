@@ -51,6 +51,8 @@ export {
   GridToolbarDensitySelector,
   GridToolbarVisualizationSelector,
   GridToolbarQuickFilter,
+  GridToolbarColumnContainsFilter,
+  upsertColumnContainsFilter,
   GridToolbarFilterColumnsDensityRow,
   GridToolbarHeaderFiltersButton,
   GridToolbarClearFiltersButton,
@@ -60,6 +62,7 @@ export {
   GridToolbarApplyColumnFiltersButton
 } from "./gridToolbar";
 export type { GridToolbarProps, GridToolbarQuickFilterProps } from "./gridToolbar";
+export type { GridToolbarColumnContainsFilterProps } from "./GridToolbarColumnContainsFilter";
 export { GridDefaultRowEditActions } from "./GridRowEditActions";
 export { GridRootProvider, useGridApiContext, useGridRootProps, useGridRootContext } from "./GridRootContext";
 export type { GridDensity, GridEditToolbarCompatProps, GridRootContextValue } from "./GridRootContext";

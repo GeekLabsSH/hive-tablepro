@@ -42,6 +42,8 @@ export {
   GridToolbarExport,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
+  GridToolbarColumnContainsFilter,
+  upsertColumnContainsFilter,
   GridToolbarFilterColumnsDensityRow,
   GridToolbarHeaderFiltersButton,
   GridToolbarClearFiltersButton,
@@ -88,6 +90,7 @@ export type {
   GridRootContextValue
 } from "../core/x-data-grid/src/GridRootContext";
 export type { GridToolbarProps, GridToolbarQuickFilterProps } from "../core/x-data-grid/src/gridToolbar";
+export type { GridToolbarColumnContainsFilterProps } from "../core/x-data-grid/src/GridToolbarColumnContainsFilter";
 export type {
   GridAggregationModel,
   GridApiCommunity,

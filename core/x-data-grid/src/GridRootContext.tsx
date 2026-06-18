@@ -66,6 +66,12 @@ export type GridRootContextValue<R extends GridValidRowModel = GridValidRowModel
   applyColumnFiltersSearchInitialHighlightTooltip?: string;
   /** Zona à direita da toolbar (ex.: select de modelos de filtro). */
   toolbarEndSlot?: React.ReactNode;
+  /** Modo da pesquisa rápida na toolbar integrada / `EditToolbar`. */
+  toolbarQuickFilterMode?: "global" | "columnContains";
+  /** Rótulos do filtro coluna + valor (`toolbarQuickFilterMode="columnContains"`). */
+  toolbarColumnContainsFilterColumnLabel?: string;
+  toolbarColumnContainsFilterValuePlaceholder?: string;
+  toolbarColumnContainsFilterAddLabel?: string;
 };
 
 const Ctx = React.createContext<GridRootContextValue | null>(null);

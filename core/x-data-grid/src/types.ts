@@ -685,6 +685,10 @@ export interface GridDetailPanelParams<R extends GridValidRowModel = GridValidRo
 /** Chaves de texto substituíveis na UI da grelha (`localeText`). */
 export interface GridLocaleText {
   filterPlaceholder?: string;
+  /** Filtro coluna + valor na toolbar (`toolbarQuickFilterMode="columnContains"`). */
+  toolbarColumnContainsFilterColumn?: string;
+  toolbarColumnContainsFilterValue?: string;
+  toolbarColumnContainsFilterAdd?: string;
   columnsMenu?: string;
   columnsMenuVisibility?: string;
   loadingLabel?: string;

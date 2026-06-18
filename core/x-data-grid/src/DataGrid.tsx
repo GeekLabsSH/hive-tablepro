@@ -1929,6 +1929,7 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
     filterMode = "client",
     disableColumnFilter,
     toolbarQuickFilterAlign = "start",
+    toolbarQuickFilterMode = "global",
     toolbarShowButtonLabels = false,
     filterTemplatesToolbarSlot,
     headerFiltersEnabled: headerFiltersEnabledProp,
@@ -4586,7 +4587,14 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
         "Os filtros de coluna ainda não foram aplicados à pesquisa.",
       applyColumnFiltersSearchInitialHighlightTooltip:
         localeText?.toolbarApplyColumnFiltersInitialHighlightTooltip,
-      toolbarEndSlot: filterTemplatesToolbarSlot
+      toolbarEndSlot: filterTemplatesToolbarSlot,
+      toolbarQuickFilterMode,
+      toolbarColumnContainsFilterColumnLabel:
+        localeText?.toolbarColumnContainsFilterColumn ?? "Coluna",
+      toolbarColumnContainsFilterValuePlaceholder:
+        localeText?.toolbarColumnContainsFilterValue ?? "Valor…",
+      toolbarColumnContainsFilterAddLabel:
+        localeText?.toolbarColumnContainsFilterAdd ?? "Adicionar filtro"
     }),
     [
       gridApi,
@@ -4614,7 +4622,8 @@ export function DataGrid<R extends GridValidRowModel>(props: DataGridProps<R>) {
       columnFiltersSearchPending,
       applyColumnFiltersSearchHighlighted,
       runServerColumnFiltersSearch,
-      localeText
+      localeText,
+      toolbarQuickFilterMode
     ]
   );
 

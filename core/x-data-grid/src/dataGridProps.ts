@@ -209,6 +209,11 @@ export interface DataGridProps<R extends GridValidRowModel = GridValidRowModel> 
   disableColumnFilter?: boolean;
   /** Alinhamento da pesquisa rápida na linha integrada `GridToolbarFilterColumnsDensityRow` (`start` = após os botões; `end` = `ml-auto`). */
   toolbarQuickFilterAlign?: "start" | "end";
+  /**
+   * Modo da pesquisa rápida na toolbar: `global` (texto único) ou `columnContains` (select de coluna + valor «contém»).
+   * @default "global"
+   */
+  toolbarQuickFilterMode?: "global" | "columnContains";
   /** Na linha integrada, mostrar rótulo de texto curto junto aos ícones (Colunas, Filtros, …). */
   toolbarShowButtonLabels?: boolean;
   /**
